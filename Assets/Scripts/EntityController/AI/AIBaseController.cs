@@ -107,7 +107,7 @@ public class AIBaseController : BasicCharacterMovement {
         }
         else {
             distance = target.transform.position.x - transform.position.x;
-            if(Mathf.Abs(distance) <= character.GetCurrentStat(WeaponStats.Range) * 0.9f) {
+            if(Mathf.Abs(distance) <= character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f) {
                 //Idle
                 if (Mathf.Sign(target.transform.position.x - transform.position.x) == (System.Convert.ToSingle(character.IsFacingRight()) - 0.5f) * 2f) {
                     Attack();
@@ -123,25 +123,20 @@ public class AIBaseController : BasicCharacterMovement {
             }
             else {
                 direction = (int)Mathf.Sign(distance);
-                Follow(target.transform.position, character.GetCurrentStat(WeaponStats.Range) * 0.9f);
+                Follow(target.transform.position, character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f);
                 return;
             }
         }
     }
 
     protected virtual void Walk() {
-        movementController.Move(direction);
-        if (direction == 1)
-            character.FlipFace(true);
-        else if (direction == -1)
-            character.FlipFace(false);
-        //Walk anim
+        Walk(direction / 3f * 5f);
     }
 
     protected virtual void Attack() {
         if (Time.realtimeSinceStartup < nextAttack) return;
-        nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(WeaponStats.AttackSpeed);
-        character.AddUncontrollableTime(Mathf.Min(1f / character.GetCurrentStat(WeaponStats.AttackSpeed), 0.2f));
+        nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
+        character.AddUncontrollableTime(Mathf.Min(1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed), 0.2f));
         //Attack anim
         //Weapon attack
     }

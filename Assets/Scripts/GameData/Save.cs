@@ -37,7 +37,7 @@ public static class Save
         PlayerData data = new PlayerData();
 
         data.Health = player.GetCurrentStat(CharacterStats.Health);
-        data.WeaponClass = player.GetWeapon().GetClass();
+        //data.WeaponClass = player.GetWeapon().GetClass();
 
         List<SlotData> tempSlots = new List<SlotData>();
         foreach(InventorySlot inven in Inventory.GetInventory()) {

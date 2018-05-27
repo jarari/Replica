@@ -36,6 +36,10 @@ public class Effect : MonoBehaviour {
             temp.x = (float)GameDataManager.instance.GetData("Data", classname, "Position", "X");
             temp.y = (float)GameDataManager.instance.GetData("Data", classname, "Position", "Y");
         }
+        if(GameDataManager.instance.GetData("Data", classname, "ShouldDisplayBeneathGround") != null
+            && (int)GameDataManager.instance.GetData("Data", classname, "ShouldDisplayBeneathGround") == 1) {
+            GetComponent<SpriteRenderer>().sortingLayerName = "DustEffect";
+        }
         transform.position = transform.TransformPoint(temp);
     }
 

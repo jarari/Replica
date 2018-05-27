@@ -34,7 +34,7 @@ public static class Helper {
     }
 
     public static DamageData DamageCalc(Character attacker, Dictionary<WeaponStats, float> attackerdata, Character victim, bool ignorearmor = false) {
-        return new DamageData(attacker, victim, 0, 0);
+        return new DamageData(attacker, victim, 100, 0);
     }
 
     public static float BallisticsAngCalc(float distance, float height, float velocity, bool min) {
@@ -60,5 +60,15 @@ public static class Helper {
             ang = Mathf.PI * 2 - Mathf.Acos(vec.normalized.x);
         ang *= Mathf.Rad2Deg;
         return ang;
+    }
+
+    public static bool IsInBox(Vector2 pos, Vector2 boxMin, Vector2 boxMax) {
+        float xMin = Mathf.Min(boxMin.x, boxMax.x);
+        float xMax = Mathf.Max(boxMin.x, boxMax.x);
+        float yMin = Mathf.Min(boxMin.y, boxMax.y);
+        float yMax = Mathf.Max(boxMin.y, boxMax.y);
+        if (pos.x >= xMin && pos.x <= xMax && pos.y >= yMin && pos.y <= yMax)
+            return true;
+        return false;
     }
 }

@@ -32,7 +32,8 @@ public class CharacterSpawner : MonoBehaviour {
         spawnerType = sptp;
         target = forcetarget;
         nextSpawn = Time.realtimeSinceStartup;
-        aiScript = (string)GameDataManager.instance.GetData("Data", c, "ScriptClass");
+        if(GameDataManager.instance.GetData("Data", c, "AIScript") != null)
+            aiScript = (string)GameDataManager.instance.GetData("Data", c, "AIScript");
         init = true;
         if (spawnerType == CharacterSpawnerTypes.Once)
             Spawn();
@@ -43,11 +44,13 @@ public class CharacterSpawner : MonoBehaviour {
         if (characterType == CharacterTypes.Player)
             sortorder = 5;
         Character spawned = CharacterManager.instance.CreateCharacter(characterClass, transform.position, team, sortorder);
-        spawned.GiveWeapon(weaponClass);
         switch (characterType) {
             case CharacterTypes.Player:
                 CharacterManager.instance.InsertControl(spawned);
                 CamController.instance.AttachCam(spawned.transform);
+                spawned.GiveWeapon("weapon_fist");
+                spawned.GiveWeapon("weapon_gunkata");
+                spawned.GiveWeapon("weapon_sword");
                 //Save.DataLoad();
                 //PlayerHUD.Initialize();
                 //PlayerHUD.UpdateHealth(spawned.GetCurrentStat(CharacterStats.Health) / spawned.GetMaxStat(CharacterStats.Health));
@@ -57,11 +60,13 @@ public class CharacterSpawner : MonoBehaviour {
                     CharacterManager.instance.InsertAI(spawned, aiScript, false);
                     spawned.GetComponent<AIBaseController>().ForceTarget(target);
                 }
+                spawned.GiveWeapon(weaponClass);
                 break;
             case CharacterTypes.Boss:
                 if (aiScript.Length != 0) {
                     CharacterManager.instance.InsertAI(spawned, aiScript, true);
                 }
+                spawned.GiveWeapon(weaponClass);
                 break;
         }
         managed.Add(spawned);

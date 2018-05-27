@@ -1,11 +1,43 @@
 {
 	"character_echo":
 	{
+		"Name":"Echo",
 		"ScriptClass":"PlayerCharacter",
 		"Stats":
 		{
 			"Health":1000,
-			"MoveSpeed":400.0,
+			"MoveSpeed":450.0,
+			"JumpPower":675.0,
+			"MeleeArmor":10,
+			"RangeArmor":10
+		},
+		"Sprites":
+		{
+			"controller":"character_echo_controller",
+			"hasSub":0
+		},
+		"Collider":
+		{
+			"Offset_X":0.0,
+			"Offset_Y":-0.5,
+			"Size_X":30.0,
+			"Size_Y":102.0
+		},
+		"Scale":
+		{
+			"X":1.0,
+			"Y":1.0
+		}
+	},
+	"character_dummy":
+	{
+		"Name":"Echo",
+		"AIScript":"ai_basetest",
+		"ScriptClass":"PlayerCharacter",
+		"Stats":
+		{
+			"Health":1000,
+			"MoveSpeed":450.0,
 			"JumpPower":675.0,
 			"MeleeArmor":10,
 			"RangeArmor":10

@@ -27,6 +27,8 @@ public class GameDataManager : MonoBehaviour {
         ParseJSONData("ai/aidata");
         ParseJSONData("items/itemdata");
         ParseJSONData("maps/mapdata");
+        ParseJSONData("weapons/attackdata");
+        ParseJSONData("weapons/bulletdata");
         if (!debug)
             GlobalUIManager.instance.LoadScene(1);
     }
@@ -154,6 +156,10 @@ public class GameDataManager : MonoBehaviour {
                 return Convert.ToSingle(GetData("Data", classname, "Stats", "Spread"));
             case WeaponStats.Stagger:
                 return Convert.ToSingle(GetData("Data", classname, "Stats", "Stagger"));
+            case WeaponStats.Range:
+                return Convert.ToSingle(GetData("Data", classname, "Stats", "Range"));
+            case WeaponStats.BulletSpeed:
+                return Convert.ToSingle(GetData("Data", classname, "Stats", "BulletSpeed"));
         }
         return -1;
     }

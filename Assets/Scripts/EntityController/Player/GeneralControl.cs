@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GeneralControl : BasicCharacterMovement {
     private float comboTimer;
-    private float comboTime = 0.1f;
+    private float comboTime = 0.3f;
     protected KeyCode doubletabKey;
     protected bool waitDoubleTab = false;
     protected bool sprint = false;
@@ -34,7 +34,7 @@ public class GeneralControl : BasicCharacterMovement {
                         }
                     }
                 }
-                if (Input.GetKey(KeyCode.LeftArrow)) {
+                else if (Input.GetKey(KeyCode.LeftArrow)) {
                     if (waitDoubleTab && doubletabKey == KeyCode.LeftArrow) {
                         sprint = true;
                     }
@@ -63,8 +63,11 @@ public class GeneralControl : BasicCharacterMovement {
                     if (Input.GetKey(KeyCode.LeftArrow)) {
                         Dash(-1);
                     }
-                    else {
+                    else if(Input.GetKey(KeyCode.RightArrow)){
                         Dash(1);
+                    }
+                    else {
+                        Dash(0);
                     }
                 }
 
@@ -84,8 +87,38 @@ public class GeneralControl : BasicCharacterMovement {
                 }
 
                 if (character.IsOnGround() && character.GetState() != CharacterStates.Jump) {
-                    if (Input.GetKey(KeyCode.A)) {
-                        //Attack
+                    if (Input.GetKeyDown(KeyCode.X)) {
+                        if(character.GetState() != CharacterStates.Attack)
+                            character.GetAnimator().Play("Attack Junction");
+                        character.GetAnimator().ResetTrigger("UpX");
+                        character.GetAnimator().ResetTrigger("FlatX");
+                        character.GetAnimator().ResetTrigger("DownX");
+                        if (Input.GetKey(KeyCode.DownArrow)) {
+                            character.GetAnimator().SetTrigger("DownX");
+                        }
+                        else if(Input.GetKey(KeyCode.UpArrow)){
+                            character.GetAnimator().SetTrigger("UpX");
+                        }
+                        else {
+                            character.GetAnimator().SetTrigger("FlatX");
+                        }
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Z)) {
+                        if (character.GetState() != CharacterStates.Attack)
+                            character.GetAnimator().Play("HG Junction");
+                        character.GetAnimator().ResetTrigger("UpZ");
+                        character.GetAnimator().ResetTrigger("FlatZ");
+                        character.GetAnimator().ResetTrigger("DownZ");
+                        if (Input.GetKey(KeyCode.DownArrow)) {
+                            character.GetAnimator().SetTrigger("DownZ");
+                        }
+                        else if (Input.GetKey(KeyCode.UpArrow)) {
+                            character.GetAnimator().SetTrigger("UpZ");
+                        }
+                        else {
+                            character.GetAnimator().SetTrigger("FlatZ");
+                        }
                     }
                 }
             }

@@ -38,32 +38,32 @@ public enum CharacterTypes {
 }
 
 public abstract class Character : ObjectBase {
-    private Teams team;
-    private CharacterFlags flag;
-    private BasicCharacterMovement basecontroller;
-    private Weapon weapon;
+    protected Teams team;
+    protected CharacterFlags flag;
+    protected BasicCharacterMovement basecontroller;
+    protected Dictionary<WeaponTypes, Weapon> weapons = new Dictionary<WeaponTypes, Weapon>();
 
-    private float uncontrollableTimer = 0.0f;
-    private bool forceUncontrollable = false;
-    private bool uncontrollable = false;
+    protected float uncontrollableTimer = 0.0f;
+    protected bool forceUncontrollable = false;
+    protected bool uncontrollable = false;
 
-    private float[] stats = new float[(int)CharacterStats.EndOfEnums];
-    private float[] weaponstats = new float[(int)WeaponStats.EndOfEnums];
+    protected float[] stats = new float[(int)CharacterStats.EndOfEnums];
+    protected Dictionary<WeaponTypes, float[]> weaponstats = new Dictionary<WeaponTypes, float[]>();
 
-    private int hasSubSprite = 0;
+    protected int hasSubSprite = 0;
 
-    private CharacterStates state = CharacterStates.Idle;
+    protected CharacterStates state = CharacterStates.Idle;
 
-    Dictionary<string, Dictionary<CharacterStats, float>> buffs_plus = new Dictionary<string, Dictionary<CharacterStats, float>>();
-    Dictionary<string, Dictionary<CharacterStats, float>> buffs_mul = new Dictionary<string, Dictionary<CharacterStats, float>>();
-    Dictionary<string, float> bufftimer = new Dictionary<string, float>();
+    protected Dictionary<string, Dictionary<CharacterStats, float>> buffs_plus = new Dictionary<string, Dictionary<CharacterStats, float>>();
+    protected Dictionary<string, Dictionary<CharacterStats, float>> buffs_mul = new Dictionary<string, Dictionary<CharacterStats, float>>();
+    protected Dictionary<string, float> bufftimer = new Dictionary<string, float>();
 
-    Dictionary<string, Dictionary<WeaponStats, float>> weaponbuffs_plus = new Dictionary<string, Dictionary<WeaponStats, float>>();
-    Dictionary<string, Dictionary<WeaponStats, float>> weaponbuffs_mul = new Dictionary<string, Dictionary<WeaponStats, float>>();
-    Dictionary<string, float> weaponbufftimer = new Dictionary<string, float>();
+    protected Dictionary<string, Dictionary<WeaponStats, float>> weaponbuffs_plus = new Dictionary<string, Dictionary<WeaponStats, float>>();
+    protected Dictionary<string, Dictionary<WeaponStats, float>> weaponbuffs_mul = new Dictionary<string, Dictionary<WeaponStats, float>>();
+    protected Dictionary<string, float> weaponbufftimer = new Dictionary<string, float>();
 
-    Dictionary<int, DOT> dotlist = new Dictionary<int, DOT>();
-    List<DOT> dotlist_noid = new List<DOT>();
+    protected Dictionary<int, DOT> dotlist = new Dictionary<int, DOT>();
+    protected List<DOT> dotlist_noid = new List<DOT>();
 
     void Update() {
         uncontrollableTimer = Mathf.Clamp(uncontrollableTimer - Time.deltaTime, 0, uncontrollableTimer);
@@ -277,6 +277,14 @@ public abstract class Character : ObjectBase {
         team = t;
     }
 
+    public string GetName() {
+        return (string)GameDataManager.instance.GetData("Data", className, "Name");
+    }
+
+    public int HasSubSprite() {
+        return hasSubSprite;
+    }
+
     public void SetBaseStat(CharacterStats stat, float val) {
         stats[(int)stat] = val;
     }
@@ -301,24 +309,32 @@ public abstract class Character : ObjectBase {
         return GetBuffedStat(stats[(int)stat], stat);
     }
 
-    public void SetBaseStat(WeaponStats stat, float val) {
-        weaponstats[(int)stat] = val;
+    public void SetBaseStat(Weapon wep, WeaponStats stat, float val) {
+        if (!weaponstats.ContainsKey(wep.GetWeaponType())) {
+            weaponstats.Add(wep.GetWeaponType(), new float[(int)WeaponStats.EndOfEnums]);
+        }
+        weaponstats[wep.GetWeaponType()][(int)stat] = val;
     }
 
-    public void ModStat(WeaponStats stat, float val) {
-        weaponstats[(int)stat] = Mathf.Clamp(GetUnbuffedWeaponStat(GetBuffedWeaponStat(GetBaseStat(stat), stat) + val, stat), 0, GetMaxStat(stat));
+    public void ModStat(Weapon wep, WeaponStats stat, float val) {
+        if (!weaponstats.ContainsKey(wep.GetWeaponType())) {
+            weaponstats.Add(wep.GetWeaponType(), new float[(int)WeaponStats.EndOfEnums]);
+        }
+        weaponstats[wep.GetWeaponType()][(int)stat] = Mathf.Clamp(GetUnbuffedWeaponStat(GetBuffedWeaponStat(GetBaseStat(wep, stat), stat) + val, stat), 0, GetMaxStat(wep, stat));
     }
 
-    public float GetBaseStat(WeaponStats stat) {
-        return GameDataManager.instance.GetWeaponStat(GetWeapon().GetClass(), stat);
+    public float GetBaseStat(Weapon wep, WeaponStats stat) {
+        return GameDataManager.instance.GetWeaponStat(wep.GetClass(), stat);
     }
 
-    public float GetMaxStat(WeaponStats stat) {
-        return GetBuffedWeaponStat(GetBaseStat(stat), stat);
+    public float GetMaxStat(Weapon wep, WeaponStats stat) {
+        return GetBuffedWeaponStat(GetBaseStat(wep, stat), stat);
     }
 
-    public float GetCurrentStat(WeaponStats stat) {
-        return GetBuffedWeaponStat(weaponstats[(int)stat], stat);
+    public float GetCurrentStat(Weapon wep, WeaponStats stat) {
+        if (!weaponstats.ContainsKey(wep.GetWeaponType()))
+            return 0;
+        return GetBuffedWeaponStat(weaponstats[wep.GetWeaponType()][(int)stat], stat);
     }
 
     public void AddForce(Vector2 force) {
@@ -370,21 +386,25 @@ public abstract class Character : ObjectBase {
     }
 
     public void GiveWeapon(string classname) {
-        if (weapon != null)
-            Destroy(weapon.gameObject);
         GameObject gun_obj = (GameObject)Instantiate(Resources.Load("Prefab/Weapon"), transform.position, new Quaternion());
-        weapon = (Weapon)gun_obj.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
+        Weapon wep = (Weapon)gun_obj.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
+        wep.SetOwner(this);
+        wep.Initialize(classname);
+        if (weapons.ContainsKey(wep.GetWeaponType())) {
+            Destroy(weapons[wep.GetWeaponType()].gameObject);
+            weapons.Remove(wep.GetWeaponType());
+        }
+        weapons.Add(wep.GetWeaponType(), wep);
         Vector3 lscale = gun_obj.transform.localScale;
         lscale.x = gun_obj.transform.localScale.x * Mathf.Sign(transform.localScale.x);
         gun_obj.transform.localScale = lscale;
         gun_obj.transform.SetParent(transform);
-        weapon.Initialize(classname);
         if (basecontroller != null)
             basecontroller.Initialize(this);
     }
 
-    public Weapon GetWeapon() {
-        return weapon;
+    public Weapon GetWeapon(WeaponTypes type) {
+        return weapons[type];
     }
 
     public BasicCharacterMovement GetController() {
@@ -395,9 +415,9 @@ public abstract class Character : ObjectBase {
         if (damage == 0 || (flag & CharacterFlags.Invincible) == CharacterFlags.Invincible) return;
         if (IsAI())
             ((AIBaseController)basecontroller).OnTakeDamage(attacker);
-        if (IsBoss()) {
+        if (!IsBoss()) {
             SetUncontrollable(true);
-            StartCoroutine(Stagger(attacker.GetCurrentStat(WeaponStats.Stagger)));
+            StartCoroutine(Stagger(stagger));
         }
         OnHealthChanged();
         ModStat(CharacterStats.Health, -damage);

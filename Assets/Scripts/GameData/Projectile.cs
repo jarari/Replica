@@ -25,16 +25,15 @@ public class Projectile : MonoBehaviour {
         collided = false;
         layer = (1 << LayerMask.NameToLayer("Characters"));// | (1 << LayerMask.NameToLayer("Characters"));
     }
-    public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, Dictionary<WeaponStats, float> _data, bool candirecthit) {
+    public void Initialize(string classname, Character user, Weapon firedfrom, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         className = classname;
         attacker = user;
         weapon = firedfrom;
-        speed = _speed;
-        range = _range;
+        speed = _data[WeaponStats.BulletSpeed];
+        range = _data[WeaponStats.Range];
         data = _data;
         startPos = transform.position;
-        string smoke = (string)GameDataManager.instance.GetData("Data", className, "Sprites", "smoke");
-        if(smoke != null && smoke != "")
+        if(GameDataManager.instance.GetData("Data", className, "Sprites", "smoke") != null)
             EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "smoke"), transform.position, transform.eulerAngles.z, transform);
         if (GameDataManager.instance.GetAnimatorController(classname) != null)
             anim.runtimeAnimatorController = GameDataManager.instance.GetAnimatorController(classname);
@@ -50,15 +49,15 @@ public class Projectile : MonoBehaviour {
             StartCoroutine(DirectHit());
     }
 
-    private void Update() {
+    /*private void Update() {
         Collider2D[] colliding = Physics2D.OverlapBoxAll(transform.position, new Vector2(128, 128), 0, layer);
         foreach (Collider2D collider in colliding) {
-            if (collider.GetComponentInChildren<Character>() != null && collider.GetComponentInChildren<Character>().GetTeam() == attacker.GetTeam()) {
+            if (collider.GetComponent<Character>() != null && collider.GetComponent<Character>().GetTeam() == attacker.GetTeam()) {
                 Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider.GetComponents<Collider2D>()[0]);
                 Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider.GetComponents<Collider2D>()[1]);
             }
         }
-    }
+    }*/
 
     protected IEnumerator DirectHit() {
         yield return new WaitWhile(() => Physics2D.OverlapBox(transform.position, new Vector2(4, 4), 0, layer));
@@ -83,6 +82,13 @@ public class Projectile : MonoBehaviour {
         Vector3 proang = transform.eulerAngles;
         proang.z = ang;
         transform.eulerAngles = proang;
+        Collider2D[] colliding = Physics2D.OverlapBoxAll(transform.position, new Vector2(128, 128), 0, layer);
+        foreach (Collider2D collider in colliding) {
+            if (collider.GetComponent<Character>() != null && collider.GetComponent<Character>().GetTeam() == attacker.GetTeam()) {
+                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider.GetComponents<Collider2D>()[0]);
+                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider.GetComponents<Collider2D>()[1]);
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
@@ -94,7 +100,7 @@ public class Projectile : MonoBehaviour {
     private void HandleCollision(Collision2D collision) {
         if (collision.gameObject == null) return;
         if (collision.gameObject.tag.Equals("Character")) {
-            if(collision.gameObject.GetComponentInChildren<Character>().GetTeam() != attacker.GetTeam()) {
+            if(collision.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
                 collided = true;
                 DestroyObject(gameObject);
                 init = false;
@@ -116,7 +122,7 @@ public class Projectile : MonoBehaviour {
 
     protected virtual void OnDestroy() {
         if (!collided) return;
-        if(GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != null && (int)GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") == 1)
+        if(GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") == null || (GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != null && (int)GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != 0))
             CamController.instance.ShakeCam(data[WeaponStats.Damage] / 20f, Mathf.Clamp(data[WeaponStats.Damage] / 50, 0, 2));
         List<Character> closeEnemies = CharacterManager.instance.GetEnemies(attacker.GetTeam()).FindAll(c => Vector3.Distance(c.transform.position, transform.position) <= range);
         foreach (Character c in closeEnemies) {

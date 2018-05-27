@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,12 +26,12 @@ public class Bullet : MonoBehaviour {
         collided = false;
         layer = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Characters"));
     }
-    public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, Dictionary<WeaponStats, float> _data, bool ignoreground) {
+    public void Initialize(string classname, Character user, Weapon firedfrom, Dictionary<WeaponStats, float> _data, bool ignoreground) {
         className = classname;
         attacker = user;
         weapon = firedfrom;
-        speed = _speed;
-        range = _range;
+        speed = _data[WeaponStats.BulletSpeed];
+        range = _data[WeaponStats.Range];
         data = _data;
         ignoreGround = ignoreground;
         startPos = transform.position;
@@ -71,8 +72,8 @@ public class Bullet : MonoBehaviour {
         Character colliding = null;
         if(collision.gameObject == null) return;
         if (collision.gameObject.tag.Equals("Character")) {
-            if (collision.gameObject.GetComponentInChildren<Character>().GetTeam() != attacker.GetTeam()) {
-                colliding = collision.gameObject.GetComponentInChildren<Character>();
+            if (collision.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
+                colliding = collision.gameObject.GetComponent<Character>();
             }
             else {
                 Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collision.collider);
@@ -104,6 +105,12 @@ public class Bullet : MonoBehaviour {
                 collided = true;
                 DamageData dmgdata = Helper.DamageCalc(attacker, data, colliding, false);
                 colliding.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
+                if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null) {
+                    Vector2 knockback = new Vector2();
+                    knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "X"));
+                    knockback.y = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "Y"));
+                    colliding.AddForce(new Vector2(transform.right.x * knockback.x, transform.right.y * knockback.y));
+                }
                 DestroyObject(gameObject);
                 //EffectManager.instance.CreateEffect("effect_hitback_bullet", colliding.transform.position + transform.right * 10f, Helper.Vector2ToAng(transform.right));
                 init = false;

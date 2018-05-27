@@ -27,6 +27,21 @@ public class LevelManager : MonoBehaviour {
         LoadMap("map_stage01");
     }
 
+    private void PreloadSprites(string prefix, string classname) {
+        GameObject obj = new GameObject();
+        obj.transform.localScale = new Vector3();
+        SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
+        UnityEngine.Object[] sprites = Resources.LoadAll("Sprites/" + prefix + "/" + classname, typeof(Sprite));
+        foreach (Sprite t in sprites) {
+            sr.sprite = t;
+        }
+        DestroyObject(obj);
+    }
+
+    private void PreloadAudios(string prefix, string classname) {
+
+    }
+
     public void LoadMap(string mapname) {
         StartCoroutine(MapCreationSequence(mapname));
     }
@@ -227,6 +242,7 @@ public class LevelManager : MonoBehaviour {
         CharacterSpawner cs = obj.GetComponent<CharacterSpawner>();
         cs.delay = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Delay"));
         cs.characterClass = (string)GameDataManager.instance.GetData(mapdata, key, "CharacterClass");
+        PreloadSprites("characters", cs.characterClass);
         cs.team = (Teams)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Team"));
         cs.weaponClass = (string)GameDataManager.instance.GetData(mapdata, key, "WeaponClass");
         cs.characterType = (CharacterTypes)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "CharacterType"));

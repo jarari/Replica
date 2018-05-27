@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class Throwable : Projectile {
     protected float torque;
-    public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, float _torque, Dictionary<WeaponStats, float> _data, bool candirecthit) {
+    public void Initialize(string classname, Character user, Weapon firedfrom, float _torque, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         className = classname;
         attacker = user;
         weapon = firedfrom;
-        speed = _speed;
-        range = _range;
+        speed = _data[WeaponStats.BulletSpeed];
+        range = _data[WeaponStats.Range];
         torque = _torque;
         data = _data;
         startPos = transform.position;

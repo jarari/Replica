@@ -57,12 +57,20 @@ public class ObjectBase : MonoBehaviour {
         return facingRight;
     }
 
+    public int GetFacingDirection() {
+        return (int)((Convert.ToSingle(facingRight) - 0.5f) * 2f);
+    }
+
     public string GetClass() {
         return className;
     }
 
     public Animator GetAnimator() {
         return anim;
+    }
+
+    public BoxCollider2D GetCollider() {
+        return box;
     }
 
     public void FlipFace(bool right) {

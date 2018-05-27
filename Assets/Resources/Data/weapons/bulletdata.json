@@ -1,0 +1,24 @@
+{
+	"bullet_hg":
+	{
+		"Loop":0,
+		"Sprites":
+		{
+			"controller":"bullet_hg_controller",
+			"hit":"effect_bullet_hg_hit"
+		}
+	},
+	"bullet_gunkata_finish":
+	{
+		"Loop":0,
+		"KnockBack": {
+			"X": 600,
+			"Y": 50
+		},
+		"Sprites":
+		{
+			"controller":"bullet_gunkata_finish_controller",
+			"hit":"effect_bullet_gunkata_finish_hit"
+		}
+	}
+}

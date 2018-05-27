@@ -1,0 +1,319 @@
+{
+  "attack_basic_01": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 1,
+        "Pos": {
+          "X": 22,
+          "Y": -5
+        },
+        "Area":{
+          "X": 62,
+          "Y": 25
+        }
+      }
+    }
+  },
+  "attack_basic_02": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 1,
+        "Pos": {
+          "X": 33,
+          "Y": 5
+        },
+        "Area":{
+          "X": 52,
+          "Y": 17
+        }
+      }
+    }
+  },
+  "attack_basic_03": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 1,
+        "Pos": {
+          "X": 31,
+          "Y": -1
+        },
+        "Area":{
+          "X": 57,
+          "Y": 39
+        }
+      }
+    }
+  },
+  "attack_basic_04": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+	"KnockBack": {
+		"X": 600,
+		"Y": 200
+	},
+    "HitBox": {
+      "0":{
+        "Time": 2,
+        "Pos": {
+          "X": 21,
+          "Y": -19
+        },
+        "Area":{
+          "X": 73,
+          "Y": 67
+        }
+      }
+    }
+  },
+  "attack_basic_finish": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 0,
+    "HitBox": {
+    }
+  },
+  "attack_fist_01": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_fist_02": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_fist_03": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_fist_04": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_fist_upper": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 0,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_sword_01": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_sword_02": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_sword_03": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_sword_04": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 300,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "attack_sword_finish": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 500,
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    }
+  },
+  "hg_forward": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 0,
+    "HitBox": {
+    },
+	"MuzzlePos":
+	{
+		"X":60.0,
+		"Y":24.0
+	}
+  },
+  "hg_down": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 0,
+    "HitBox": {
+    },
+	"MuzzlePos":
+	{
+		"X":60.0,
+		"Y":-12.0
+	}
+  },
+  "hg_up": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeAmount": 0,
+    "HitBox": {
+    },
+	"MuzzlePos":
+	{
+		"X":50.0,
+		"Y":80.0
+	}
+  }
+}
