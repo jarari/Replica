@@ -88,7 +88,7 @@ public class Projectile : MonoBehaviour {
 
     protected virtual void FixedUpdate() {
         if (!init) return;
-        rb.velocity += new Vector2(0, -981f * Time.fixedDeltaTime);
+        rb.velocity += new Vector2(0, Physics2D.gravity.y * Time.fixedDeltaTime);
         velVector = rb.velocity.normalized;
         float ang = Helper.Vector2ToAng(rb.velocity);
         if (ang >= 90 && ang <= 270) {
@@ -155,7 +155,7 @@ public class Projectile : MonoBehaviour {
             if (c.HasFlag(CharacterFlags.Invincible))
                 continue;
             Vector2 cBoxBorder = Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position);
-            if (Physics2D.Raycast(transform.position, cBoxBorder - (Vector2)transform.position, Mathf.Infinity, mapLayer).collider != null)
+            if (Physics2D.Raycast(transform.position, c.transform.position - transform.position, Mathf.Infinity, mapLayer).collider != null)
                 continue;
             DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true, true);
             float dist = Vector3.Distance(cBoxBorder, transform.position);
