@@ -61,5 +61,36 @@
 			"X":1.0,
 			"Y":1.0
 		}
+	},
+	"character_secbot":
+	{
+		"Name":"Security Bot",
+		"AIScript":"ai_secbot",
+		"ScriptClass":"CharacterSecbot",
+		"Stats":
+		{
+			"Health":10,
+			"MoveSpeed":250.0,
+			"JumpPower":450.0,
+			"MeleeArmor":10,
+			"RangeArmor":10
+		},
+		"Sprites":
+		{
+			"controller":"character_secbot_controller",
+			"hasSub":0
+		},
+		"Collider":
+		{
+			"Offset_X":0.0,
+			"Offset_Y":1.0,
+			"Size_X":30.0,
+			"Size_Y":75.0
+		},
+		"Scale":
+		{
+			"X":1.0,
+			"Y":1.0
+		}
 	}
 }

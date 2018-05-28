@@ -9,7 +9,6 @@ public class DOT {
     private float nextDamage;
     private Character attacker;
     private Character victim;
-    private float duration;
 
     public DOT(float duration, float tickDamage, float tickdelay, Character _attacker, Character _victim) {
         timeLeft = duration;
@@ -21,9 +20,9 @@ public class DOT {
     }
 
     public DOT(float duration, float tickdamage, float tickdelay) {
-        this.duration = duration;
-        this.damage = tickdamage;
-        this.tickDelay = tickdelay;
+        timeLeft = duration;
+        damage = tickdamage;
+        tickDelay = tickdelay;
     }
 
     public void SetDuration(float d) {

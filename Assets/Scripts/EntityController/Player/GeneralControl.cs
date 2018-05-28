@@ -16,13 +16,14 @@ public class GeneralControl : BasicCharacterMovement {
             waitDoubleTab = false;
         }
         if (!PlayerPauseUI.IsPaused()) {
-            if (character.GetUncontrollableTimeLeft() == 0) {
+            if (character.GetUncontrollableTimeLeft() == 0 && !character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("hit")) {
                 if (!character.IsOnGround())
                     sprint = false;
 
                 if (Input.GetKey(KeyCode.RightArrow)) {
                     if (waitDoubleTab && doubletabKey == KeyCode.RightArrow) {
                         sprint = true;
+                        Sprint(1);
                     }
                     else {
                         comboTimer = comboTime;
@@ -40,6 +41,7 @@ public class GeneralControl : BasicCharacterMovement {
                 else if (Input.GetKey(KeyCode.LeftArrow)) {
                     if (waitDoubleTab && doubletabKey == KeyCode.LeftArrow) {
                         sprint = true;
+                        Sprint(-1);
                     }
                     else {
                         comboTimer = comboTime;
@@ -59,7 +61,7 @@ public class GeneralControl : BasicCharacterMovement {
                     sprint = false;
                     if (comboTimer > 0 &&
                      (doubletabKey == KeyCode.RightArrow || doubletabKey == KeyCode.LeftArrow))
-                    waitDoubleTab = true;
+                        waitDoubleTab = true;
                 }
 
                 if (Input.GetKeyDown(KeyCode.LeftShift)) {
@@ -91,8 +93,14 @@ public class GeneralControl : BasicCharacterMovement {
                         }
                     }
                 }
+                else if (character.GetState() == CharacterStates.Attack
+                    && Input.GetKey(KeyCode.DownArrow)
+                    && character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsName("HG Continue"))
+                    Sit();
 
-                if (character.IsOnGround() && character.GetState() != CharacterStates.Jump) {
+                if (character.IsOnGround() 
+                    && character.GetState() != CharacterStates.Jump
+                    && character.GetState() != CharacterStates.Shift) {
                     if (Input.GetKeyDown(KeyCode.X)) {
                         if (character.GetState() != CharacterStates.Attack)
                             character.GetAnimator().Play("Attack Junction");
@@ -132,22 +140,18 @@ public class GeneralControl : BasicCharacterMovement {
                             character.GetAnimator().Play("throw_ready");
                         }
                     }
-                    else if (Input.GetKeyUp(KeyCode.G)) {
-                        if (grenadeCharge < character.GetCurrentStat(CharacterStats.GrenadeFullCharge) * 0.1f)
-                            OnGrenadeCancelled();
+                    if (Input.GetKeyUp(KeyCode.G) && character.GetState() == CharacterStates.Throw) {
+                        character.GetAnimator().ResetTrigger("UpG");
+                        character.GetAnimator().ResetTrigger("FlatG");
+                        character.GetAnimator().ResetTrigger("DownG");
+                        if (Input.GetKey(KeyCode.DownArrow)) {
+                            character.GetAnimator().SetTrigger("DownG");
+                        }
+                        else if (Input.GetKey(KeyCode.UpArrow)) {
+                            character.GetAnimator().SetTrigger("UpG");
+                        }
                         else {
-                            character.GetAnimator().ResetTrigger("UpG");
-                            character.GetAnimator().ResetTrigger("FlatG");
-                            character.GetAnimator().ResetTrigger("DownG");
-                            if (Input.GetKey(KeyCode.DownArrow)) {
-                                character.GetAnimator().SetTrigger("DownG");
-                            }
-                            else if (Input.GetKey(KeyCode.UpArrow)) {
-                                character.GetAnimator().SetTrigger("UpG");
-                            }
-                            else {
-                                character.GetAnimator().SetTrigger("FlatG");
-                            }
+                            character.GetAnimator().SetTrigger("FlatG");
                         }
                     }
                 }

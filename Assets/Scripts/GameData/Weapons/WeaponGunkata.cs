@@ -13,10 +13,6 @@ public class WeaponGunkata : Weapon {
         }
     }
 
-    public void FireBullet(string bulletclass, float ang) {
-        BulletManager.instance.CreateBullet(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
-    }
-
     public override void OnWeaponEvent(string eventname) {
         if (eventname == "hg_forward" || eventname == "hg_down" || eventname == "hg_up") {
             SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "X")

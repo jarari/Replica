@@ -60,8 +60,10 @@ public class BasicCharacterMovement : MoveObject {
             }
         }
 
-        if (character.GetUncontrollableTimeLeft() == 0 && character.GetState() == CharacterStates.Uncontrollable)
+        if (character.GetUncontrollableTimeLeft() == 0 && character.GetState() == CharacterStates.Uncontrollable) {
             character.SetState(CharacterStates.Idle);
+            character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
+        }
 
         if (character.GetAnimator().GetInteger("State") == (int)CharacterStates.Walk
             || character.GetAnimator().GetInteger("State") == (int)CharacterStates.Sprint
@@ -71,7 +73,6 @@ public class BasicCharacterMovement : MoveObject {
 
         if (character.GetState() != CharacterStates.Throw) {
             if(grenadeCharge != 0) {
-                grenadeCharge = 0;
                 OnGrenadeCancelled();
             }
         }
@@ -102,10 +103,10 @@ public class BasicCharacterMovement : MoveObject {
         if(character.GetState() != CharacterStates.Sit
             && character.GetState() != CharacterStates.Throw)
             Move(dir * 0.6f);
-        if (dir == 1) {
+        if (dir > 0) {
             character.FlipFace(true);
         }
-        else if (dir == -1) {
+        else if (dir < 0) {
             character.FlipFace(false);
         }
         if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk")) {
@@ -119,13 +120,14 @@ public class BasicCharacterMovement : MoveObject {
             return;
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Sprint);
         if (character.GetState() != CharacterStates.Sit
-            && character.GetState() != CharacterStates.Throw) {
+            && character.GetState() != CharacterStates.Throw
+            && character.IsOnGround()) {
             character.SetState(CharacterStates.Sprint);
             Move(dir);
-            if (dir == 1) {
+            if (dir > 0) {
                 character.FlipFace(true);
             }
-            else if (dir == -1) {
+            else if (dir < 0) {
                 character.FlipFace(false);
             }
         }
@@ -161,6 +163,12 @@ public class BasicCharacterMovement : MoveObject {
         character.GetAnimator().SetBool("DiscardFromAnyState", true);
     }
 
+    protected void OnFallEvent() {
+        character.SetState(CharacterStates.Jump);
+        character.GetAnimator().SetInteger("State", (int)CharacterStates.Jump);
+        character.GetAnimator().SetBool("DiscardFromAnyState", true);
+    }
+
     protected void OnLandEvent() {
         character.SetState(CharacterStates.Idle);
         character.GetAnimator().SetBool("DiscardFromAnyState", false);
@@ -181,7 +189,8 @@ public class BasicCharacterMovement : MoveObject {
         if (!CanDash())
             return;
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Shift);
-        if(dir == 0) {
+        character.SetState(CharacterStates.Shift);
+        if (dir == 0) {
             dashDir = (Convert.ToSingle(character.IsFacingRight()) - 0.5f) * -2f;
             character.GetAnimator().Play("tumble_back");
         }
@@ -207,7 +216,6 @@ public class BasicCharacterMovement : MoveObject {
         ForceMove(dashDir);
         AddForce(Vector3.up * character.GetCurrentStat(CharacterStats.JumpPower) * 0.6f
             + Vector3.right * dashDir * character.GetCurrentStat(CharacterStats.JumpPower) * 0.2f);
-        character.SetState(CharacterStates.Shift);
         character.SetFlag(CharacterFlags.Invincible);
         character.gameObject.layer = LayerMask.NameToLayer("CharactersShifting");
         character.GetAnimator().SetBool("DiscardFromAnyState", true);
@@ -234,6 +242,10 @@ public class BasicCharacterMovement : MoveObject {
         ForceMove(0);
         character.SetState(CharacterStates.Sit);
         character.GetAnimator().SetBool("DiscardFromAnyState", true);
+    }
+
+    protected void OnSitLoop() {
+        character.SetState(CharacterStates.Sit);
     }
 
     protected void OnStandup() {
@@ -266,10 +278,6 @@ public class BasicCharacterMovement : MoveObject {
         character.GetAnimator().SetBool("DiscardFromAnyState", false);
     }
 
-    protected void OnSitLoop() {
-        character.SetState(CharacterStates.Sit);
-    }
-
     protected void OnAttackEvent(string eventname) {
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
         character.SetState(CharacterStates.Attack);
@@ -282,6 +290,9 @@ public class BasicCharacterMovement : MoveObject {
         else if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("sword")) {
             character.GetWeapon(WeaponTypes.Sword).OnAttack(eventname);
         }
+        else if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("ai")) {
+            character.GetWeapon(WeaponTypes.AI).OnAttack(eventname);
+        }
     }
 
     protected void OnWeaponEvent(string eventname) {
@@ -293,6 +304,9 @@ public class BasicCharacterMovement : MoveObject {
         }
         else if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("sword")) {
             character.GetWeapon(WeaponTypes.Sword).OnWeaponEvent(eventname);
+        }
+        else if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("ai")) {
+            character.GetWeapon(WeaponTypes.AI).OnWeaponEvent(eventname);
         }
     }
 
@@ -310,7 +324,9 @@ public class BasicCharacterMovement : MoveObject {
     }
 
     protected void OnGrenadeCancelled() {
-        character.GetAnimator().Play("idle_loop");
+        if (character.GetState() == CharacterStates.Throw)
+            character.GetAnimator().Play("idle_loop");
+        grenadeCharge = 0;
         character.RemoveBuff("debuff_ms_chargegrenade");
     }
 
@@ -326,6 +342,21 @@ public class BasicCharacterMovement : MoveObject {
             character.GetCurrentStat(grenade, WeaponStats.Range), 90 - (90 - throwang) * character.GetFacingDirection(), 300,
             grenade.GetEssentialStats());
         character.RemoveWeapon(WeaponTypes.Throwable);
+    }
+
+    protected void OnHitEvent(int invincible) {
+        character.GetAnimator().SetInteger("State", 8);
+        character.SetState(CharacterStates.Uncontrollable);
+        if (invincible == 1)
+            character.SetFlag(CharacterFlags.Invincible);
+        character.GetAnimator().SetBool("DiscardFromAnyState", true);
+    }
+
+    protected void OnHitRecoverEvent(int invincible) {
+        if(invincible == 1)
+            character.RemoveFlag(CharacterFlags.Invincible);
+        character.GetAnimator().SetBool("DiscardFromAnyState", false);
+        character.SetUncontrollable(false);
     }
 
     protected void Follow(Vector3 pos, float xradius) {

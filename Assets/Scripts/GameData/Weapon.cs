@@ -75,20 +75,18 @@ public class Weapon : ObjectBase {
         return stats;
     }
 
+    public void FireBullet(string bulletclass, float ang) {
+        BulletManager.instance.CreateBullet(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
+    }
+
     public virtual void OnAttack(string eventname) {
-        Vector2 knockback = new Vector2();
         if (!owner.IsOnGround()) {
             if(owner.GetComponent<Rigidbody2D>().velocity.y < 300)
                 owner.GetController().SetVelY(300);
         }
         if(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount") != null) {
             owner.GetController().ForceMove(0);
-            knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount")) * owner.GetFacingDirection();
-            owner.AddForce(Vector2.right * knockback.x);
-        }
-        if (GameDataManager.instance.GetData("Data", eventname, "KnockBack") != null) {
-            knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "KnockBack", "X")) * owner.GetFacingDirection();
-            knockback.y = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "KnockBack", "Y"));
+            owner.AddForce(Vector2.right * Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount")) * owner.GetFacingDirection());
         }
         Dictionary<WeaponStats, float> dmgMult = new Dictionary<WeaponStats, float>();
         dmgMult.Add(WeaponStats.Damage, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "DamageMultiplier")));
@@ -112,7 +110,7 @@ public class Weapon : ObjectBase {
                     Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "HitBox", i.ToString(), "Pos", "Y")));
                 Vector2 area = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "HitBox", i.ToString(), "Area", "X")),
                     Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "HitBox", i.ToString(), "Area", "Y")));
-                StartCoroutine(HitCheck(time / numOfFrames, pos, area, knockback));
+                StartCoroutine(HitCheck(time / numOfFrames, pos, area, eventname));
             }
         }
         /*Dictionary<CharacterStats, float> moveSpeedDebuff = new Dictionary<CharacterStats, float>();
@@ -120,49 +118,45 @@ public class Weapon : ObjectBase {
         owner.AddBuff("debuff_ms_attack", moveSpeedDebuff, false, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);*/
     }
 
-    IEnumerator HitCheck(float normalizedtime, Vector2 localPos, Vector2 area, Vector2 knockback) {
+    IEnumerator HitCheck(float normalizedtime, Vector2 localPos, Vector2 area, string eventname) {
         yield return new WaitWhile(() => owner.GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime < normalizedtime);
         List<Character> closeEnemies = CharacterManager.instance.GetEnemies(GetOwner().GetTeam()).FindAll
             (c => Helper.IsInBox((Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset - c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset + c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)owner.transform.position + localPos - area / 2f, (Vector2)owner.transform.position + localPos + area / 2f));
-        StartCoroutine(DrawBox((Vector2)owner.transform.position + localPos, area));
+        StartCoroutine(Helper.DrawBox((Vector2)owner.transform.position + localPos, area, Color.red));
         foreach (Character c in closeEnemies) {
-            c.AddForce(knockback);
             float hitposX = Mathf.Clamp(((Vector2)owner.transform.position + localPos).x,
                 c.transform.position.x + c.GetCollider().offset.x - c.GetCollider().size.x / 2f,
                 c.transform.position.x + c.GetCollider().offset.x + c.GetCollider().size.x / 2f);
             float hitposY = Mathf.Clamp(((Vector2)owner.transform.position + localPos).y,
                 c.transform.position.y + c.GetCollider().offset.y - c.GetCollider().size.y / 2f,
                 c.transform.position.y + c.GetCollider().offset.y + c.GetCollider().size.y / 2f);
-            OnWeaponHit(c, new Vector2(hitposX, hitposY));
+            OnWeaponHit(c, new Vector2(hitposX, hitposY), eventname);
         }
     }
 
-    IEnumerator DrawBox(Vector2 pos, Vector2 area) {
-        float elapsed = 0;
-        float duration = 0.5f;
-        while (elapsed < duration) {
-            elapsed += Time.deltaTime;
-
-            float minX = pos.x - area.x / 2f;
-            float maxX = pos.x + area.x / 2f;
-            float minY = pos.y - area.y / 2f;
-            float maxY = pos.y + area.y / 2f;
-            Debug.DrawLine(new Vector2(minX, minY), new Vector2(minX, maxY));
-            Debug.DrawLine(new Vector2(minX, maxY), new Vector2(maxX, maxY));
-            Debug.DrawLine(new Vector2(maxX, minY), new Vector2(maxX, maxY));
-            Debug.DrawLine(new Vector2(minX, minY), new Vector2(maxX, minY));
-
-            yield return null;
-        }
-    }
-
-    public virtual void OnWeaponHit(Character victim, Vector2 hitPos) {
+    public virtual void OnWeaponHit(Character victim, Vector2 hitPos, string eventname) {
         CamController.instance.ShakeCam(Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 20f, 0, 2),
             Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 50f, 0, 0.5f));
         if(GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null)
             EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), hitPos, owner.GetFacingDirection());
+        if (victim.HasFlag(CharacterFlags.Invincible))
+            return;
         DamageData dmgData = Helper.DamageCalc(owner, GetEssentialStats(), victim);
         victim.DoDamage(owner, dmgData.damage, dmgData.stagger);
+        if (!victim.HasFlag(CharacterFlags.KnockBackImmunity)) {
+            Vector2 knockback = new Vector2();
+            bool knockout = false;
+            if (GameDataManager.instance.GetData("Data", eventname, "KnockBack") != null) {
+                knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "KnockBack", "X")) * owner.GetFacingDirection();
+                knockback.y = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "KnockBack", "Y"));
+                knockout = true;
+            }
+            else if (GameDataManager.instance.GetData("Data", eventname, "ChargeAmount") != null) {
+                knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount")) * owner.GetFacingDirection();
+                knockout = true;
+            }
+            victim.AddForce(knockback, knockout);
+        }
     }
 
     public virtual void OnWeaponEvent(string eventname) { }

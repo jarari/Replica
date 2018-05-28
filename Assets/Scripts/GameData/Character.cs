@@ -31,7 +31,8 @@ public enum CharacterStates {
 [Flags] public enum CharacterFlags {
     Invincible = 1,
     AIControlled = 2,
-    Boss = 4
+    Boss = 4,
+    KnockBackImmunity = 8
 }
 
 public enum CharacterTypes {
@@ -154,6 +155,10 @@ public abstract class Character : ObjectBase {
 
         if (GameDataManager.instance.GetData("Data", className, "Sprites", "hasSub") != null)
             hasSubSprite = Convert.ToInt32(GameDataManager.instance.GetData("Data", className, "Sprites", "hasSub"));
+
+        if (GameDataManager.instance.GetData("Data", className, "KnockBackImmunity") != null)
+            if (Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBackImmunity")) == 1)
+                SetFlag(CharacterFlags.KnockBackImmunity);
     }
 
     public void AddBuff(string name, Dictionary<CharacterStats, float> data, bool isAdd, float time = -1) {
@@ -297,10 +302,6 @@ public abstract class Character : ObjectBase {
             dotlist.Remove(id);
     }
 
-    public CharacterFlags GetFlag() {
-        return flag;
-    }
-
     public Teams GetTeam() {
         return team;
     }
@@ -322,7 +323,7 @@ public abstract class Character : ObjectBase {
     }
 
     public void ModStat(CharacterStats stat, float val) {
-        stats[(int)stat] = Mathf.Clamp(GetUnbuffedStat(GetBuffedStat(GetBaseStat(stat), stat) + val, stat), 0, GetMaxStat(stat));
+        stats[(int)stat] = Mathf.Clamp(GetUnbuffedStat(GetBuffedStat(stats[(int)stat], stat) + val, stat), 0, GetMaxStat(stat));
     }
 
     public void SetCurrentStat(CharacterStats stat, float val) {
@@ -352,7 +353,7 @@ public abstract class Character : ObjectBase {
         if (!weaponstats.ContainsKey(wep.GetWeaponType())) {
             weaponstats.Add(wep.GetWeaponType(), new float[(int)WeaponStats.EndOfEnums]);
         }
-        weaponstats[wep.GetWeaponType()][(int)stat] = Mathf.Clamp(GetUnbuffedWeaponStat(GetBuffedWeaponStat(GetBaseStat(wep, stat), wep.GetWeaponType(), stat) + val, wep.GetWeaponType(), stat), 0, GetMaxStat(wep, stat));
+        weaponstats[wep.GetWeaponType()][(int)stat] = Mathf.Clamp(GetUnbuffedWeaponStat(GetBuffedWeaponStat(weaponstats[wep.GetWeaponType()][(int)stat], wep.GetWeaponType(), stat) + val, wep.GetWeaponType(), stat), 0, GetMaxStat(wep, stat));
     }
 
     public float GetBaseStat(Weapon wep, WeaponStats stat) {
@@ -369,8 +370,14 @@ public abstract class Character : ObjectBase {
         return GetBuffedWeaponStat(weaponstats[wep.GetWeaponType()][(int)stat], wep.GetWeaponType(), stat);
     }
 
-    public void AddForce(Vector2 force) {
+    public void AddForce(Vector2 force, bool knockdown = false) {
         GetComponentInParent<MoveObject>().AddForce(force);
+        if (knockdown)
+            KnockDown();
+    }
+
+    public virtual void KnockDown() {
+
     }
 
     public float GetUncontrollableTimeLeft() {
@@ -389,16 +396,24 @@ public abstract class Character : ObjectBase {
         basecontroller = controller;
     }
 
+    public CharacterFlags GetFlag() {
+        return flag;
+    }
+
+    public bool HasFlag(CharacterFlags _flag) {
+        return (flag & _flag) != 0;
+    }
+
     public bool IsAI() {
-        return (flag & CharacterFlags.AIControlled) != 0;
+        return HasFlag(CharacterFlags.AIControlled);
     }
 
     public bool IsBoss() {
-        return (flag & CharacterFlags.Boss) != 0;
+        return HasFlag(CharacterFlags.Boss);
     }
 
     public bool IsInvincible() {
-        return (flag & CharacterFlags.Invincible) != 0;
+        return HasFlag(CharacterFlags.Invincible);
     }
 
     public void SetFlag(CharacterFlags f) {
@@ -452,34 +467,29 @@ public abstract class Character : ObjectBase {
     }
 
     public void DoDamage(Character attacker, float damage, float stagger) {
-        if (damage == 0 || (flag & CharacterFlags.Invincible) == CharacterFlags.Invincible) return;
+        if (damage == 0 || HasFlag(CharacterFlags.Invincible)) return;
         if (IsAI())
             ((AIBaseController)basecontroller).OnTakeDamage(attacker);
-        if (!IsBoss()) {
-            SetUncontrollable(true);
-            StartCoroutine(Stagger(stagger));
+        if (!IsBoss() && stagger > 0) {
+            AddUncontrollableTime(stagger);
         }
-        OnHealthChanged();
+        OnHealthChanged(damage);
         ModStat(CharacterStats.Health, -damage);
-        if (GetCurrentStat(CharacterStats.Health) <= 0)
+        if (GetCurrentStat(CharacterStats.Health) == 0)
             OnDeath();
-    }
-
-    IEnumerator Stagger(float time) {
-        yield return new WaitForSeconds(time);
-        SetUncontrollable(false);
     }
 
     public void Kill() {
         DoDamage(this, GetCurrentStat(CharacterStats.Health), 0);
     }
 
-    public virtual void OnHealthChanged() {
+    public virtual void OnHealthChanged(float delta) {
     }
 
     public virtual void OnDeath() {
         if (transform == null)
             return;
+        Destroy(gameObject);
     }
 
     private void OnDestroy() {

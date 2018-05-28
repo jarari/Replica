@@ -169,7 +169,7 @@
     "Stagger": 0,
     "ChargeAmount": 0,
 	"KnockBack": {
-        "X": 200,
+        "X": 50,
         "Y": 1200
     },
     "HitBox": {
@@ -370,5 +370,17 @@
 		"X":0.0,
 		"Y":-25.0
 	}
+  },
+  "attack_secbot": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"MuzzlePos":
+	{
+		"X":15.0,
+		"Y":20.0
+	},
+    "HitBox": {
+    }
   }
 }

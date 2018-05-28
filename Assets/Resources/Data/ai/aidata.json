@@ -5,9 +5,14 @@
 		"RecognitionRadius":600.0,
 		"MinWanderDistance":60.0,
 		"MaxWanderDistance":200.0,
-		"RestingTime":3.0,
-		"SpecialAttackChance":0.2,
-		"HopHeight":300.0,
-		"HopDelay":0.75
+		"RestingTime":3.0
+	},
+	"ai_secbot":
+	{
+		"ScriptClass":"",
+		"RecognitionRadius":600.0,
+		"MinWanderDistance":60.0,
+		"MaxWanderDistance":200.0,
+		"RestingTime":3.0
 	}
 }

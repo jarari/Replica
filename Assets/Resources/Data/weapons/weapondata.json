@@ -7,7 +7,6 @@
 			"WeaponType":0,
 			"Damage":10,
 			"SADestruction":0,
-			"Spread":0,
 			"AttackSpeed":1.0,
 			"Stagger":0.1,
 			"MagSize":0,
@@ -39,7 +38,6 @@
 			"WeaponType":1,
 			"Damage":10,
 			"SADestruction":0,
-			"Spread":0,
 			"AttackSpeed":1.0,
 			"Stagger":0.1,
 			"MagSize":0,
@@ -72,7 +70,6 @@
 			"WeaponType":2,
 			"Damage":10,
 			"SADestruction":0,
-			"Spread":0,
 			"AttackSpeed":1.0,
 			"Stagger":0.1,
 			"MagSize":0,
@@ -91,19 +88,6 @@
 		},
 		"Sounds":
 		{
-			"fire":"Sounds/weapons/GunShot",
-			"reload":"Sounds/weapons/MG_reload",
-			"shell":"Sounds/weapons/Shell_fall"
-		}
-	},
-	"weapon_molotov":
-	{
-		"Stats":
-		{
-			"Damage":50,
-			"Duration":5.0,
-			"TickDelay":0.5,
-			"BurnDuration":2.0
 		}
 	},
 	"weapon_ai_dummy":
@@ -114,7 +98,6 @@
 			"WeaponType":4,
 			"Damage":10,
 			"SADestruction":0,
-			"Spread":0,
 			"AttackSpeed":1.0,
 			"Stagger":0.1,
 			"MagSize":0,
@@ -132,9 +115,6 @@
 		},
 		"Sounds":
 		{
-			"fire":"Sounds/weapons/GunShot",
-			"reload":"Sounds/weapons/MG_reload",
-			"shell":"Sounds/weapons/Shell_fall"
 		}
 	},
 	"weapon_grenade":
@@ -145,7 +125,6 @@
 			"WeaponType":3,
 			"Damage":10,
 			"SADestruction":0,
-			"Spread":0,
 			"AttackSpeed":1.0,
 			"Stagger":1,
 			"MagSize":0,
@@ -163,9 +142,34 @@
 		},
 		"Sounds":
 		{
-			"fire":"Sounds/weapons/GunShot",
-			"reload":"Sounds/weapons/MG_reload",
-			"shell":"Sounds/weapons/Shell_fall"
+		}
+	},
+	"weapon_secbot":
+	{
+		"ScriptClass":"WeaponSecbot",
+		"Stats":
+		{
+			"WeaponType":4,
+			"Damage":10,
+			"SADestruction":0,
+			"AttackSpeed":1.0,
+			"Stagger":0.1,
+			"MagSize":0,
+			"ReloadTime":0,
+			"Range":150,
+			"BulletSpeed":600
+		},
+		"Sprites":
+		{
+			"controller":""
+		},
+		"MuzzlePos":
+		{
+			"X":0.0,
+			"Y":0.0
+		},
+		"Sounds":
+		{
 		}
 	}
 }

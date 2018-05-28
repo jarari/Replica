@@ -103,18 +103,24 @@ public class Bullet : MonoBehaviour {
         if (colliding != null) {
             if (colliding.GetTeam() != attacker.GetTeam()) {
                 collided = true;
-                DamageData dmgdata = Helper.DamageCalc(attacker, data, colliding, true, false);
-                colliding.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
-                if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null) {
-                    Vector2 knockback = new Vector2();
-                    knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "X"));
-                    knockback.y = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "Y"));
-                    colliding.AddForce(new Vector2(transform.right.x * knockback.x, transform.right.y * knockback.y));
+                if (colliding.HasFlag(CharacterFlags.Invincible)) {
+                    Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collision.collider);
+                    Physics2D.IgnoreCollision(GetComponents<Collider2D>()[1], collision.collider);
                 }
-                DestroyObject(gameObject);
-                //EffectManager.instance.CreateEffect("effect_hitback_bullet", colliding.transform.position + transform.right * 10f, Helper.Vector2ToAng(transform.right));
-                init = false;
-                return;
+                else {
+                    DamageData dmgdata = Helper.DamageCalc(attacker, data, colliding, true, false);
+                    colliding.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
+                    if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !colliding.HasFlag(CharacterFlags.KnockBackImmunity)) {
+                        Vector2 knockback = new Vector2();
+                        knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "X"));
+                        knockback.y = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "Y"));
+                        colliding.AddForce(new Vector2(transform.right.x * knockback.x, transform.right.y * knockback.y), true);
+                    }
+                    DestroyObject(gameObject);
+                    //EffectManager.instance.CreateEffect("effect_hitback_bullet", colliding.transform.position + transform.right * 10f, Helper.Vector2ToAng(transform.right));
+                    init = false;
+                    return;
+                }
             }
         }
         

@@ -5,6 +5,8 @@
 		"PhysicsMaterial":"Grenade",
 		"Loop":1,
 		"KnockBack":800,
+		"FallOff50":0.5,
+		"FallOff25":0.75,
 		"Sprites":
 		{
 			"controller":"throwable_grenade_controller",

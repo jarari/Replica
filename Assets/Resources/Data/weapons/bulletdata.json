@@ -20,5 +20,14 @@
 			"controller":"bullet_gunkata_finish_controller",
 			"hit":"effect_bullet_gunkata_finish_hit"
 		}
+	},
+	"bullet_secbot":
+	{
+		"Loop":0,
+		"Sprites":
+		{
+			"controller":"bullet_secbot_controller",
+			"hit":"effect_bullet_secbot_hit"
+		}
 	}
 }

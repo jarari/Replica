@@ -103,4 +103,59 @@ public static class Helper {
             return true;
         return false;
     }
+
+    public static Vector2 SnapToBox(Vector2 pos, Vector2 boxOffset, Vector2 boxSize, Vector2 anotherpos) {
+        Vector2 boxMin = pos + boxOffset - boxSize / 2f;
+        Vector2 boxMax = pos + boxOffset + boxSize / 2f;
+        return new Vector2(Mathf.Clamp(anotherpos.x, boxMin.x, boxMax.x), Mathf.Clamp(anotherpos.y, boxMin.y, boxMax.y));
+    }
+
+    public static Vector2 SnapToBox(Vector2 pos, BoxCollider2D box, Vector2 anotherpos) {
+        return SnapToBox(pos, box.offset, box.size, anotherpos);
+    }
+
+    public static Vector2 GetClosestBoxBorder(Vector2 pos, Vector2 boxOffset, Vector2 boxSize, Vector2 anotherpos) {
+        Vector2 boxMin = pos + boxOffset - boxSize / 2f;
+        Vector2 boxMax = pos + boxOffset + boxSize / 2f;
+        Vector2 result = new Vector2(Mathf.Clamp(anotherpos.x, boxMin.x, boxMax.x), Mathf.Clamp(anotherpos.y, boxMin.y, boxMax.y));
+        if (result == anotherpos) {
+            Vector2 boxCenter = (boxMin + boxMax) / 2f;
+            result = GetClosestBoxBorder(pos, boxOffset, boxSize, (anotherpos - boxCenter).normalized * Mathf.Max(boxSize.x, boxSize.y));
+        }
+        return result;
+    }
+
+    public static Vector2 GetClosestBoxBorder(Vector2 pos, BoxCollider2D box, Vector2 anotherpos) {
+        return GetClosestBoxBorder(pos, box.offset, box.size, anotherpos);
+    }
+
+    public static IEnumerator DrawBox(Vector2 pos, Vector2 area, Color col, float dur = 0.5f) {
+        float elapsed = 0;
+        float duration = dur;
+        while (elapsed < duration) {
+            elapsed += Time.deltaTime;
+
+            float minX = pos.x - area.x / 2f;
+            float maxX = pos.x + area.x / 2f;
+            float minY = pos.y - area.y / 2f;
+            float maxY = pos.y + area.y / 2f;
+            Debug.DrawLine(new Vector2(minX, minY), new Vector2(minX, maxY), col);
+            Debug.DrawLine(new Vector2(minX, maxY), new Vector2(maxX, maxY), col);
+            Debug.DrawLine(new Vector2(maxX, minY), new Vector2(maxX, maxY), col);
+            Debug.DrawLine(new Vector2(minX, minY), new Vector2(maxX, minY), col);
+
+            yield return null;
+        }
+    }
+
+    public static IEnumerator DrawLine(Vector2 pos, Vector2 another, Color col, float dur = 0.5f) {
+        float elapsed = 0;
+        float duration = dur;
+        while (elapsed < duration) {
+            elapsed += Time.deltaTime;
+            Debug.DrawLine(pos, another, col);
+
+            yield return null;
+        }
+    }
 }

@@ -79,7 +79,6 @@ public class GameDataManager : MonoBehaviour {
 
     public Dictionary<string, object> ParseMapData(string mapname) {
         TextAsset txtdata = Resources.Load<TextAsset>("Data/maps/" + mapname);
-        Dictionary<string, object> data = new Dictionary<string, object>();
         if (txtdata != null) {
             string dataAsJson = txtdata.text;
             JObject jsonObj = JObject.Parse(dataAsJson);

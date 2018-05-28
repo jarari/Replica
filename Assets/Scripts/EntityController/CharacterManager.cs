@@ -52,7 +52,9 @@ public class CharacterManager : MonoBehaviour {
             }
             aicon.Initialize(ai, aidata);
             ai.SetController(aicon);
+            ai.SetFlag(CharacterFlags.Boss);
         }
+        ai.SetFlag(CharacterFlags.AIControlled);
     }
 
     public void InsertControl(Character c) {

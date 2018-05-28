@@ -72,7 +72,7 @@ public class AIBaseController : BasicCharacterMovement {
 
     protected virtual void Search() {
         if (distance <= 0) {
-            direction = (int)((Random.Range(0, 2) - 0.5f) * 2);
+            direction = (int)((Random.Range(0, 2) - 0.5f) * 2f);
             distance = Random.Range(minWanderDist, maxWanderDist);
             lastX = transform.position.x;
             restTimer = restingTime;
@@ -89,15 +89,18 @@ public class AIBaseController : BasicCharacterMovement {
                 }
             }
         }
-        distance -= transform.position.x - lastX;
+        distance -= Mathf.Abs(transform.position.x - lastX);
         restTimer = Mathf.Clamp(restTimer - Time.deltaTime, 0, restTimer);
-        lastX = transform.position.x;
         if(restTimer == 0) {
             Walk();
+            if (Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, 0), new Vector2(16, 10), 0, mapLayer) != null
+                            && Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, maxJump), new Vector2(16, 5), 0, mapLayer) != null)
+                direction *= -1;
         }
         else {
-            //Idle
+            character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
         }
+        lastX = transform.position.x;
     }
 
     protected virtual void Chase() {
@@ -108,7 +111,7 @@ public class AIBaseController : BasicCharacterMovement {
         else {
             distance = target.transform.position.x - transform.position.x;
             if(Mathf.Abs(distance) <= character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f) {
-                //Idle
+                character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
                 if (Mathf.Sign(target.transform.position.x - transform.position.x) == (System.Convert.ToSingle(character.IsFacingRight()) - 0.5f) * 2f) {
                     Attack();
                     return;
@@ -130,15 +133,14 @@ public class AIBaseController : BasicCharacterMovement {
     }
 
     protected virtual void Walk() {
-        Walk(direction / 3f * 5f);
+        Walk(direction);
     }
 
     protected virtual void Attack() {
         if (Time.realtimeSinceStartup < nextAttack) return;
         nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
         character.AddUncontrollableTime(Mathf.Min(1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed), 0.2f));
-        //Attack anim
-        //Weapon attack
+        character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
     }
 
     public virtual void OnTakeDamage(Character attacker) {

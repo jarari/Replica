@@ -8,6 +8,8 @@ public class Projectile : MonoBehaviour {
     protected Weapon weapon;
     protected float speed;
     protected float range;
+    protected float falloff50;
+    protected float falloff25;
     protected Animator anim;
     protected Rigidbody2D rb;
     protected Vector3 collisionPos;
@@ -45,12 +47,27 @@ public class Projectile : MonoBehaviour {
         if (GameDataManager.instance.GetData("Data", className, "PhysicsMaterial") != null) {
             rb.sharedMaterial = Helper.GetPhysicsMaterial2D((string)GameDataManager.instance.GetData("Data", className, "PhysicsMaterial"));
         }
+        if (GameDataManager.instance.GetData("Data", className, "FallOff50") != null) {
+            falloff50 = range * Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "FallOff50"));
+        }
+        else {
+            falloff50 = range * 0.5f;
+        }
+        if (GameDataManager.instance.GetData("Data", className, "FallOff25") != null) {
+            falloff25 = range * Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "FallOff25"));
+        }
+        else {
+            falloff25 = range * 0.75f;
+        }
         rb.velocity = transform.right * speed;
         velVector = transform.right;
         init = true;
         AdditionalData();
-        if (candirecthit)
-            StartCoroutine(DirectHit());
+        if (candirecthit) {
+            Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], user.GetComponents<Collider2D>()[0]);
+            Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], user.GetComponents<Collider2D>()[1]);
+            gameObject.layer = LayerMask.NameToLayer("Bullet");
+        }
     }
 
     /*private void Update() {
@@ -62,11 +79,6 @@ public class Projectile : MonoBehaviour {
             }
         }
     }*/
-
-    protected IEnumerator DirectHit() {
-        yield return new WaitWhile(() => Physics2D.OverlapBox(transform.position, new Vector2(4, 4), 0, layer));
-        gameObject.layer = LayerMask.NameToLayer("Bullet");
-    }
 
     protected virtual void AdditionalData() {
 
@@ -136,12 +148,22 @@ public class Projectile : MonoBehaviour {
     protected virtual void OnDestroy() {
         if(GameDataManager.instance.GetData("Data", className, "ShakeCam") == null || (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null && (int)GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != 0))
             CamController.instance.ShakeCam(data[WeaponStats.Damage] / 20f, Mathf.Clamp(data[WeaponStats.Damage] / 50f, 0, 2));
-        List<Character> closeEnemies = CharacterManager.instance.GetAllCharacters().FindAll(c => Vector3.Distance(c.transform.position, transform.position) <= range);
+        List<Character> closeEnemies = CharacterManager.instance.GetAllCharacters().FindAll(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position) <= range);
         foreach (Character c in closeEnemies) {
+            if (c.HasFlag(CharacterFlags.Invincible))
+                continue;
             DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true, true);
-            c.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
-            if(GameDataManager.instance.GetData("Data", className, "KnockBack") != null) {
-                c.AddForce((c.transform.position - transform.position).normalized * Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack")));
+            float dist = Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position);
+            float mult = 1;
+            if (dist > falloff50) {
+                if (dist <= falloff25)
+                    mult = 0.5f;
+                else
+                    mult = 0.25f;
+            }
+            c.DoDamage(attacker, dmgdata.damage * mult, dmgdata.stagger);
+            if(GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !c.HasFlag(CharacterFlags.KnockBackImmunity)) {
+                c.AddForce((c.transform.position - transform.position).normalized * Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack")) * mult, true);
             }
         }
         ExplosionEffect();
