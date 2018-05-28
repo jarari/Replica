@@ -20,6 +20,7 @@ public class Projectile : MonoBehaviour {
     protected bool collided = false;
     protected bool init = false;
     protected LayerMask layer;
+    protected LayerMask mapLayer;
     protected Dictionary<WeaponStats, float> data;
 
     private void Awake() {
@@ -27,6 +28,7 @@ public class Projectile : MonoBehaviour {
         anim = GetComponent<Animator>();
         collided = false;
         layer = (1 << LayerMask.NameToLayer("Characters"));// | (1 << LayerMask.NameToLayer("Characters"));
+        mapLayer = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Ceiling"));
     }
     public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         className = classname;
@@ -152,8 +154,11 @@ public class Projectile : MonoBehaviour {
         foreach (Character c in closeEnemies) {
             if (c.HasFlag(CharacterFlags.Invincible))
                 continue;
+            Vector2 cBoxBorder = Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position);
+            if (Physics2D.Raycast(transform.position, cBoxBorder - (Vector2)transform.position, Mathf.Infinity, mapLayer).collider != null)
+                continue;
             DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true, true);
-            float dist = Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position);
+            float dist = Vector3.Distance(cBoxBorder, transform.position);
             float mult = 1;
             if (dist > falloff50) {
                 if (dist <= falloff25)
