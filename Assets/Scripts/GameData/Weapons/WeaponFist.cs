@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+/* 체술 무기 클래스 */
 public class WeaponFist : Weapon {
     public override void OnAttack(string eventname) {
         base.OnAttack(eventname);

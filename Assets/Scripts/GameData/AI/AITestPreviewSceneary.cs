@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+/* 레벨 익스포터에서 배경 스크롤러를 테스트할 때 쓰이는 AI */
 class AITestPreviewSceneary : AIBossController {
     protected override void Update() {
         Walk(1);

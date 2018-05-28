@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 사운드 재생 클래스
+ * 오브젝트에 부착된 사운드, 오브젝트와 독립된 사운드 재생 가능 */
 public class SoundManager : MonoBehaviour {
     public static SoundManager instance;
     void Awake() {

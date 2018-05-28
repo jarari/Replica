@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 플레이어 조작 */
 public class GeneralControl : BasicCharacterMovement {
     private float comboTimer;
     private float comboTime = 0.3f;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+//기본 AI 움직임 클래스
 public class AIBaseController : BasicCharacterMovement {
     protected float nextAttack;
     protected float nextSearch;
@@ -19,6 +20,7 @@ public class AIBaseController : BasicCharacterMovement {
     protected bool AIEnabled = true;
     protected string AIData;
 
+    //초기 데이터 설정
     public void Initialize(Character c, string aidata) {
         base.Initialize(c);
         nextAttack = Time.realtimeSinceStartup;
@@ -42,6 +44,10 @@ public class AIBaseController : BasicCharacterMovement {
 
     }
 
+    /*
+     * AI의 행동은 기본적으로 스트링 명령
+     * 명령 이름 = 함수명
+     *                              */
     public string GetCurrentCommand() {
         return command;
     }
@@ -54,6 +60,9 @@ public class AIBaseController : BasicCharacterMovement {
         AIEnabled = stat;
     }
 
+    /*
+     * 타겟 관련 함수
+     *              */
     public void ForceTarget(Character c) {
         targetFound = true;
         target = c;
@@ -70,6 +79,11 @@ public class AIBaseController : BasicCharacterMovement {
         Invoke(command, 0.0f);
     }
 
+    /*
+     * AI는 매 초마다 ai데이터의 정보값에 따라 다른 영역을 탐색하고 감지함.
+     * 플레이어 (또는 플레이어의 아군)이 감지 범위 내에 들어와있고 AI가 해당 방향을 바라보고 있다면 추격 시작.
+     * 감지 범위의 40%부터는 무조건 추격.
+     * 이외의 경우에는 계속 돌아다님. */
     protected virtual void Search() {
         if (distance <= 0) {
             direction = (int)((Random.Range(0, 2) - 0.5f) * 2f);
@@ -104,6 +118,7 @@ public class AIBaseController : BasicCharacterMovement {
         lastX = transform.position.x;
     }
 
+    /* 추격 알고리즘 */
     protected virtual void Chase() {
         if(target == null) {
             targetFound = false;
@@ -149,11 +164,13 @@ public class AIBaseController : BasicCharacterMovement {
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
     }
 
+    /* 슈퍼아머가 없는 AI는 타격당하면 공격 타이머가 리셋됨. */
     protected override void OnHitEvent(int invincible) {
         base.OnHitEvent(invincible);
         nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
     }
 
+    /* AI가 공격당하면 주위의 아군에게도 어그로가 전달됨. */
     public virtual void OnTakeDamage(Character attacker) {
         List<Character> closeAllies = CharacterManager.instance.GetAllies(character.GetTeam()).FindAll(c => Vector3.Distance(c.transform.position, transform.position) <= alertRange);
         foreach (Character c in closeAllies) {

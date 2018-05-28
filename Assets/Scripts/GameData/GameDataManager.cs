@@ -5,6 +5,9 @@ using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System;
 
+/* 게임에 쓰일 데이터들을 관리하는 클래스
+ * 모든 데이터는 json 형태로 관리하며
+ * 이 클래스에서 ParseJSONData로 호출하면 등록됨. */
 public class GameDataManager : MonoBehaviour {
     public static GameDataManager instance;
     public bool debug = false;
@@ -34,6 +37,8 @@ public class GameDataManager : MonoBehaviour {
             GlobalUIManager.instance.LoadScene(1);
     }
 
+    /* JSON 안의 모든 내용을 찾아서 Dictionary화 시키는 함수.
+     * 자바스크립트의 object와 비슷한 형태가 됨. */
     private Dictionary<string, object> RecursiveDigger(Dictionary<string, object> target) {
         Dictionary<string, object> digged = new Dictionary<string, object>();
         foreach(KeyValuePair<string, object> obj in target) {
@@ -108,6 +113,7 @@ public class GameDataManager : MonoBehaviour {
         return null;
     }
 
+    /* 이 매니저가 관리하지 않는 데이터 (예: 맵데이터는 레벨 매니저가 관리) 를 읽어올 때 사용 */
     public object GetData(Dictionary<string, object> data, params string[] Keys) {
         Dictionary<string, object> tempDict = data;
         for (int i = 0; i < Keys.Length - 1; i++) {
@@ -124,6 +130,7 @@ public class GameDataManager : MonoBehaviour {
         return null;
     }
 
+    /* 빠른 접근을 위한 스탯 관련 함수들 */
     public float GetCharacterStat(string classname, CharacterStats stat) {
         switch (stat) {
             case CharacterStats.Health:
@@ -172,6 +179,10 @@ public class GameDataManager : MonoBehaviour {
         return -1;
     }
 
+    /* 애니메이터 컨트롤러를 가져오는 함수.
+     * JSON 데이터에 컨트롤러가 여러개 적혀있는 경우가 있는데,
+     * 이 경우 그 컨트롤러 중 하나를 랜덤하게 가져옴.
+     * 주로 총알 피격이펙트 랜덤 재생에 사용됨. */
     public RuntimeAnimatorController GetAnimatorController(string classname) {
         string controllername;
         if (GetData("Data", classname, "Sprites", "controller").GetType().Equals(typeof(Dictionary<string, object>))) {

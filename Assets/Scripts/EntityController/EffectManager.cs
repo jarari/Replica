@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 이펙트 생성 클래스
+ * 여기서는 오브젝트에 부착된 이펙트, 오브젝트와 독립된 이펙트, 오브젝트와 독립되어 특정 방향으로 움직이는 이펙트 생성 가능 */
 public class EffectManager : MonoBehaviour {
     public static EffectManager instance;
     void Awake() {

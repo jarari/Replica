@@ -2,6 +2,9 @@
 using System.Collections;
 using UnityEngine;
 
+/* 보스급 AI를 위한 클래스
+ * 이 클래스는 쓰지 않고 추가적으로 생성한 클래스에서 이 클래스를 오버라이드하여 사용 */
+
 public class AIBossController : BasicCharacterMovement {
 
     protected string className;

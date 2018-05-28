@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/* 캐릭터 생성, 관리 클래스
+ * 캐릭터의 생성과 적/아군 가져오기, 범위 내 캐릭터 가져오기 등의 기능 제공 */
 public class CharacterManager : MonoBehaviour {
     private List<Character> Characters = new List<Character>();
     private Character player;

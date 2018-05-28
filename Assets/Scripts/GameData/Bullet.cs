@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 총알 클래스
+ * 총알은 생성 후 중력과 관계없이 일직선으로 진행
+ * 충돌시 사라지며 이펙트 생성 (json 데이터에 hit 컨트롤러 정의)
+ * 캐릭터에게 데미지
+ * 무적 상태의 캐릭터는 통과함 */
 public class Bullet : MonoBehaviour {
     private Character attacker;
     private Weapon weapon;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+/* 시큐리티 봇 무기 클래스 */
 public class WeaponSecbot : Weapon {
     public override void OnAttack(string eventname) {
         base.OnAttack(eventname);

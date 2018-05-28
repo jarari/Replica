@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+/* 플레이어 캐릭터 클래스 */
 public class PlayerCharacter : Character {
     public override void OnHealthChanged(float delta) {
         if(GetState() != CharacterStates.Uncontrollable) {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+/* 시큐리티 봇 클래스 */
 public class CharacterSecbot : Character {
     public override void OnHealthChanged(float delta) {
         if (GetState() != CharacterStates.Uncontrollable) {

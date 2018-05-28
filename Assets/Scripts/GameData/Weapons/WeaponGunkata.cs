@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+/* 건카타/권총 무기 클래스 */
 public class WeaponGunkata : Weapon {
     public override void OnAttack(string eventname) {
         base.OnAttack(eventname);

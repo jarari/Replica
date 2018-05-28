@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+/* 수류탄 클래스
+ * 수류탄은 시간이 지나면 터지고
+ * 처음 충돌이 일어난 순간부터는 캐릭터와 충돌하지 않음 (캐릭터 발에 치이는 문제 방지) */
 class ThrowableGrenade : Throwable{
     private float cookTime = 0;
     private bool flying = false;

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 투사체 생성 클래스
+ * 여기서는 총알, 포환, 투척물을 생성할 수 있음. */
 public class BulletManager : MonoBehaviour {
     public static BulletManager instance;
     void Awake() {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 모든 캐릭터 움직임의 기본이 되는 컨트롤러 */
 public class BasicCharacterMovement : MoveObject {
 
     protected MoveObject movementController;
@@ -37,6 +38,7 @@ public class BasicCharacterMovement : MoveObject {
 
     // Update is called once per frame
     protected virtual void Update() {
+        /* 위, 아래로 자유롭게 이동할 수 있도록 윗쪽 블럭과의 충돌을 미리 꺼놓음 */
         if (Mathf.Abs(GetComponent<Rigidbody2D>().velocity.y) > 0f) {
             foreach (Collider2D rayvel in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, (box.size.y / 2f + 16f) * Mathf.Sign(GetComponent<Rigidbody2D>().velocity.y)), new Vector2(2000, 8f), 0, groundLayer)) {
                 if (rayvel != null) {
@@ -60,17 +62,21 @@ public class BasicCharacterMovement : MoveObject {
             }
         }
 
+        /* 조종 불가상태에서 돌아왔을 때 Idle 실행*/
         if (character.GetUncontrollableTimeLeft() == 0 && character.GetState() == CharacterStates.Uncontrollable) {
             character.SetState(CharacterStates.Idle);
             character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
         }
 
+        /* 키보드 입력을 유지해야하는 동작들 (걷기, 달리기, 앉기)은 매 프레임마다 Idle로 리셋 */
         if (character.GetAnimator().GetInteger("State") == (int)CharacterStates.Walk
             || character.GetAnimator().GetInteger("State") == (int)CharacterStates.Sprint
             || character.GetAnimator().GetInteger("State") == (int)CharacterStates.Sit) {
             character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
         }
 
+        /* 투척 동작 관련
+         * 투척 관련 자세가 아닌데 수류탄 게이지가 올라가있으면 캔슬당한 것으로 판정 */
         if (character.GetState() != CharacterStates.Throw) {
             if(grenadeCharge != 0) {
                 OnGrenadeCancelled();
@@ -80,9 +86,8 @@ public class BasicCharacterMovement : MoveObject {
             grenadeCharge = Mathf.Clamp(grenadeCharge + Time.deltaTime, 0, character.GetCurrentStat(CharacterStats.GrenadeFullCharge));
         }
 
-        /*if (character.GetState() == CharacterStates.Shift) {
-            ForceMove(dashDir * 0.6f);
-        }*/
+        
+        /* 앉았을 때 캐릭터 히트박스 감소 */
         if(character.GetState() == CharacterStates.Sit) {
             character.ModifyHeight(0.65f);
         }
@@ -175,6 +180,7 @@ public class BasicCharacterMovement : MoveObject {
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
     }
 
+    /* 이름이 대쉬인데 덤블링임 사실 */
     protected bool CanDash() {
         if (character.GetUncontrollableTimeLeft() > 0)
             return false;
@@ -185,6 +191,8 @@ public class BasicCharacterMovement : MoveObject {
         return true;
     }
 
+    /* 방향이 입력이 없다면 백덤블링
+     * 있다면 해당 방향으로 덤블링 */
     protected void Dash(int dir) {
         if (!CanDash())
             return;
@@ -206,6 +214,7 @@ public class BasicCharacterMovement : MoveObject {
         }
     }
 
+    /* 덤블링 높이는 점프력에 비례함 */
     protected void OnTumbleEvent() {
         if(character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("tumble_back"))
             EffectManager.instance.CreateEffect("effect_tumble_back", transform.position, (int)Mathf.Sign(transform.localScale.x));
@@ -238,6 +247,7 @@ public class BasicCharacterMovement : MoveObject {
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Sit);
     }
 
+    /* 앉으면 가속도 초기화 (슬라이딩 방지)*/
     protected void OnSit() {
         ForceMove(0);
         character.SetState(CharacterStates.Sit);
@@ -253,6 +263,9 @@ public class BasicCharacterMovement : MoveObject {
         character.GetAnimator().SetBool("DiscardFromAnyState", false);
     }
 
+    /* 맵 레이어는 Ground와 Ceiling으로 나뉘는데,
+     * Ceiling은 어떤 상황에서도 뚫리지 않는 지형
+     * Ground는 자유자재로 위아래로 돌아다닐 수 있는 지형 */
     protected bool CanGoDown() {
         return Physics2D.OverlapBox((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 16f), new Vector2(box.size.x, 16f), 0, ceilingLayer) == null;
     }
@@ -278,6 +291,7 @@ public class BasicCharacterMovement : MoveObject {
         character.GetAnimator().SetBool("DiscardFromAnyState", false);
     }
 
+    /* 공격 이벤트 */
     protected void OnAttackEvent(string eventname) {
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
         character.SetState(CharacterStates.Attack);
@@ -295,6 +309,7 @@ public class BasicCharacterMovement : MoveObject {
         }
     }
 
+    /* 기타 무기 이벤트 (타이밍에 맞게 특정 행동을 하기 위함) */
     protected void OnWeaponEvent(string eventname) {
         if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("gunkata")) {
             character.GetWeapon(WeaponTypes.Pistol).OnWeaponEvent(eventname);
@@ -310,10 +325,12 @@ public class BasicCharacterMovement : MoveObject {
         }
     }
 
+    /* 캐릭터에 부착된 이펙트 생성 (애니메이션 이벤트용) */
     protected void OnParentedEffectEvent(string effect) {
         EffectManager.instance.CreateEffect(effect, transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
     }
 
+    /* 캐릭터와 독립된 이펙트 생성 (애니메이션 이벤트용) */
     protected void OnEffectEvent(string effect) {
         EffectManager.instance.CreateEffect(effect, transform.position, (int)Mathf.Sign(transform.localScale.x));
     }
@@ -327,9 +344,11 @@ public class BasicCharacterMovement : MoveObject {
         if (character.GetState() == CharacterStates.Throw)
             character.GetAnimator().Play("idle_loop");
         grenadeCharge = 0;
-        character.RemoveBuff("debuff_ms_chargegrenade");
     }
 
+    /* 수류탄 투척 함수.
+     * 현재는 무조건 기본 수류탄이 나가도록 돼있지만
+     * 차후 인벤토리에서 수류탄 갯수를 확인하여 해당 수류탄을 던질 수 있도록 바꿀 계획 */
     protected void OnThrowGrenade(string eventname) {
         //Get grenade class, not yet implemented for now.
         Vector2 throwpos = (Vector2)transform.position + new Vector2((float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "X")
@@ -344,6 +363,7 @@ public class BasicCharacterMovement : MoveObject {
         character.RemoveWeapon(WeaponTypes.Throwable);
     }
 
+    /* 피격 이벤트 */
     protected virtual void OnHitEvent(int invincible) {
         character.GetAnimator().SetInteger("State", 8);
         character.SetState(CharacterStates.Uncontrollable);
@@ -352,6 +372,7 @@ public class BasicCharacterMovement : MoveObject {
         character.GetAnimator().SetBool("DiscardFromAnyState", true);
     }
 
+    /* 피격 회복 이벤트 */
     protected virtual void OnHitRecoverEvent(int invincible) {
         if(invincible == 1)
             character.RemoveFlag(CharacterFlags.Invincible);
@@ -359,6 +380,9 @@ public class BasicCharacterMovement : MoveObject {
         character.SetUncontrollable(false);
     }
 
+    /* 다양한 용도로 쓸 수 있는 좌표를 향해 가기 함수
+     * Navmesh같은걸 이용한다면 좀 더 멋드러지고 효과적이겠지만
+     * 일단은 이 알고리즘을 쓰도록 함. */
     protected void Follow(Vector3 pos, float xradius) {
         float dx = pos.x - transform.position.x;
         float dy = pos.y - transform.position.y;
