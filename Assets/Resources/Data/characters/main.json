@@ -69,7 +69,7 @@
 		"ScriptClass":"CharacterSecbot",
 		"Stats":
 		{
-			"Health":10,
+			"Health":100,
 			"MoveSpeed":250.0,
 			"JumpPower":450.0,
 			"MeleeArmor":10,

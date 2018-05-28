@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,6 +40,9 @@ public class Effect : MonoBehaviour {
         if(GameDataManager.instance.GetData("Data", classname, "ShouldDisplayBeneathGround") != null
             && (int)GameDataManager.instance.GetData("Data", classname, "ShouldDisplayBeneathGround") == 1) {
             GetComponent<SpriteRenderer>().sortingLayerName = "DustEffect";
+        }
+        if (GameDataManager.instance.GetData("Data", classname, "SortingOrder") != null) {
+            GetComponent<SpriteRenderer>().sortingOrder = Convert.ToInt32(GameDataManager.instance.GetData("Data", classname, "SortingOrder"));
         }
         transform.position = transform.TransformPoint(temp);
     }
