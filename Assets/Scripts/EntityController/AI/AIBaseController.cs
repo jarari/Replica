@@ -81,8 +81,9 @@ public class AIBaseController : BasicCharacterMovement {
             nextSearch = Time.realtimeSinceStartup + 1f;
             Character closestPlayer = CharacterManager.instance.GetClosestEnemy(transform.position, character.GetTeam());
             if (closestPlayer != null) {
-                if (Vector3.Distance(closestPlayer.transform.position, character.transform.position) < recognitionRadius
-                        && Mathf.Sign(closestPlayer.transform.position.x - transform.position.x) == direction) {
+                if ((Vector3.Distance(closestPlayer.transform.position, character.transform.position) < recognitionRadius
+                        && Mathf.Sign(closestPlayer.transform.position.x - transform.position.x) == direction)
+                        || Vector3.Distance(closestPlayer.transform.position, character.transform.position) < recognitionRadius * 0.4f) {
                     targetFound = true;
                     target = closestPlayer;
                     SetCommand("Chase");
@@ -109,26 +110,31 @@ public class AIBaseController : BasicCharacterMovement {
             SetCommand("Search");
         }
         else {
-            distance = target.transform.position.x - transform.position.x;
-            if(Mathf.Abs(distance) <= character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f) {
-                character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
-                if (Mathf.Sign(target.transform.position.x - transform.position.x) == (System.Convert.ToSingle(character.IsFacingRight()) - 0.5f) * 2f) {
-                    Attack();
+            if(character.GetState() != CharacterStates.Attack) {
+                distance = target.transform.position.x - transform.position.x;
+                if (Mathf.Abs(distance) <= character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f) {
+                    if (Mathf.Sign(target.transform.position.x - transform.position.x) == character.GetFacingDirection()
+                        && Helper.GetClosestBoxBorder(target.transform.position, target.GetComponent<BoxCollider2D>(), transform.position).y - transform.position.y <= 100) {
+                        Attack();
+                        return;
+                    }
+                    else if (character.GetUncontrollableTimeLeft() == 0) {
+                        direction = (int)Mathf.Sign(distance);
+                        if (direction == 1)
+                            character.FlipFace(true);
+                        else if (direction == -1)
+                            character.FlipFace(false);
+                    }
+                }
+                else {
+                    direction = (int)Mathf.Sign(distance);
+                    Follow(target.transform.position, character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f);
                     return;
                 }
-                else if(character.GetUncontrollableTimeLeft() == 0){
-                    direction = (int)Mathf.Sign(distance);
-                    if (direction == 1)
-                        character.FlipFace(true);
-                    else if (direction == -1)
-                        character.FlipFace(false);
-                }
+                character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
             }
-            else {
-                direction = (int)Mathf.Sign(distance);
-                Follow(target.transform.position, character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f);
-                return;
-            }
+            else
+                character.GetAnimator().SetBool("DiscardFromAnyState", true);
         }
     }
 
@@ -141,6 +147,11 @@ public class AIBaseController : BasicCharacterMovement {
         nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
         character.AddUncontrollableTime(Mathf.Min(1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed), 0.2f));
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
+    }
+
+    protected override void OnHitEvent(int invincible) {
+        base.OnHitEvent(invincible);
+        nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
     }
 
     public virtual void OnTakeDamage(Character attacker) {
