@@ -24,7 +24,7 @@ public enum WeaponTypes {
     AI
 }
 
-public abstract class Weapon : ObjectBase {
+public class Weapon : ObjectBase {
 
     protected WeaponTypes type;
     protected Character owner;
@@ -76,9 +76,11 @@ public abstract class Weapon : ObjectBase {
     }
 
     public virtual void OnAttack(string eventname) {
-        owner.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
-        owner.SetState(CharacterStates.Attack);
         Vector2 knockback = new Vector2();
+        if (!owner.IsOnGround()) {
+            if(owner.GetComponent<Rigidbody2D>().velocity.y < 300)
+                owner.GetController().SetVelY(300);
+        }
         if(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount") != null) {
             owner.GetController().ForceMove(0);
             knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount")) * owner.GetFacingDirection();
@@ -90,12 +92,14 @@ public abstract class Weapon : ObjectBase {
         }
         Dictionary<WeaponStats, float> dmgMult = new Dictionary<WeaponStats, float>();
         dmgMult.Add(WeaponStats.Damage, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "DamageMultiplier")));
-        owner.AddWeaponBuff("buff_damage_" + eventname, dmgMult, false, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);
+        WeaponBuff dmgMultBuff = new WeaponBuff(dmgMult, type);
+        owner.AddWeaponBuff("buff_damage_" + eventname, dmgMultBuff, false, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);
 
         Dictionary<WeaponStats, float> ccAdd = new Dictionary<WeaponStats, float>();
         ccAdd.Add(WeaponStats.SADestruction, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "SADestruction")));
         ccAdd.Add(WeaponStats.Stagger, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "Stagger")));
-        owner.AddWeaponBuff("buff_cc_" + eventname, ccAdd, true, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);
+        WeaponBuff ccAddBuff = new WeaponBuff(ccAdd, type);
+        owner.AddWeaponBuff("buff_cc_" + eventname, ccAddBuff, true, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);
         
         if(GameDataManager.instance.GetData("Data", eventname, "HitBox") != null
             && GameDataManager.instance.GetData("Data", eventname, "HitBox").GetType().Equals(typeof(Dictionary<string, object>))){
@@ -119,7 +123,7 @@ public abstract class Weapon : ObjectBase {
     IEnumerator HitCheck(float normalizedtime, Vector2 localPos, Vector2 area, Vector2 knockback) {
         yield return new WaitWhile(() => owner.GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime < normalizedtime);
         List<Character> closeEnemies = CharacterManager.instance.GetEnemies(GetOwner().GetTeam()).FindAll
-            (c => Helper.IsInBox(c.transform.position, (Vector2)owner.transform.position + localPos - area / 2f, (Vector2)owner.transform.position + localPos + area / 2f));
+            (c => Helper.IsInBox((Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset - c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset + c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)owner.transform.position + localPos - area / 2f, (Vector2)owner.transform.position + localPos + area / 2f));
         StartCoroutine(DrawBox((Vector2)owner.transform.position + localPos, area));
         foreach (Character c in closeEnemies) {
             c.AddForce(knockback);
@@ -129,7 +133,7 @@ public abstract class Weapon : ObjectBase {
             float hitposY = Mathf.Clamp(((Vector2)owner.transform.position + localPos).y,
                 c.transform.position.y + c.GetCollider().offset.y - c.GetCollider().size.y / 2f,
                 c.transform.position.y + c.GetCollider().offset.y + c.GetCollider().size.y / 2f);
-            OnWeaponHit(new Vector2(hitposX, hitposY));
+            OnWeaponHit(c, new Vector2(hitposX, hitposY));
         }
     }
 
@@ -152,9 +156,14 @@ public abstract class Weapon : ObjectBase {
         }
     }
 
-    public virtual void OnWeaponHit(Vector2 hitPos) {
-        EffectManager.instance.CreateEffect("effect_indicator_armorpen", hitPos, 0);
+    public virtual void OnWeaponHit(Character victim, Vector2 hitPos) {
+        CamController.instance.ShakeCam(Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 20f, 0, 2),
+            Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 50f, 0, 0.5f));
+        if(GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null)
+            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), hitPos, owner.GetFacingDirection());
+        DamageData dmgData = Helper.DamageCalc(owner, GetEssentialStats(), victim);
+        victim.DoDamage(owner, dmgData.damage, dmgData.stagger);
     }
 
-    public abstract void OnWeaponEvent(string eventname);
+    public virtual void OnWeaponEvent(string eventname) { }
 }

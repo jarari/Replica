@@ -9,7 +9,9 @@
 			"MoveSpeed":450.0,
 			"JumpPower":675.0,
 			"MeleeArmor":10,
-			"RangeArmor":10
+			"RangeArmor":10,
+			"GrenadeFullCharge":2,
+			"GrenadeThrowPower":1000
 		},
 		"Sprites":
 		{

@@ -23,7 +23,7 @@ public class MoveObject : MonoBehaviour {
         lastdir = dir;
         dir = a;
         maxSpeed = character.GetCurrentStat(CharacterStats.MoveSpeed);
-        realSpeed = Mathf.Clamp(realSpeed + maxSpeed / 5f, 0, maxSpeed);
+        realSpeed = Mathf.Clamp(realSpeed + maxSpeed / 15f, 0, maxSpeed);
         if(Mathf.Abs(GetComponent<Rigidbody2D>().velocity.x) < Mathf.Abs(dir * realSpeed)) {
             float velX = Mathf.Clamp(dir * realSpeed, -maxSpeed, maxSpeed);
             GetComponent<Rigidbody2D>().velocity = new Vector2(velX, GetComponent<Rigidbody2D>().velocity.y);
@@ -42,6 +42,10 @@ public class MoveObject : MonoBehaviour {
 
     public void AddForce(Vector2 force) {
         GetComponent<Rigidbody2D>().velocity += force;
+    }
+
+    public void SetVelY(float v) {
+        GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, v);
     }
 
     void LateUpdate () {

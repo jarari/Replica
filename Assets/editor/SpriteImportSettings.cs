@@ -6,7 +6,7 @@ internal sealed class SpriteImportSettings : AssetPostprocessor {
         TextureImporter importer = assetImporter as TextureImporter;
         importer.spritePixelsPerUnit = 1;
         importer.compressionQuality = 100;
-        importer.maxTextureSize = 8192;
+        importer.maxTextureSize = 1024;
         importer.filterMode = FilterMode.Point;
     }
 }

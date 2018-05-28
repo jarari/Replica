@@ -19,6 +19,7 @@ public class BasicCharacterMovement : MoveObject {
     protected float minDistToDash = 0;
     protected float targetApproachRange;
     protected float subX = -1f;
+    protected float grenadeCharge = 0f;
     protected bool goingdown = false;
 
     // Use this for initialization
@@ -68,6 +69,16 @@ public class BasicCharacterMovement : MoveObject {
             character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
         }
 
+        if (character.GetState() != CharacterStates.Throw) {
+            if(grenadeCharge != 0) {
+                grenadeCharge = 0;
+                OnGrenadeCancelled();
+            }
+        }
+        else {
+            grenadeCharge = Mathf.Clamp(grenadeCharge + Time.deltaTime, 0, character.GetCurrentStat(CharacterStats.GrenadeFullCharge));
+        }
+
         /*if (character.GetState() == CharacterStates.Shift) {
             ForceMove(dashDir * 0.6f);
         }*/
@@ -88,7 +99,8 @@ public class BasicCharacterMovement : MoveObject {
             || character.GetState() == CharacterStates.Attack)
             return;
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Walk);
-        if(character.GetState() != CharacterStates.Sit)
+        if(character.GetState() != CharacterStates.Sit
+            && character.GetState() != CharacterStates.Throw)
             Move(dir * 0.6f);
         if (dir == 1) {
             character.FlipFace(true);
@@ -106,7 +118,8 @@ public class BasicCharacterMovement : MoveObject {
             || character.GetState() == CharacterStates.Attack)
             return;
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Sprint);
-        if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("sprint")) {
+        if (character.GetState() != CharacterStates.Sit
+            && character.GetState() != CharacterStates.Throw) {
             character.SetState(CharacterStates.Sprint);
             Move(dir);
             if (dir == 1) {
@@ -218,6 +231,7 @@ public class BasicCharacterMovement : MoveObject {
     }
 
     protected void OnSit() {
+        ForceMove(0);
         character.SetState(CharacterStates.Sit);
         character.GetAnimator().SetBool("DiscardFromAnyState", true);
     }
@@ -257,6 +271,8 @@ public class BasicCharacterMovement : MoveObject {
     }
 
     protected void OnAttackEvent(string eventname) {
+        character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
+        character.SetState(CharacterStates.Attack);
         if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("gunkata")) {
             character.GetWeapon(WeaponTypes.Pistol).OnAttack(eventname);
         }
@@ -286,6 +302,30 @@ public class BasicCharacterMovement : MoveObject {
 
     protected void OnEffectEvent(string effect) {
         EffectManager.instance.CreateEffect(effect, transform.position, (int)Mathf.Sign(transform.localScale.x));
+    }
+
+    protected void OnChargeGrenade() {
+        character.GetAnimator().SetInteger("State", (int)CharacterStates.Throw);
+        character.SetState(CharacterStates.Throw);
+    }
+
+    protected void OnGrenadeCancelled() {
+        character.GetAnimator().Play("idle_loop");
+        character.RemoveBuff("debuff_ms_chargegrenade");
+    }
+
+    protected void OnThrowGrenade(string eventname) {
+        //Get grenade class, not yet implemented for now.
+        Vector2 throwpos = (Vector2)transform.position + new Vector2((float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "X")
+                                        , (float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "Y"));
+        float throwang = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ThrowAngle"));
+        character.GiveWeapon("weapon_grenade");
+        Weapon grenade = character.GetWeapon(WeaponTypes.Throwable);
+        BulletManager.instance.CreateThrowable("throwable_grenade", throwpos, character, grenade,
+            character.GetCurrentStat(CharacterStats.GrenadeThrowPower) * grenadeCharge / character.GetCurrentStat(CharacterStats.GrenadeFullCharge),
+            character.GetCurrentStat(grenade, WeaponStats.Range), 90 - (90 - throwang) * character.GetFacingDirection(), 300,
+            grenade.GetEssentialStats());
+        character.RemoveWeapon(WeaponTypes.Throwable);
     }
 
     protected void Follow(Vector3 pos, float xradius) {

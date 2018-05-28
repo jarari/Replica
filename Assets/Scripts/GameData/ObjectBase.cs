@@ -31,11 +31,11 @@ public class ObjectBase : MonoBehaviour {
                                                 , (float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_Y"));
                 nofriction.offset = new Vector2((float)GameDataManager.instance.GetData("Data", classname, "Collider", "Offset_X")
                                                 , (float)GameDataManager.instance.GetData("Data", classname, "Collider", "Offset_Y") + 0.5f);
-                nofriction.size = new Vector2((float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_X") + 3f
+                nofriction.size = new Vector2((float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_X")
                                                 , (float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_Y") - 1);
             }
         }
-        if (((Dictionary<string, object>)GameDataManager.instance.GetData("Data", classname)).ContainsKey("Scale")) {
+        if (GameDataManager.instance.GetData("Data", classname, "Scale") != null) {
             transform.localScale = new Vector3((float)GameDataManager.instance.GetData("Data", classname, "Scale", "X")
                                             , (float)GameDataManager.instance.GetData("Data", classname, "Scale", "Y"), 1);
         }
@@ -127,8 +127,8 @@ public class ObjectBase : MonoBehaviour {
     protected virtual void FixedUpdate() {
         if (isStatic)
             return;
-        onGround = Physics2D.OverlapBox((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f - 6f) + GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime, new Vector2(box.size.x, 16f), 0, groundLayer)
-            && ((GetComponent<Rigidbody2D>().velocity.y <= 5f) || Physics2D.OverlapBox((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f - 16f) + GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime, new Vector2(box.size.x, 12f), 0, groundLayer) == null);
+        onGround = Physics2D.OverlapBox((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f - 6f), new Vector2(box.size.x + 0.5f, 16f), 0, groundLayer)
+            && ((GetComponent<Rigidbody2D>().velocity.y <= 5f) || Physics2D.OverlapBox((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f - 16f), new Vector2(box.size.x + 0.5f, 12f), 0, groundLayer) == null);
         if (anim != null)
             anim.SetBool("onGround", onGround);
     }

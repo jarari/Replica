@@ -16,7 +16,8 @@
 		},
 		"Sprites":
 		{
-			"controller":""
+			"controller":"",
+			"hit":"effect_attack_fist_hit"
 		},
 		"MuzzlePos":
 		{
@@ -48,7 +49,8 @@
 		},
 		"Sprites":
 		{
-			"controller":""
+			"controller":"",
+			"hit":"effect_attack_basic_hit"
 		},
 		"MuzzlePos":
 		{
@@ -79,7 +81,8 @@
 		},
 		"Sprites":
 		{
-			"controller":""
+			"controller":"",
+			"hit":"effect_attack_sword_hit"
 		},
 		"MuzzlePos":
 		{
@@ -114,6 +117,37 @@
 			"Spread":0,
 			"AttackSpeed":1.0,
 			"Stagger":0.1,
+			"MagSize":0,
+			"ReloadTime":0,
+			"Range":300
+		},
+		"Sprites":
+		{
+			"controller":""
+		},
+		"MuzzlePos":
+		{
+			"X":24.0,
+			"Y":-9.4
+		},
+		"Sounds":
+		{
+			"fire":"Sounds/weapons/GunShot",
+			"reload":"Sounds/weapons/MG_reload",
+			"shell":"Sounds/weapons/Shell_fall"
+		}
+	},
+	"weapon_grenade":
+	{
+		"ScriptClass":"",
+		"Stats":
+		{
+			"WeaponType":3,
+			"Damage":10,
+			"SADestruction":0,
+			"Spread":0,
+			"AttackSpeed":1.0,
+			"Stagger":1,
 			"MagSize":0,
 			"ReloadTime":0,
 			"Range":300

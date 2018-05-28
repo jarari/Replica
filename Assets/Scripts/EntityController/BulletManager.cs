@@ -54,7 +54,7 @@ public class BulletManager : MonoBehaviour {
         return bullet;
     }
 
-    public Projectile CreateProjectile(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data, bool candirecthit) {
+    public Projectile CreateProjectile(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         GameObject projectile_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
         Projectile projectile;
         if (GameDataManager.instance.GetData("Data", classname, "ScriptClass") != null && (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass") != "") {
@@ -68,11 +68,11 @@ public class BulletManager : MonoBehaviour {
         Vector3 ang = projectile_obj.transform.eulerAngles;
         ang.z = angle;
         projectile_obj.transform.eulerAngles = ang;
-        projectile.Initialize(classname, user, firedfrom, _data, candirecthit);
+        projectile.Initialize(classname, user, firedfrom, speed, range, _data, candirecthit);
         return projectile;
     }
 
-    public Throwable CreateThrowable(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, float torque, Dictionary<WeaponStats, float> _data, bool candirecthit) {
+    public Throwable CreateThrowable(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, float torque, Dictionary<WeaponStats, float> _data, bool candirecthit = true) {
         GameObject throwable_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
         Throwable throwable;
         if (GameDataManager.instance.GetData("Data", classname, "ScriptClass") != null && (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass") != "") {
@@ -86,7 +86,7 @@ public class BulletManager : MonoBehaviour {
         Vector3 ang = throwable_obj.transform.eulerAngles;
         ang.z = angle;
         throwable_obj.transform.eulerAngles = ang;
-        throwable.Initialize(classname, user, firedfrom, torque, _data, candirecthit);
+        throwable.Initialize(classname, user, firedfrom, speed, range, torque, _data, candirecthit);
         return throwable;
     }
 }

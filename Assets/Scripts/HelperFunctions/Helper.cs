@@ -5,7 +5,6 @@ using UnityEngine;
 public class DamageData {
     public Character attacker;
     public Character victim;
-    public bool isCrit;
     public float damage;
     public float stagger;
     public DamageData(Character a, Character v, float dmg, float stag) {
@@ -29,12 +28,35 @@ public static class Helper {
         return null;
     }
 
+    public static PhysicsMaterial2D GetPhysicsMaterial2D(string name) {
+        foreach (PhysicsMaterial2D mat in Resources.LoadAll("Sprites/tileset/physicsmat", typeof(PhysicsMaterial2D))) {
+            if (mat.name == name)
+                return mat;
+        }
+        return null;
+    }
+
     public static bool CalcChance(float chance) {
         return Random.Range(0.00f, 1.00f) <= chance;
     }
 
-    public static DamageData DamageCalc(Character attacker, Dictionary<WeaponStats, float> attackerdata, Character victim, bool ignorearmor = false) {
-        return new DamageData(attacker, victim, 100, 0);
+    public static DamageData DamageCalc(Character attacker, Dictionary<WeaponStats, float> stats, Character victim, bool isRanged = false, bool ignorearmor = false) {
+        float damage = stats[WeaponStats.Damage];
+        float stagger = stats[WeaponStats.Stagger];
+        if (!ignorearmor) {
+            if (victim.GetCurrentStat(CharacterStats.SuperArmor) >= 0) {
+                stagger = 0;
+                victim.ModStat(CharacterStats.SuperArmor, -stats[WeaponStats.SADestruction]);
+                if (victim.GetCurrentStat(CharacterStats.SuperArmor) == 0) {
+                    EffectManager.instance.CreateEffect("effect_indicator_armorpen", victim.transform.position, 0);
+                }
+            }
+            float armor = victim.GetCurrentStat(CharacterStats.MeleeArmor);
+            if (isRanged)
+                armor = victim.GetCurrentStat(CharacterStats.RangeArmor);
+            damage -= -damage * (armor / (armor + 100f));
+        }
+        return new DamageData(attacker, victim, damage, stagger);
     }
 
     public static float BallisticsAngCalc(float distance, float height, float velocity, bool min) {
@@ -62,12 +84,22 @@ public static class Helper {
         return ang;
     }
 
-    public static bool IsInBox(Vector2 pos, Vector2 boxMin, Vector2 boxMax) {
+    private static bool overlap1D(float minX, float maxX, float minX2, float maxX2) {
+        if (maxX >= minX2 && maxX2 >= minX)
+            return true;
+        return false;
+    }
+
+    public static bool IsInBox(Vector2 boxMin, Vector2 boxMax, Vector2 box2Min, Vector2 box2Max) {
         float xMin = Mathf.Min(boxMin.x, boxMax.x);
         float xMax = Mathf.Max(boxMin.x, boxMax.x);
         float yMin = Mathf.Min(boxMin.y, boxMax.y);
         float yMax = Mathf.Max(boxMin.y, boxMax.y);
-        if (pos.x >= xMin && pos.x <= xMax && pos.y >= yMin && pos.y <= yMax)
+        float xMin2 = Mathf.Min(box2Min.x, box2Max.x);
+        float xMax2 = Mathf.Max(box2Min.x, box2Max.x);
+        float yMin2 = Mathf.Min(box2Min.y, box2Max.y);
+        float yMax2 = Mathf.Max(box2Min.y, box2Max.y);
+        if (overlap1D(xMin, xMax, xMin2, xMax2) && overlap1D(yMin, yMax, yMin2, yMax2))
             return true;
         return false;
     }

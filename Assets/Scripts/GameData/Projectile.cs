@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,12 +26,12 @@ public class Projectile : MonoBehaviour {
         collided = false;
         layer = (1 << LayerMask.NameToLayer("Characters"));// | (1 << LayerMask.NameToLayer("Characters"));
     }
-    public void Initialize(string classname, Character user, Weapon firedfrom, Dictionary<WeaponStats, float> _data, bool candirecthit) {
+    public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         className = classname;
         attacker = user;
         weapon = firedfrom;
-        speed = _data[WeaponStats.BulletSpeed];
-        range = _data[WeaponStats.Range];
+        speed = _speed;
+        range = _range;
         data = _data;
         startPos = transform.position;
         if(GameDataManager.instance.GetData("Data", className, "Sprites", "smoke") != null)
@@ -40,6 +41,9 @@ public class Projectile : MonoBehaviour {
         else {
             transform.localScale = new Vector3(0, 0, 0);
             anim = null;
+        }
+        if (GameDataManager.instance.GetData("Data", className, "PhysicsMaterial") != null) {
+            rb.sharedMaterial = Helper.GetPhysicsMaterial2D((string)GameDataManager.instance.GetData("Data", className, "PhysicsMaterial"));
         }
         rb.velocity = transform.right * speed;
         velVector = transform.right;
@@ -97,7 +101,7 @@ public class Projectile : MonoBehaviour {
         HandleCollision(collision);
     }
 
-    private void HandleCollision(Collision2D collision) {
+    protected virtual void HandleCollision(Collision2D collision) {
         if (collision.gameObject == null) return;
         if (collision.gameObject.tag.Equals("Character")) {
             if(collision.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
@@ -120,20 +124,26 @@ public class Projectile : MonoBehaviour {
         }
     }
 
-    protected virtual void OnDestroy() {
-        if (!collided) return;
-        if(GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") == null || (GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != null && (int)GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != 0))
-            CamController.instance.ShakeCam(data[WeaponStats.Damage] / 20f, Mathf.Clamp(data[WeaponStats.Damage] / 50, 0, 2));
-        List<Character> closeEnemies = CharacterManager.instance.GetEnemies(attacker.GetTeam()).FindAll(c => Vector3.Distance(c.transform.position, transform.position) <= range);
-        foreach (Character c in closeEnemies) {
-            DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true);
-            c.DoDamage(attacker, dmgdata.damage, data[WeaponStats.Stagger]);
-        }
+    protected virtual void ExplosionEffect() {
         if (anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
             Vector3 temp = collisionNorm;
             temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
             float ang = Helper.Vector2ToAng(temp);
             EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), collisionPos, ang);
         }
+    }
+
+    protected virtual void OnDestroy() {
+        if(GameDataManager.instance.GetData("Data", className, "ShakeCam") == null || (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null && (int)GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != 0))
+            CamController.instance.ShakeCam(data[WeaponStats.Damage] / 20f, Mathf.Clamp(data[WeaponStats.Damage] / 50f, 0, 2));
+        List<Character> closeEnemies = CharacterManager.instance.GetAllCharacters().FindAll(c => Vector3.Distance(c.transform.position, transform.position) <= range);
+        foreach (Character c in closeEnemies) {
+            DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true, true);
+            c.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
+            if(GameDataManager.instance.GetData("Data", className, "KnockBack") != null) {
+                c.AddForce((c.transform.position - transform.position).normalized * Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack")));
+            }
+        }
+        ExplosionEffect();
     }
 }

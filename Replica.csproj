@@ -108,6 +108,7 @@
     <Compile Include="Assets\Scripts\GameData\Save.cs" />
     <Compile Include="Assets\Scripts\GameData\Teams.cs" />
     <Compile Include="Assets\Scripts\GameData\Throwable.cs" />
+    <Compile Include="Assets\Scripts\GameData\Throwable\ThrowableGrenade.cs" />
     <Compile Include="Assets\Scripts\GameData\Weapon.cs" />
     <Compile Include="Assets\Scripts\GameData\Weapons\WeaponSword.cs" />
     <Compile Include="Assets\Scripts\GameData\Weapons\WeaponGunkata.cs" />

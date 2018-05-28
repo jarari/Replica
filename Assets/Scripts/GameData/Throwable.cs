@@ -3,29 +3,9 @@ using UnityEngine;
 
 public class Throwable : Projectile {
     protected float torque;
-    public void Initialize(string classname, Character user, Weapon firedfrom, float _torque, Dictionary<WeaponStats, float> _data, bool candirecthit) {
-        className = classname;
-        attacker = user;
-        weapon = firedfrom;
-        speed = _data[WeaponStats.BulletSpeed];
-        range = _data[WeaponStats.Range];
+    public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, float _torque, Dictionary<WeaponStats, float> _data, bool candirecthit) {
+        Initialize(classname, user, firedfrom, _speed, _range, _data, candirecthit);
         torque = _torque;
-        data = _data;
-        startPos = transform.position;
-        string smoke = (string)GameDataManager.instance.GetData("Data", className, "Sprites", "smoke");
-        if (smoke != null && smoke != "")
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "smoke"), transform.position, transform.eulerAngles.z, transform);
-        if (GameDataManager.instance.GetAnimatorController(classname) != null)
-            anim.runtimeAnimatorController = GameDataManager.instance.GetAnimatorController(classname);
-        else {
-            transform.localScale = new Vector3(0, 0, 0);
-            anim = null;
-        }
-        rb.velocity = transform.right * speed;
-        init = true;
-        AdditionalData();
-        if (candirecthit)
-            StartCoroutine(DirectHit());
     }
 
     protected override void FixedUpdate() {
@@ -43,5 +23,11 @@ public class Throwable : Projectile {
         Vector3 proang = transform.eulerAngles;
         proang.z = ang;
         transform.eulerAngles = proang;
+    }
+
+    protected override void ExplosionEffect() {
+        if (anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
+            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), collisionPos, 0);
+        }
     }
 }

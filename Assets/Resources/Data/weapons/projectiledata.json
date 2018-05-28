@@ -1,0 +1,16 @@
+{
+	"throwable_grenade":
+	{
+		"ScriptClass":"ThrowableGrenade",
+		"PhysicsMaterial":"Grenade",
+		"Loop":1,
+		"KnockBack":800,
+		"Sprites":
+		{
+			"controller":"throwable_grenade_controller",
+			"hit":"effect_grenade_explosion"
+		},
+		"CookTime":3
+	}
+}
+	

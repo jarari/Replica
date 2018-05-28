@@ -10,6 +10,8 @@ public enum CharacterStats {
     MeleeArmor,
     RangeArmor,
     SuperArmor,
+    GrenadeFullCharge,
+    GrenadeThrowPower,
     EndOfEnums
 }
 
@@ -21,6 +23,7 @@ public enum CharacterStates {
     Jump,
     Attack,
     Sit,
+    Throw,
     Uncontrollable,
     None
 }
@@ -35,6 +38,23 @@ public enum CharacterTypes {
     Player,
     AI,
     Boss
+}
+
+public class WeaponBuff {
+    private Dictionary<WeaponStats, float> buffdata;
+    private WeaponTypes weaponType;
+    public WeaponBuff(Dictionary<WeaponStats, float> _data, WeaponTypes _type) {
+        buffdata = _data;
+        weaponType = _type;
+    }
+
+    public Dictionary<WeaponStats, float> GetBuffData() {
+        return buffdata;
+    }
+
+    public WeaponTypes GetTargetType() {
+        return weaponType;
+    }
 }
 
 public abstract class Character : ObjectBase {
@@ -58,8 +78,8 @@ public abstract class Character : ObjectBase {
     protected Dictionary<string, Dictionary<CharacterStats, float>> buffs_mul = new Dictionary<string, Dictionary<CharacterStats, float>>();
     protected Dictionary<string, float> bufftimer = new Dictionary<string, float>();
 
-    protected Dictionary<string, Dictionary<WeaponStats, float>> weaponbuffs_plus = new Dictionary<string, Dictionary<WeaponStats, float>>();
-    protected Dictionary<string, Dictionary<WeaponStats, float>> weaponbuffs_mul = new Dictionary<string, Dictionary<WeaponStats, float>>();
+    protected Dictionary<string, WeaponBuff> weaponbuffs_plus = new Dictionary<string, WeaponBuff>();
+    protected Dictionary<string, WeaponBuff> weaponbuffs_mul = new Dictionary<string, WeaponBuff>();
     protected Dictionary<string, float> weaponbufftimer = new Dictionary<string, float>();
 
     protected Dictionary<int, DOT> dotlist = new Dictionary<int, DOT>();
@@ -74,25 +94,29 @@ public abstract class Character : ObjectBase {
 
         List<string> keys = new List<string>(bufftimer.Keys);
         foreach (string key in keys) {
-            float time = Mathf.Clamp(bufftimer[key] - Time.deltaTime, 0, bufftimer[key]);
-            if (time == 0) {
-                RemoveBuff(key);
-                bufftimer.Remove(key);
-            }
-            else {
-                bufftimer[key] = time;
+            if(bufftimer[key] != -1) {
+                float time = Mathf.Clamp(bufftimer[key] - Time.deltaTime, 0, bufftimer[key]);
+                if (time == 0) {
+                    RemoveBuff(key);
+                    bufftimer.Remove(key);
+                }
+                else {
+                    bufftimer[key] = time;
+                }
             }
         }
 
         List<string> wepkeys = new List<string>(weaponbufftimer.Keys);
         foreach (string wepkey in wepkeys) {
-            float time = Mathf.Clamp(weaponbufftimer[wepkey] - Time.deltaTime, 0, weaponbufftimer[wepkey]);
-            if (time == 0) {
-                RemoveWeaponBuff(wepkey);
-                weaponbufftimer.Remove(wepkey);
-            }
-            else {
-                weaponbufftimer[wepkey] = time;
+            if (weaponbufftimer[wepkey] != -1) {
+                float time = Mathf.Clamp(weaponbufftimer[wepkey] - Time.deltaTime, 0, weaponbufftimer[wepkey]);
+                if (time == 0) {
+                    RemoveWeaponBuff(wepkey);
+                    weaponbufftimer.Remove(wepkey);
+                }
+                else {
+                    weaponbufftimer[wepkey] = time;
+                }
             }
         }
 
@@ -189,14 +213,14 @@ public abstract class Character : ObjectBase {
         return val / mul - plus;
     }
 
-    public void AddWeaponBuff(string name, Dictionary<WeaponStats, float> data, bool isAdd, float time = -1) {
-        if (isAdd && !buffs_plus.ContainsKey(name)) {
+    public void AddWeaponBuff(string name, WeaponBuff data, bool isAdd, float time = -1) {
+        if (isAdd && !weaponbuffs_plus.ContainsKey(name)) {
             weaponbuffs_plus.Add(name, data);
         }
-        else if (!isAdd && !buffs_mul.ContainsKey(name)) {
+        else if (!isAdd && !weaponbuffs_mul.ContainsKey(name)) {
             weaponbuffs_mul.Add(name, data);
         }
-        if (time != -1 && !bufftimer.ContainsKey(name))
+        if (time != -1 && !weaponbufftimer.ContainsKey(name))
             weaponbufftimer.Add(name, time);
         else
             weaponbufftimer[name] = time;
@@ -210,37 +234,45 @@ public abstract class Character : ObjectBase {
             weaponbuffs_mul.Remove(name);
         }
     }
-    public float GetBuffedWeaponStat(float original, WeaponStats stat) {
+    public float GetBuffedWeaponStat(float original, WeaponTypes type, WeaponStats stat) {
         float plus = original;
-        foreach (KeyValuePair<string, Dictionary<WeaponStats, float>> buffs in weaponbuffs_plus) {
-            foreach (KeyValuePair<WeaponStats, float> data in buffs.Value) {
-                if (data.Key == stat)
-                    plus += data.Value;
+        foreach (KeyValuePair<string, WeaponBuff> buffs in weaponbuffs_plus) {
+            if (buffs.Value.GetTargetType() == type) {
+                foreach (KeyValuePair<WeaponStats, float> data in buffs.Value.GetBuffData()) {
+                    if (data.Key == stat)
+                        plus += data.Value;
+                }
             }
         }
         float mul = 1;
-        foreach (KeyValuePair<string, Dictionary<WeaponStats, float>> buffs in weaponbuffs_mul) {
-            foreach (KeyValuePair<WeaponStats, float> data in buffs.Value) {
-                if (data.Key == stat)
-                    mul += data.Value;
+        foreach (KeyValuePair<string, WeaponBuff> buffs in weaponbuffs_mul) {
+            if (buffs.Value.GetTargetType() == type) {
+                foreach (KeyValuePair<WeaponStats, float> data in buffs.Value.GetBuffData()) {
+                    if (data.Key == stat)
+                        mul += data.Value;
+                }
             }
         }
         return plus * mul;
     }
 
-    public float GetUnbuffedWeaponStat(float val, WeaponStats stat) {
+    public float GetUnbuffedWeaponStat(float val, WeaponTypes type, WeaponStats stat) {
         float plus = 0;
-        foreach (KeyValuePair<string, Dictionary<WeaponStats, float>> buffs in weaponbuffs_plus) {
-            foreach (KeyValuePair<WeaponStats, float> data in buffs.Value) {
-                if (data.Key == stat)
-                    plus += data.Value;
+        foreach (KeyValuePair<string, WeaponBuff> buffs in weaponbuffs_plus) {
+            if (buffs.Value.GetTargetType() == type) {
+                foreach (KeyValuePair<WeaponStats, float> data in buffs.Value.GetBuffData()) {
+                    if (data.Key == stat)
+                        plus += data.Value;
+                }
             }
         }
         float mul = 1;
-        foreach (KeyValuePair<string, Dictionary<WeaponStats, float>> buffs in weaponbuffs_mul) {
-            foreach (KeyValuePair<WeaponStats, float> data in buffs.Value) {
-                if (data.Key == stat)
-                    mul += data.Value;
+        foreach (KeyValuePair<string, WeaponBuff> buffs in weaponbuffs_mul) {
+            if (buffs.Value.GetTargetType() == type) {
+                foreach (KeyValuePair<WeaponStats, float> data in buffs.Value.GetBuffData()) {
+                    if (data.Key == stat)
+                        mul += data.Value;
+                }
             }
         }
         return val / mul - plus;
@@ -320,7 +352,7 @@ public abstract class Character : ObjectBase {
         if (!weaponstats.ContainsKey(wep.GetWeaponType())) {
             weaponstats.Add(wep.GetWeaponType(), new float[(int)WeaponStats.EndOfEnums]);
         }
-        weaponstats[wep.GetWeaponType()][(int)stat] = Mathf.Clamp(GetUnbuffedWeaponStat(GetBuffedWeaponStat(GetBaseStat(wep, stat), stat) + val, stat), 0, GetMaxStat(wep, stat));
+        weaponstats[wep.GetWeaponType()][(int)stat] = Mathf.Clamp(GetUnbuffedWeaponStat(GetBuffedWeaponStat(GetBaseStat(wep, stat), wep.GetWeaponType(), stat) + val, wep.GetWeaponType(), stat), 0, GetMaxStat(wep, stat));
     }
 
     public float GetBaseStat(Weapon wep, WeaponStats stat) {
@@ -328,13 +360,13 @@ public abstract class Character : ObjectBase {
     }
 
     public float GetMaxStat(Weapon wep, WeaponStats stat) {
-        return GetBuffedWeaponStat(GetBaseStat(wep, stat), stat);
+        return GetBuffedWeaponStat(GetBaseStat(wep, stat), wep.GetWeaponType(), stat);
     }
 
     public float GetCurrentStat(Weapon wep, WeaponStats stat) {
         if (!weaponstats.ContainsKey(wep.GetWeaponType()))
             return 0;
-        return GetBuffedWeaponStat(weaponstats[wep.GetWeaponType()][(int)stat], stat);
+        return GetBuffedWeaponStat(weaponstats[wep.GetWeaponType()][(int)stat], wep.GetWeaponType(), stat);
     }
 
     public void AddForce(Vector2 force) {
@@ -387,7 +419,10 @@ public abstract class Character : ObjectBase {
 
     public void GiveWeapon(string classname) {
         GameObject gun_obj = (GameObject)Instantiate(Resources.Load("Prefab/Weapon"), transform.position, new Quaternion());
-        Weapon wep = (Weapon)gun_obj.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
+        string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
+        if (script == null || script.Length == 0)
+            script = "Weapon";
+        Weapon wep = (Weapon)gun_obj.AddComponent(Type.GetType(script));
         wep.SetOwner(this);
         wep.Initialize(classname);
         if (weapons.ContainsKey(wep.GetWeaponType())) {
@@ -399,8 +434,13 @@ public abstract class Character : ObjectBase {
         lscale.x = gun_obj.transform.localScale.x * Mathf.Sign(transform.localScale.x);
         gun_obj.transform.localScale = lscale;
         gun_obj.transform.SetParent(transform);
-        if (basecontroller != null)
-            basecontroller.Initialize(this);
+    }
+
+    public void RemoveWeapon(WeaponTypes type) {
+        if (weapons.ContainsKey(type)) {
+            Destroy(weapons[type].gameObject);
+            weapons.Remove(type);
+        }
     }
 
     public Weapon GetWeapon(WeaponTypes type) {

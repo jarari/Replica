@@ -27,6 +27,8 @@ public class WeaponGunkata : Weapon {
                 FireBullet("bullet_hg", 90);
         }
         else if(eventname == "attack_basic_finish_fire") {
+            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData("Data", "hg_forward", "MuzzlePos", "X")
+                                        , (float)GameDataManager.instance.GetData("Data", "hg_forward", "MuzzlePos", "Y")));
             FireBullet("bullet_gunkata_finish", 90);
         }
     }

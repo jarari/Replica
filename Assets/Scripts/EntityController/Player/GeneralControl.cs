@@ -17,6 +17,9 @@ public class GeneralControl : BasicCharacterMovement {
         }
         if (!PlayerPauseUI.IsPaused()) {
             if (character.GetUncontrollableTimeLeft() == 0) {
+                if (!character.IsOnGround())
+                    sprint = false;
+
                 if (Input.GetKey(KeyCode.RightArrow)) {
                     if (waitDoubleTab && doubletabKey == KeyCode.RightArrow) {
                         sprint = true;
@@ -71,24 +74,27 @@ public class GeneralControl : BasicCharacterMovement {
                     }
                 }
 
-                if (Input.GetKey(KeyCode.DownArrow)) {
-                    Sit();
-                }
-
-                if (Input.GetKeyDown(KeyCode.Space)) {
+                if (character.GetState() != CharacterStates.Attack
+                    && character.GetState() != CharacterStates.Throw) {
                     if (Input.GetKey(KeyCode.DownArrow)) {
-                        if (CanGoDown()) {
-                            GoDown();
-                        }
+                        Sit();
                     }
-                    else {
-                        Jump();
+
+                    if (Input.GetKeyDown(KeyCode.Space)) {
+                        if (Input.GetKey(KeyCode.DownArrow)) {
+                            if (CanGoDown()) {
+                                GoDown();
+                            }
+                        }
+                        else {
+                            Jump();
+                        }
                     }
                 }
 
                 if (character.IsOnGround() && character.GetState() != CharacterStates.Jump) {
                     if (Input.GetKeyDown(KeyCode.X)) {
-                        if(character.GetState() != CharacterStates.Attack)
+                        if (character.GetState() != CharacterStates.Attack)
                             character.GetAnimator().Play("Attack Junction");
                         character.GetAnimator().ResetTrigger("UpX");
                         character.GetAnimator().ResetTrigger("FlatX");
@@ -96,7 +102,7 @@ public class GeneralControl : BasicCharacterMovement {
                         if (Input.GetKey(KeyCode.DownArrow)) {
                             character.GetAnimator().SetTrigger("DownX");
                         }
-                        else if(Input.GetKey(KeyCode.UpArrow)){
+                        else if (Input.GetKey(KeyCode.UpArrow)) {
                             character.GetAnimator().SetTrigger("UpX");
                         }
                         else {
@@ -119,6 +125,56 @@ public class GeneralControl : BasicCharacterMovement {
                         else {
                             character.GetAnimator().SetTrigger("FlatZ");
                         }
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.G)) {
+                        if(character.GetState() != CharacterStates.Throw) {
+                            character.GetAnimator().Play("throw_ready");
+                        }
+                    }
+                    else if (Input.GetKeyUp(KeyCode.G)) {
+                        if (grenadeCharge < character.GetCurrentStat(CharacterStats.GrenadeFullCharge) * 0.1f)
+                            OnGrenadeCancelled();
+                        else {
+                            character.GetAnimator().ResetTrigger("UpG");
+                            character.GetAnimator().ResetTrigger("FlatG");
+                            character.GetAnimator().ResetTrigger("DownG");
+                            if (Input.GetKey(KeyCode.DownArrow)) {
+                                character.GetAnimator().SetTrigger("DownG");
+                            }
+                            else if (Input.GetKey(KeyCode.UpArrow)) {
+                                character.GetAnimator().SetTrigger("UpG");
+                            }
+                            else {
+                                character.GetAnimator().SetTrigger("FlatG");
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (Input.GetKeyDown(KeyCode.X)) {
+                        if (character.GetState() != CharacterStates.Attack)
+                            character.GetAnimator().Play("Attack Junction");
+                        character.GetAnimator().ResetTrigger("UpX");
+                        character.GetAnimator().ResetTrigger("FlatX");
+                        character.GetAnimator().ResetTrigger("DownX");
+                        if (Input.GetKey(KeyCode.DownArrow)) {
+                            character.GetAnimator().SetTrigger("DownX");
+                        }
+                        else if (Input.GetKey(KeyCode.UpArrow)) {
+                            character.GetAnimator().SetTrigger("UpX");
+                        }
+                        else {
+                            character.GetAnimator().SetTrigger("FlatX");
+                        }
+                    }
+                }
+                if(character.GetState() == CharacterStates.Attack) {
+                    if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.85f) {
+                        if (Input.GetKey(KeyCode.LeftArrow))
+                            character.FlipFace(false);
+                        else if (Input.GetKey(KeyCode.RightArrow))
+                            character.FlipFace(true);
                     }
                 }
             }

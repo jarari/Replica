@@ -29,6 +29,7 @@ public class GameDataManager : MonoBehaviour {
         ParseJSONData("maps/mapdata");
         ParseJSONData("weapons/attackdata");
         ParseJSONData("weapons/bulletdata");
+        ParseJSONData("weapons/projectiledata");
         if (!debug)
             GlobalUIManager.instance.LoadScene(1);
     }
@@ -136,6 +137,14 @@ public class GameDataManager : MonoBehaviour {
                 return Convert.ToSingle(GetData("Data", classname, "Stats", "MeleeArmor"));
             case CharacterStats.RangeArmor:
                 return Convert.ToSingle(GetData("Data", classname, "Stats", "RangeArmor"));
+            case CharacterStats.GrenadeFullCharge:
+                if(GetData("Data", classname, "Stats", "GrenadeFullCharge") != null)
+                    return Convert.ToSingle(GetData("Data", classname, "Stats", "GrenadeFullCharge"));
+                return 2f;
+            case CharacterStats.GrenadeThrowPower:
+                if (GetData("Data", classname, "Stats", "GrenadeThrowPower") != null)
+                    return Convert.ToSingle(GetData("Data", classname, "Stats", "GrenadeThrowPower"));
+                return 600f;
         }
         return -1;
     }

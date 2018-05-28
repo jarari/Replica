@@ -103,7 +103,7 @@ public class Bullet : MonoBehaviour {
         if (colliding != null) {
             if (colliding.GetTeam() != attacker.GetTeam()) {
                 collided = true;
-                DamageData dmgdata = Helper.DamageCalc(attacker, data, colliding, false);
+                DamageData dmgdata = Helper.DamageCalc(attacker, data, colliding, true, false);
                 colliding.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
                 if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null) {
                     Vector2 knockback = new Vector2();
