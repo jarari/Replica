@@ -11,6 +11,11 @@ public class LevelExporter : MonoBehaviour {
     private Dictionary<int, GameObject> BGParents = new Dictionary<int, GameObject>();
     private CharacterSpawner playerspawner;
     private void Awake() {
+        StartCoroutine(WaitTillInit());
+    }
+    IEnumerator WaitTillInit() {
+        yield return new WaitForSeconds(0.1f);
+        Cursor.visible = true;
         string data = "{";
         foreach(GameObject obj in  FindObjectsOfType<GameObject>()) {
             bool tagged = false;
@@ -103,11 +108,10 @@ public class LevelExporter : MonoBehaviour {
             }
         }
         if(playerspawner != null) {
-            LevelManager.instance.Initialize();
             playerspawner.characterType = CharacterTypes.Boss;
             playerspawner.characterClass = "character_dummy";
             playerspawner.weaponClass = "weapon_ai_dummy";
-            playerspawner.Initialize();
+            LevelManager.instance.Initialize();
             CamController.instance.AttachCam(playerspawner.GetLastSpawn().transform);
             playerspawner.GetLastSpawn().SetFlag(CharacterFlags.Invincible);
             playerspawner.GetLastSpawn().SetFlag(CharacterFlags.KnockBackImmunity);

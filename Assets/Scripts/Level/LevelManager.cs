@@ -289,7 +289,12 @@ public class LevelManager : MonoBehaviour {
         mapMin = new Vector2(minX, minY);
         mapMax = new Vector2(maxX, maxY);
         GetComponent<ScenarySimulation>().Initialize(mapMin, mapMax, BGParents);
-        if(LoadingScreen.instance != null)
+
+        foreach (GameObject spawner in GameObject.FindGameObjectsWithTag("Spawner")) {
+            spawner.GetComponent<CharacterSpawner>().Initialize();
+        }
+
+        if (LoadingScreen.instance != null)
             LoadingScreen.instance.Open();
     }
 

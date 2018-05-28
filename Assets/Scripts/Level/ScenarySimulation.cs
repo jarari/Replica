@@ -47,10 +47,6 @@ public class ScenarySimulation : MonoBehaviour {
         }
 
         farthestDist = GameObject.FindGameObjectWithTag("BG_Farthest").transform.position.z;
-
-        foreach (GameObject spawner in GameObject.FindGameObjectsWithTag("Spawner")) {
-            spawner.GetComponent<CharacterSpawner>().Initialize();
-        }
         init = true;
     }
 
@@ -58,7 +54,7 @@ public class ScenarySimulation : MonoBehaviour {
         if (!init) return;
         Vector3 camPos = CamController.instance.GetCamPos();
         float distX = camPos.x - mapMin.x;
-        float distY = camPos.y - mapMin.y - CamController.instance.GetStandardHeight();
+        float distY = camPos.y - mapMin.y - CamController.instance.GetCamSize().y;
 
         float a = Mathf.Atan(distY / farthestDist);
 
