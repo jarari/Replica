@@ -123,6 +123,7 @@ public class Weapon : ObjectBase {
         List<Character> closeEnemies = CharacterManager.instance.GetEnemies(GetOwner().GetTeam()).FindAll
             (c => Helper.IsInBox((Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset - c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset + c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)owner.transform.position + localPos - area / 2f, (Vector2)owner.transform.position + localPos + area / 2f));
         StartCoroutine(Helper.DrawBox((Vector2)owner.transform.position + localPos, area, Color.red));
+        Vector2 hitPos = new Vector2();
         foreach (Character c in closeEnemies) {
             float hitposX = Mathf.Clamp(((Vector2)owner.transform.position + localPos).x,
                 c.transform.position.x + c.GetCollider().offset.x - c.GetCollider().size.x / 2f,
@@ -130,15 +131,20 @@ public class Weapon : ObjectBase {
             float hitposY = Mathf.Clamp(((Vector2)owner.transform.position + localPos).y,
                 c.transform.position.y + c.GetCollider().offset.y - c.GetCollider().size.y / 2f,
                 c.transform.position.y + c.GetCollider().offset.y + c.GetCollider().size.y / 2f);
+            hitPos.x += hitposX / closeEnemies.Count;
+            hitPos.y += hitposY / closeEnemies.Count;
             OnWeaponHit(c, new Vector2(hitposX, hitposY), eventname);
+        }
+        if(closeEnemies.Count > 0) {
+            if (GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null)
+                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), hitPos, owner.GetFacingDirection());
         }
     }
 
     public virtual void OnWeaponHit(Character victim, Vector2 hitPos, string eventname) {
-        CamController.instance.ShakeCam(Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 20f, 0, 2),
-            Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 50f, 0, 0.5f));
-        if(GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null)
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), hitPos, owner.GetFacingDirection());
+        if(owner == CharacterManager.instance.GetPlayer() || victim == CharacterManager.instance.GetPlayer())
+            CamController.instance.ShakeCam(Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 20f, 0, 2),
+                Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 50f, 0, 0.5f));
         if (victim.HasFlag(CharacterFlags.Invincible))
             return;
         DamageData dmgData = Helper.DamageCalc(owner, GetEssentialStats(), victim);
