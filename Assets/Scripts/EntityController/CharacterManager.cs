@@ -85,10 +85,10 @@ public class CharacterManager : MonoBehaviour {
     }
 
     public Character GetClosestAlly(Vector3 pos, Teams team) {
-        return Characters.Where(c => c.GetTeam() == team).OrderBy(c => Vector3.Distance(c.transform.position, pos)).FirstOrDefault();
+        return Characters.Where(c => c.GetTeam() == team).OrderBy(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), pos), pos)).FirstOrDefault();
     }
 
     public Character GetClosestEnemy(Vector3 pos, Teams team) {
-        return Characters.Where(c => c.GetTeam() != team).OrderBy(c => Vector3.Distance(c.transform.position, pos)).FirstOrDefault();
+        return Characters.Where(c => c.GetTeam() != team).OrderBy(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), pos), pos)).FirstOrDefault();
     }
 }
