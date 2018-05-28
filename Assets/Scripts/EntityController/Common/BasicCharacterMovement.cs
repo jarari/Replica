@@ -344,7 +344,7 @@ public class BasicCharacterMovement : MoveObject {
         character.RemoveWeapon(WeaponTypes.Throwable);
     }
 
-    protected void OnHitEvent(int invincible) {
+    protected virtual void OnHitEvent(int invincible) {
         character.GetAnimator().SetInteger("State", 8);
         character.SetState(CharacterStates.Uncontrollable);
         if (invincible == 1)
@@ -352,7 +352,7 @@ public class BasicCharacterMovement : MoveObject {
         character.GetAnimator().SetBool("DiscardFromAnyState", true);
     }
 
-    protected void OnHitRecoverEvent(int invincible) {
+    protected virtual void OnHitRecoverEvent(int invincible) {
         if(invincible == 1)
             character.RemoveFlag(CharacterFlags.Invincible);
         character.GetAnimator().SetBool("DiscardFromAnyState", false);
