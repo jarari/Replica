@@ -382,5 +382,23 @@
 	},
     "HitBox": {
     }
+  },
+  "attack_secbot2": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+    "HitBox": {
+		"0":{
+        "Time": 7,
+        "Pos": {
+          "X": 45,
+          "Y": 0
+        },
+        "Area":{
+          "X": 100,
+          "Y": 40
+        }
+      }
+    }
   }
 }
