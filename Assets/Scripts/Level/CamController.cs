@@ -10,6 +10,7 @@ public class CamController : MonoBehaviour {
     private Vector3 camPos;
     private Vector3 shakeCamVec;
     private Coroutine zoomCoroutine;
+    private float tilesize = 32f;
     private int deadzoneWidth = 200;
     private int deadzoneHeight = 300;
     private int standardHeight = 1080;
@@ -33,7 +34,7 @@ public class CamController : MonoBehaviour {
             camTargetPos.y = target.position.y - deadzoneHeight / 2f * Mathf.Sign(target.position.y - camTargetPos.y);
         if (Mathf.Abs(deltapos.y) / Time.deltaTime < 1)
             camTargetPos.y = target.position.y + camUp;
-        camTargetPos.x = Mathf.Clamp(camTargetPos.x, LevelManager.instance.GetMapMin().x + GetCamSize().x, LevelManager.instance.GetMapMax().x - GetCamSize().x);
+        camTargetPos.x = Mathf.Clamp(camTargetPos.x, LevelManager.instance.GetMapMin().x + GetCamSize().x + tilesize / 2f, LevelManager.instance.GetMapMax().x - GetCamSize().x - tilesize / 2f);
         Vector3 deltacam = (camTargetPos - camPos) / smoothVal;
         if(deltacam.magnitude <= 0.05) {
             deltacam *= smoothVal;

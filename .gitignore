@@ -32,3 +32,5 @@ Temp/StagingArea/Test_Data/Mono/etc/mono/mconfig/config.xml
 Temp/StagingArea/Test_Data/Mono/mono.dll
 Temp/StagingArea/Test_Data/Mono/MonoPosixHelper.dll
 Temp/StagingArea/Test_Data/resources.assets
+Temp/*
+Library/*

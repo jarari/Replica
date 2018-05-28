@@ -1,7 +1,7 @@
 {
 	"ai_basetest":
 	{
-		"ScriptClass":"",
+		"ScriptClass":"AITestPreviewSceneary",
 		"RecognitionRadius":600.0,
 		"MinWanderDistance":60.0,
 		"MaxWanderDistance":200.0,

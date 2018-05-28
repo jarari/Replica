@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class LevelExporter : MonoBehaviour {
     private int counter = 0;
+    private int BGlayerCount = 0;
+    private Dictionary<int, GameObject> BGParents = new Dictionary<int, GameObject>();
+    private CharacterSpawner playerspawner;
     private void Awake() {
         string data = "{";
         foreach(GameObject obj in  FindObjectsOfType<GameObject>()) {
@@ -37,23 +40,26 @@ public class LevelExporter : MonoBehaviour {
                     data += HandleObject(obj, "BG_Object");
                     counter++;
                     break;
-                case "BG_Near":
+                case "BG":
                     tagged = true;
-                    data += HandleObject(obj, "BG_Near_Parent");
-                    data += "\"NearID\":\"" + counter.ToString() + "\",";
-                    counter++;
-                    break;
-                case "BG_Mid":
-                    tagged = true;
-                    data += HandleObject(obj, "BG_Mid_Parent");
-                    data += "\"MidID\":\"" + counter.ToString() + "\",";
-                    counter++;
-                    break;
-                case "BG_Far":
-                    tagged = true;
-                    data += HandleObject(obj, "BG_Far_Parent");
-                    data += "\"FarID\":\"" + counter.ToString() + "\",";
-                    counter++;
+                    if(obj.transform.childCount > 0) {
+                        int index = 0;
+                        SpriteRenderer sr = null;
+                        while (sr == null) {
+                            index++;
+                            sr = obj.transform.GetChild(index).GetComponent<SpriteRenderer>();
+                            if(index == obj.transform.childCount && sr == null) {
+                                Debug.Log("No objects with SpriteRenderer was found for this background layer!");
+                                break;
+                            }
+                        }
+                        int layernum = sr.sortingOrder;
+                        BGParents.Add(layernum, obj);
+                        data += HandleObject(obj, "BG_Parent");
+                        data += "\"Layer" + layernum.ToString() + "ID\":\"" + counter.ToString() + "\",";
+                        counter++;
+                        BGlayerCount++;
+                    }
                     break;
                 case "BG_Farthest":
                     tagged = true;
@@ -68,22 +74,13 @@ public class LevelExporter : MonoBehaviour {
             }
             if (tagged) continue;
             if(obj.transform.parent != null) {
-                switch (obj.transform.parent.tag) {
-                    case "BG_Near":
-                        data += HandleObject(obj, "BG_Near");
-                        counter++;
-                        break;
-                    case "BG_Mid":
-                        data += HandleObject(obj, "BG_Mid");
-                        counter++;
-                        break;
-                    case "BG_Far":
-                        data += HandleObject(obj, "BG_Far");
-                        counter++;
-                        break;
+                if (obj.transform.parent.tag == "BG") {
+                    data += HandleObject(obj, "BG_Layer");
+                    counter++;
                 }
             }
         }
+        data += "\"NumOfLayers\":\"" + BGlayerCount.ToString() + "\",";
         data = data.Substring(0, data.Length - 1) + "}";
         var path = EditorUtility.SaveFilePanel(
                 "Save map",
@@ -92,6 +89,30 @@ public class LevelExporter : MonoBehaviour {
                 "json");
         if (path.Length != 0)
             System.IO.File.WriteAllText(path, data);
+
+        List<GameObject> BGp = new List<GameObject>();
+        int i = 0;
+        while(BGParents.Count > 0) {
+            List<int> tempkeys = new List<int>(BGParents.Keys);
+            foreach (int key in tempkeys) {
+                if(key == i) {
+                    BGp.Add(BGParents[key]);
+                    BGParents.Remove(i);
+                    i++;
+                }
+            }
+        }
+        if(playerspawner != null) {
+            LevelManager.instance.Initialize();
+            playerspawner.characterType = CharacterTypes.Boss;
+            playerspawner.characterClass = "character_dummy";
+            playerspawner.weaponClass = "weapon_ai_dummy";
+            playerspawner.Initialize();
+            CamController.instance.AttachCam(playerspawner.GetLastSpawn().transform);
+            playerspawner.GetLastSpawn().SetFlag(CharacterFlags.Invincible);
+            playerspawner.GetLastSpawn().SetFlag(CharacterFlags.KnockBackImmunity);
+            ScenarySimulation.instance.Initialize(LevelManager.instance.GetMapMin(), LevelManager.instance.GetMapMax(), BGp);
+        }
     }
 
     private string HandleObject(GameObject obj, string tag) {
@@ -137,6 +158,8 @@ public class LevelExporter : MonoBehaviour {
             + "\",\"CharacterType\":" + Convert.ToInt32(cs.characterType).ToString()
             + ",\"SpawnerType\":" + Convert.ToInt32(cs.spawnerType).ToString()
             + ",";
+            if (cs.characterType == CharacterTypes.Player)
+                playerspawner = cs;
         }
         if(obj.GetComponent<BoxCollider2D>() != null) {
             jsondata += "\"BoxOffset\":{\"X\":" + obj.GetComponent<BoxCollider2D>().offset.x.ToString()

@@ -468,7 +468,7 @@ public abstract class Character : ObjectBase {
 
     public void DoDamage(Character attacker, float damage, float stagger) {
         if (damage == 0 || HasFlag(CharacterFlags.Invincible)) return;
-        if (IsAI())
+        if (IsAI() && !IsBoss())
             ((AIBaseController)basecontroller).OnTakeDamage(attacker);
         if (!IsBoss() && stagger > 0) {
             AddUncontrollableTime(stagger);

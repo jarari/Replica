@@ -92,6 +92,7 @@
     <Compile Include="Assets\Scripts\EntityController\EffectManager.cs" />
     <Compile Include="Assets\Scripts\EntityController\Player\GeneralControl.cs" />
     <Compile Include="Assets\Scripts\EntityController\SoundManager.cs" />
+    <Compile Include="Assets\Scripts\GameData\AI\AITestPreviewSceneary.cs" />
     <Compile Include="Assets\Scripts\GameData\Bullet.cs" />
     <Compile Include="Assets\Scripts\GameData\Character.cs" />
     <Compile Include="Assets\Scripts\GameData\CharacterSpawner.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Assets\Scripts\UIController\PlayerPauseUI.cs" />
     <Compile Include="Assets\UnityPackages\JsonNetSample\JsonNetSample.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
 </Project>

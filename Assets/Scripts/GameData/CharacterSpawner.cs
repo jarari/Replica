@@ -46,27 +46,27 @@ public class CharacterSpawner : MonoBehaviour {
         Character spawned = CharacterManager.instance.CreateCharacter(characterClass, transform.position, team, sortorder);
         switch (characterType) {
             case CharacterTypes.Player:
-                CharacterManager.instance.InsertControl(spawned);
-                CamController.instance.AttachCam(spawned.transform);
                 spawned.GiveWeapon("weapon_fist");
                 spawned.GiveWeapon("weapon_gunkata");
                 spawned.GiveWeapon("weapon_sword");
                 //Save.DataLoad();
                 //PlayerHUD.Initialize();
                 //PlayerHUD.UpdateHealth(spawned.GetCurrentStat(CharacterStats.Health) / spawned.GetMaxStat(CharacterStats.Health));
+                CharacterManager.instance.InsertControl(spawned);
+                CamController.instance.AttachCam(spawned.transform);
                 break;
             case CharacterTypes.AI:
-                if(aiScript.Length != 0) {
+                spawned.GiveWeapon(weaponClass);
+                if (aiScript.Length != 0) {
                     CharacterManager.instance.InsertAI(spawned, aiScript, false);
                     spawned.GetComponent<AIBaseController>().ForceTarget(target);
                 }
-                spawned.GiveWeapon(weaponClass);
                 break;
             case CharacterTypes.Boss:
+                spawned.GiveWeapon(weaponClass);
                 if (aiScript.Length != 0) {
                     CharacterManager.instance.InsertAI(spawned, aiScript, true);
                 }
-                spawned.GiveWeapon(weaponClass);
                 break;
         }
         managed.Add(spawned);
@@ -83,6 +83,10 @@ public class CharacterSpawner : MonoBehaviour {
 
     public void SetAutoEngage(bool b) {
         autoEngage = b;
+    }
+
+    public Character GetLastSpawn() {
+        return lastspawn;
     }
 
     private void Update() {

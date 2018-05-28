@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour {
     public static LevelManager instance;
-    private List<GameObject> createdObjs = new List<GameObject>();
+    private Dictionary<int, GameObject> createdObjs = new Dictionary<int, GameObject>();
+    private List<GameObject> BGParents = new List<GameObject>();
     private Dictionary<string, object> mapdata = null;
     private Vector2 mapMin;
     private Vector2 mapMax;
@@ -67,8 +68,8 @@ public class LevelManager : MonoBehaviour {
             for (int i = 0; i < totalNumOfRooms; i++) {
                 string pattern = mapList[i];
                 if (createdObjs.Count > 0) {
-                    float maxX = createdObjs.OrderBy(obj => obj.transform.position.x).Reverse().ToArray()[0].transform.position.x;
-                    float minY = createdObjs.Where(obj => obj.transform.position.x == maxX).OrderBy(obj => obj.transform.position.y).ToArray()[0].transform.position.y;
+                    float maxX = createdObjs.OrderBy(obj => obj.Value.transform.position.x).Reverse().ToArray()[0].Value.transform.position.x;
+                    float minY = createdObjs.Where(obj => obj.Value.transform.position.x == maxX).OrderBy(obj => obj.Value.transform.position.y).ToArray()[0].Value.transform.position.y;
                     CreateMap(pattern, new Vector3(maxX + 32, minY, 0));
                     yield return new WaitForEndOfFrame();
                 }
@@ -88,25 +89,20 @@ public class LevelManager : MonoBehaviour {
     public void CreateMap(string mapname, Vector3 basePos) {
         mapdata = GameDataManager.instance.ParseMapData(mapname);
         if (mapdata != null) {
-            GameObject near = null, mid = null, far = null;
-            if (GameDataManager.instance.GetData(mapdata, "NearID") != null) {
-                near = CreateEmptyObject((string)GameDataManager.instance.GetData(mapdata, "NearID"), basePos);
-                near.tag = "BG_Near";
+            int numOfLayers = Convert.ToInt32(GameDataManager.instance.GetData(mapdata, "NumOfLayers"));
+            List<string> BGParentKeys = new List<string>();
+            BGParents.Clear();
+            for(int i = 0; i < numOfLayers; i++) {
+                string key = (string)GameDataManager.instance.GetData(mapdata, "Layer" + i.ToString() + "ID");
+                BGParents.Add(CreateEmptyObject(key, basePos));
+                BGParentKeys.Add(key);
+                BGParents[i].tag = "BG";
             }
 
-            if (GameDataManager.instance.GetData(mapdata, "MidID") != null) {
-                mid = CreateEmptyObject((string)GameDataManager.instance.GetData(mapdata, "MidID"), basePos);
-                mid.tag = "BG_Mid";
-            }
-
-            if (GameDataManager.instance.GetData(mapdata, "FarID") != null) {
-                far = CreateEmptyObject((string)GameDataManager.instance.GetData(mapdata, "FarID"), basePos);
-                far.tag = "BG_Far";
-            }
-
+            Dictionary<int, int> inheritances = new Dictionary<int, int>();
             foreach (KeyValuePair<string, object> entity in mapdata) {
                 GameObject obj = null;
-                if (entity.Key == "NearID" || entity.Key == "MidID" || entity.Key == "FarID") continue;
+                if (!entity.Value.GetType().Equals(typeof(Dictionary<string, object>))) continue;
                 switch((string)GameDataManager.instance.GetData(mapdata, entity.Key, "Tag")) {
                     case "Ground":
                         obj = CreatePrefab("Ground", entity.Key, basePos);
@@ -132,8 +128,12 @@ public class LevelManager : MonoBehaviour {
                             obj.AddComponent<Animator>();
                             ApplyAnimator(obj, entity.Key);
                         }
+                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "Parent") != null) {
+                            inheritances.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, entity.Key, "ID")),
+                                Convert.ToInt32(GameDataManager.instance.GetData(mapdata, entity.Key, "Parent")));
+                        }
                         break;
-                    case "BG_Near":
+                    case "BG_Layer":
                         obj = CreateEmptyObject(entity.Key, basePos);
                         if(GameDataManager.instance.GetData(mapdata, entity.Key, "SpritePath") != null) {
                             obj.AddComponent<SpriteRenderer>();
@@ -143,31 +143,10 @@ public class LevelManager : MonoBehaviour {
                             obj.AddComponent<Animator>();
                             ApplyAnimator(obj, entity.Key);
                         }
-                        obj.transform.parent = near.transform;
-                        break;
-                    case "BG_Mid":
-                        obj = CreateEmptyObject(entity.Key, basePos);
-                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "SpritePath") != null) {
-                            obj.AddComponent<SpriteRenderer>();
-                            ApplySpriteRenderer(obj, entity.Key);
+                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "Parent") != null) {
+                            inheritances.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, entity.Key, "ID")),
+                                Convert.ToInt32(GameDataManager.instance.GetData(mapdata, entity.Key, "Parent")));
                         }
-                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "Controller") != null) {
-                            obj.AddComponent<Animator>();
-                            ApplyAnimator(obj, entity.Key);
-                        }
-                        obj.transform.parent = mid.transform;
-                        break;
-                    case "BG_Far":
-                        obj = CreateEmptyObject(entity.Key, basePos);
-                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "SpritePath") != null) {
-                            obj.AddComponent<SpriteRenderer>();
-                            ApplySpriteRenderer(obj, entity.Key);
-                        }
-                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "Controller") != null) {
-                            obj.AddComponent<Animator>();
-                            ApplyAnimator(obj, entity.Key);
-                        }
-                        obj.transform.parent = far.transform;
                         break;
                     case "BG_Farthest":
                         obj = CreateEmptyObject(entity.Key, basePos);
@@ -177,6 +156,14 @@ public class LevelManager : MonoBehaviour {
                         obj = CreatePrefab("Trigger", entity.Key, basePos);
                         ApplyTrigger(obj, entity.Key);
                         break;
+                }
+            }
+
+            foreach(KeyValuePair<int, GameObject> kvp in createdObjs) {
+                if (inheritances.ContainsKey(kvp.Key)) {
+                    if (createdObjs.ContainsKey(inheritances[kvp.Key])) {
+                        kvp.Value.transform.parent = createdObjs[inheritances[kvp.Key]].transform;
+                    }
                 }
             }
         }
@@ -198,7 +185,7 @@ public class LevelManager : MonoBehaviour {
         GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/" + name), pos, new Quaternion());
         obj.transform.eulerAngles = ang;
         obj.transform.localScale = scale;
-        createdObjs.Add(obj);
+        createdObjs.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "ID")), obj);
         return obj;
     }
 
@@ -216,7 +203,7 @@ public class LevelManager : MonoBehaviour {
         obj.transform.position = pos;
         obj.transform.eulerAngles = ang;
         obj.transform.localScale = scale;
-        createdObjs.Add(obj);
+        createdObjs.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "ID")), obj);
         return obj;
     }
 
@@ -301,7 +288,7 @@ public class LevelManager : MonoBehaviour {
         }
         mapMin = new Vector2(minX, minY);
         mapMax = new Vector2(maxX, maxY);
-        GetComponent<ScenarySimulation>().Initialize(mapMin, mapMax);
+        GetComponent<ScenarySimulation>().Initialize(mapMin, mapMax, BGParents);
         if(LoadingScreen.instance != null)
             LoadingScreen.instance.Open();
     }
