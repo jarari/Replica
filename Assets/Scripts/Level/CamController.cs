@@ -13,7 +13,13 @@ public class CamController : MonoBehaviour {
     private float tilesize = 32f;
     private int deadzoneWidth = 200;
     private int deadzoneHeight = 300;
+    private int standardWidth = 1920;
     private int standardHeight = 1080;
+    private float standardAspect;
+    private int lastScreenWidth;
+    private int lastScreenHeight;
+    private float marginWidth = 0;
+    private float marginHeight = 0;
     private int camUp = 155;
     private float smoothVal = 15f;
     private float zoomed = 1f;
@@ -21,9 +27,15 @@ public class CamController : MonoBehaviour {
     private bool shaking = false;
     private bool zooming = false;
 
+    private float ClampCamX(float x) {
+        return Mathf.Clamp(x, LevelManager.instance.GetMapMin().x + GetCamSize().x + tilesize / 2f, LevelManager.instance.GetMapMax().x - GetCamSize().x - tilesize / 2f);
+    }
+
     private void Update() {
         if (target == null || LevelManager.instance == null || zoomed != 1f)
             return;
+        if (lastScreenWidth != Screen.width || lastScreenHeight != Screen.height)
+            SetupCam();
         Vector3 deltapos = target.position - lastTargetPos;
         lastTargetPos = target.position;
         if (Mathf.Abs(target.position.x - camTargetPos.x) > deadzoneWidth / 2f)
@@ -34,7 +46,7 @@ public class CamController : MonoBehaviour {
             camTargetPos.y = target.position.y - deadzoneHeight / 2f * Mathf.Sign(target.position.y - camTargetPos.y);
         if (Mathf.Abs(deltapos.y) / Time.deltaTime < 1)
             camTargetPos.y = target.position.y + camUp;
-        camTargetPos.x = Mathf.Clamp(camTargetPos.x, LevelManager.instance.GetMapMin().x + GetCamSize().x + tilesize / 2f, LevelManager.instance.GetMapMax().x - GetCamSize().x - tilesize / 2f);
+        camTargetPos.x = ClampCamX(camTargetPos.x);
         Vector3 deltacam = (camTargetPos - camPos) / smoothVal;
         if(deltacam.magnitude <= 0.05) {
             deltacam *= smoothVal;
@@ -44,7 +56,7 @@ public class CamController : MonoBehaviour {
 
     private void LateUpdate() {
         Vector3 temptarget = camPos;
-        temptarget.x = Mathf.Clamp(temptarget.x, LevelManager.instance.GetMapMin().x + GetCamSize().x, LevelManager.instance.GetMapMax().x - GetCamSize().x);
+        temptarget.x = ClampCamX(temptarget.x);
         if (shaking && !PlayerPauseUI.IsPaused())
             temptarget += shakeCamVec;
         Vector3 roundedPos = new Vector3(0, 0, -10) {
@@ -61,16 +73,37 @@ public class CamController : MonoBehaviour {
             Destroy(gameObject);
         }
         camPos = transform.position;
+        SetupCam();
     }
+
     public void AttachCam(Transform p) {
-        Camera.main.orthographicSize = (standardHeight / (1f * pixelsPerUnit)) * 0.25f;
+        SetupCam();
         zoomed = 1f;
         target = p;
         lastTargetPos = target.position;
         camTargetPos = p.position + new Vector3(0, camUp, -10);
-        camTargetPos.x = Mathf.Clamp(camTargetPos.x, LevelManager.instance.GetMapMin().x + GetCamSize().x, LevelManager.instance.GetMapMax().x - GetCamSize().x);
+        camTargetPos.x = ClampCamX(camTargetPos.x);
         camPos = camTargetPos;
         //ShakeCam(10f, 5);
+    }
+    
+    public void SetupCam() {
+        lastScreenWidth = Screen.width;
+        lastScreenHeight = Screen.height;
+        Camera.main.orthographicSize = (standardHeight / (1f * pixelsPerUnit)) * 0.25f;
+        standardAspect = standardWidth / (float)standardHeight;
+        if (Screen.width / (float)Screen.height > standardAspect) {
+            float forcedWidth = Screen.height * standardAspect;
+            marginWidth = (Screen.width - forcedWidth) / Screen.width;
+            marginHeight = 0;
+            Camera.main.rect = new Rect(marginWidth / 2f, 0, 1.0f - marginWidth, 1);
+        }
+        else if(Screen.width / (float)Screen.height < standardAspect) {
+            float forcedHeight = Screen.width / standardAspect;
+            marginWidth = 0;
+            marginHeight = (Screen.height - forcedHeight) / Screen.height;
+            Camera.main.rect = new Rect(0, marginHeight / 2f, 1, 1.0f - marginHeight);
+        }
     }
 
     public Vector3 GetCamPos() {
@@ -86,7 +119,7 @@ public class CamController : MonoBehaviour {
     }
 
     public Vector2 GetCamSize() {
-        return new Vector2(Screen.width / (float)Screen.height * Camera.main.orthographicSize, Camera.main.orthographicSize);
+        return new Vector2(standardAspect * Camera.main.orthographicSize, Camera.main.orthographicSize);
     }
 
     public void ShakeCam(float magnitude, float duration) {
