@@ -11,6 +11,11 @@ public class LevelManager : MonoBehaviour {
     private Dictionary<string, object> mapdata = null;
     private Vector2 mapMin;
     private Vector2 mapMax;
+    private bool loadOnce = false;
+    private static string[] essentialSprites = {
+        "items",
+        "effects"
+    };
     public bool debug = false;
     private void Awake() {
         if (instance == null) {
@@ -26,6 +31,20 @@ public class LevelManager : MonoBehaviour {
     IEnumerator Debugger() {
         yield return new WaitForEndOfFrame();
         LoadMap("map_stage01");
+    }
+
+    private void PreloadEssentialSprites() {
+        GameObject obj = new GameObject();
+        obj.transform.localScale = new Vector3();
+        SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
+        foreach(string essential in essentialSprites) {
+            UnityEngine.Object[] sprites = Resources.LoadAll("Sprites/" + essential, typeof(Sprite));
+            foreach (Sprite t in sprites) {
+                sr.sprite = t;
+            }
+        }
+        DestroyObject(obj);
+        loadOnce = true;
     }
 
     private void PreloadSprites(string prefix, string classname) {
@@ -105,11 +124,11 @@ public class LevelManager : MonoBehaviour {
                 if (!entity.Value.GetType().Equals(typeof(Dictionary<string, object>))) continue;
                 switch((string)GameDataManager.instance.GetData(mapdata, entity.Key, "Tag")) {
                     case "Ground":
-                        obj = CreatePrefab("Ground", entity.Key, basePos);
+                        obj = CreatePrefab("Ground", entity.Key, basePos, true);
                         ApplySpriteRenderer(obj, entity.Key);
                         break;
                     case "Ceiling":
-                        obj = CreatePrefab("Ceiling", entity.Key, basePos);
+                        obj = CreatePrefab("Ceiling", entity.Key, basePos, true);
                         ApplySpriteRenderer(obj, entity.Key);
                         break;
                     case "Spawner":
@@ -166,16 +185,24 @@ public class LevelManager : MonoBehaviour {
                     }
                 }
             }
+
+            if (!loadOnce)
+                PreloadEssentialSprites();
         }
         else {
             Debug.LogError("No such data!");
         }
     }
 
-    private GameObject CreatePrefab(string name, string key, Vector3 basePos) {
+    private GameObject CreatePrefab(string name, string key, Vector3 basePos, bool snap = false) {
         Vector3 pos = new Vector3(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "X")) + basePos.x
                                     , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "Y")) + basePos.y
                                     , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "Z")));
+        if (snap) {
+            pos.x = Mathf.Round(pos.x);
+            pos.y = Mathf.Round(pos.y);
+            pos.z = Mathf.Round(pos.z);
+        }
         Vector3 ang = new Vector3(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "X"))
                                     , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "Y"))
                                     , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "Z")));
