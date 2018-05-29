@@ -124,7 +124,12 @@ public class Weapon : ObjectBase {
             (c => Helper.IsInBox((Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset - c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset + c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)owner.transform.position + localPos - area / 2f, (Vector2)owner.transform.position + localPos + area / 2f));
         StartCoroutine(Helper.DrawBox((Vector2)owner.transform.position + localPos, area, Color.red));
         Vector2 hitPos = new Vector2();
+        List<Character> actualEnemiesHit = new List<Character>();
         foreach (Character c in closeEnemies) {
+            if (c.HasFlag(CharacterFlags.Invincible)) {
+                continue;
+            }
+            actualEnemiesHit.Add(c);
             float hitposX = Mathf.Clamp(((Vector2)owner.transform.position + localPos).x,
                 c.transform.position.x + c.GetCollider().offset.x - c.GetCollider().size.x / 2f,
                 c.transform.position.x + c.GetCollider().offset.x + c.GetCollider().size.x / 2f);
@@ -135,7 +140,7 @@ public class Weapon : ObjectBase {
             hitPos.y += hitposY / closeEnemies.Count;
             OnWeaponHit(c, new Vector2(hitposX, hitposY), eventname);
         }
-        if(closeEnemies.Count > 0) {
+        if(actualEnemiesHit.Count > 0) {
             if (GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null)
                 EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), hitPos, owner.GetFacingDirection());
         }
