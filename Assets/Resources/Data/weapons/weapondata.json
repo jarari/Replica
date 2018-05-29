@@ -123,13 +123,13 @@
 		"Stats":
 		{
 			"WeaponType":3,
-			"Damage":10,
+			"Damage":150,
 			"SADestruction":0,
 			"AttackSpeed":1.0,
 			"Stagger":1,
 			"MagSize":0,
 			"ReloadTime":0,
-			"Range":300
+			"Range":250
 		},
 		"Sprites":
 		{
