@@ -11,9 +11,6 @@ public class BasicCharacterMovement : MoveObject {
     protected BoxCollider2D box;
     protected BoxCollider2D nofriction;
     protected float maxJump = 0;
-    protected LayerMask groundLayer;
-    protected LayerMask mapLayer;
-    protected LayerMask ceilingLayer;
     protected float dashCooldown = 0.6f;
     protected float lastDash = 0;
     protected float dashDir = 1;
@@ -31,16 +28,13 @@ public class BasicCharacterMovement : MoveObject {
             nofriction = GetComponents<BoxCollider2D>()[1];
         }
         lastDash = Time.time - dashCooldown;
-        groundLayer = 1 << LayerMask.NameToLayer("Ground");
-        mapLayer = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Ceiling"));
-        ceilingLayer = 1 << LayerMask.NameToLayer("Ceiling");
     }
 
     // Update is called once per frame
     protected virtual void Update() {
         /* 위, 아래로 자유롭게 이동할 수 있도록 윗쪽 블럭과의 충돌을 미리 꺼놓음 */
         if (Mathf.Abs(GetComponent<Rigidbody2D>().velocity.y) > 0f) {
-            foreach (Collider2D rayvel in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, (box.size.y / 2f + 16f) * Mathf.Sign(GetComponent<Rigidbody2D>().velocity.y)), new Vector2(2000, 8f), 0, groundLayer)) {
+            foreach (Collider2D rayvel in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, (box.size.y / 2f + 16f) * Mathf.Sign(GetComponent<Rigidbody2D>().velocity.y)), new Vector2(2000, 8f), 0, Helper.groundLayer)) {
                 if (rayvel != null) {
                     if (GetComponent<Rigidbody2D>().velocity.y > 0) {
                         Physics2D.IgnoreCollision(rayvel, box);
@@ -54,7 +48,7 @@ public class BasicCharacterMovement : MoveObject {
             }
         }
         else {
-            foreach (Collider2D rayup in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, (box.size.y / 2f + 16f)), new Vector2(2000, 8f), 0, groundLayer)) {
+            foreach (Collider2D rayup in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, (box.size.y / 2f + 16f)), new Vector2(2000, 8f), 0, Helper.groundLayer)) {
                 if (rayup != null) {
                     Physics2D.IgnoreCollision(rayup, box);
                     Physics2D.IgnoreCollision(rayup, nofriction);
@@ -267,13 +261,13 @@ public class BasicCharacterMovement : MoveObject {
      * Ceiling은 어떤 상황에서도 뚫리지 않는 지형
      * Ground는 자유자재로 위아래로 돌아다닐 수 있는 지형 */
     protected bool CanGoDown() {
-        return Physics2D.OverlapBox((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 16f), new Vector2(box.size.x, 16f), 0, ceilingLayer) == null;
+        return Physics2D.OverlapBox((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 16f), new Vector2(box.size.x, 16f), 0, Helper.ceilingLayer) == null;
     }
 
     protected void GoDown() {
         goingdown = true;
         StartCoroutine(GoDownEnd());
-        foreach (Collider2D raydown in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, -box.size.y / 2f), new Vector2(2000, 64f), 0, groundLayer)) {
+        foreach (Collider2D raydown in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, -box.size.y / 2f), new Vector2(2000, 64f), 0, Helper.groundLayer)) {
             if (raydown != null) {
                 Physics2D.IgnoreCollision(raydown, box);
                 Physics2D.IgnoreCollision(raydown, nofriction);
@@ -327,12 +321,12 @@ public class BasicCharacterMovement : MoveObject {
 
     /* 캐릭터에 부착된 이펙트 생성 (애니메이션 이벤트용) */
     protected void OnParentedEffectEvent(string effect) {
-        EffectManager.instance.CreateEffect(effect, transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+        EffectManager.instance.CreateEffect(effect, transform.position, character.GetFacingDirection(), transform);
     }
 
     /* 캐릭터와 독립된 이펙트 생성 (애니메이션 이벤트용) */
     protected void OnEffectEvent(string effect) {
-        EffectManager.instance.CreateEffect(effect, transform.position, (int)Mathf.Sign(transform.localScale.x));
+        EffectManager.instance.CreateEffect(effect, transform.position, character.GetFacingDirection());
     }
 
     protected void OnChargeGrenade() {
@@ -390,8 +384,8 @@ public class BasicCharacterMovement : MoveObject {
         int dir = (int)Mathf.Sign(dx);
         maxJump = Mathf.Pow(character.GetCurrentStat(CharacterStats.JumpPower), 2) / 3924f;
         if (character.GetUncontrollableTimeLeft() == 0) {
-            RaycastHit2D rayup = Physics2D.Raycast(transform.position, new Vector2(0, 1), maxJump, groundLayer);
-            RaycastHit2D rayunder = Physics2D.Raycast((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 33), new Vector2(0, -1), 128f, groundLayer);
+            RaycastHit2D rayup = Physics2D.Raycast(transform.position, new Vector2(0, 1), maxJump, Helper.groundLayer);
+            RaycastHit2D rayunder = Physics2D.Raycast((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 33), new Vector2(0, -1), 128f, Helper.groundLayer);
             if (dist > xradius) {
                 subX = -1;
                 if (minDistToDash != -1 && dist > minDistToDash && CanDash()) {
@@ -461,8 +455,8 @@ public class BasicCharacterMovement : MoveObject {
                     }
                 }
             }
-            if (Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, 0), new Vector2(16, 10), 0, mapLayer) != null
-                            && Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, maxJump), new Vector2(16, 5), 0, mapLayer) == null) {
+            if (Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, 0), new Vector2(16, 10), 0, Helper.mapLayer) != null
+                            && Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, maxJump), new Vector2(16, 5), 0, Helper.mapLayer) == null) {
                 Jump();
             }
             if (Mathf.Abs(dy) > 32f && character.IsOnGround() && character.GetState() != CharacterStates.Jump) {

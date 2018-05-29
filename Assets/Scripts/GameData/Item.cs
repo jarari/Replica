@@ -22,6 +22,11 @@ public class Item {
         image = Helper.GetSprite((string)GameDataManager.instance.GetData("Data", classname, "SpritePath"), (string)GameDataManager.instance.GetData("Data", classname, "SpriteName"));
     }
 
+    public static Item Initialize(string classname) {
+        var item = new Item(classname);
+        return item;
+    }
+
     public virtual void Use() {
 
     }
@@ -44,17 +49,20 @@ public class Item {
 }
 
 public static class CachedItem {
-    private static Dictionary<string, Func<Item>> InstanceCreateCache = new Dictionary<string, Func<Item>>();
+    private static Dictionary<string, Func<string, Item>> InstanceCreateCache = new Dictionary<string, Func<string, Item>>();
 
     public static Item GetItemClass(string className) {
-        if (!InstanceCreateCache.ContainsKey(className)) {
-            Type type = Type.GetType(className, false, true);
+        string classname = "Item";
+        if(GameDataManager.instance.GetData("Data", className, "ScriptClass") != null)
+            classname = (string)GameDataManager.instance.GetData("Data", className, "ScriptClass");
+        if (!InstanceCreateCache.ContainsKey(classname)) {
+            Type type = Type.GetType(classname, false, true);
             MethodInfo mi = type.GetMethod("Initialize");
-            var createInstanceDelegate = (Func<Item>)Delegate.CreateDelegate(typeof(Func<Item>), mi);
-            InstanceCreateCache.Add(className, createInstanceDelegate);
+            var createInstanceDelegate = (Func<string, Item>)Delegate.CreateDelegate(typeof(Func<string, Item>), mi);
+            InstanceCreateCache.Add(classname, createInstanceDelegate);
         }
 
-        return InstanceCreateCache[className].Invoke();
+        return InstanceCreateCache[classname].Invoke(className);
 
     }
 }

@@ -19,16 +19,12 @@ public class Projectile : MonoBehaviour {
     protected string className;
     protected bool collided = false;
     protected bool init = false;
-    protected LayerMask layer;
-    protected LayerMask mapLayer;
     protected Dictionary<WeaponStats, float> data;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         collided = false;
-        layer = (1 << LayerMask.NameToLayer("Characters"));// | (1 << LayerMask.NameToLayer("Characters"));
-        mapLayer = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Ceiling"));
     }
     public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         className = classname;
@@ -100,7 +96,7 @@ public class Projectile : MonoBehaviour {
         Vector3 proang = transform.eulerAngles;
         proang.z = ang;
         transform.eulerAngles = proang;
-        Collider2D[] colliding = Physics2D.OverlapBoxAll(transform.position, new Vector2(128, 128), 0, layer);
+        Collider2D[] colliding = Physics2D.OverlapBoxAll(transform.position, new Vector2(128, 128), 0, Helper.characterLayer);
         foreach (Collider2D collider in colliding) {
             if (collider.GetComponent<Character>() != null && collider.GetComponent<Character>().GetTeam() == attacker.GetTeam()) {
                 Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider.GetComponents<Collider2D>()[0]);
@@ -155,7 +151,7 @@ public class Projectile : MonoBehaviour {
             if (c.HasFlag(CharacterFlags.Invincible))
                 continue;
             Vector2 cBoxBorder = Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position);
-            if (Physics2D.Raycast(transform.position, c.transform.position - transform.position, Mathf.Infinity, mapLayer).collider != null)
+            if (Helper.IsBlockedByMap(transform.position, c.transform.position))
                 continue;
             DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true, true);
             float dist = Vector3.Distance(cBoxBorder, transform.position);

@@ -64,6 +64,8 @@ public class CharacterSpawner : MonoBehaviour {
                 break;
             case CharacterTypes.Boss:
                 spawned.GiveWeapon(weaponClass);
+                spawned.SetFlag(CharacterFlags.KnockBackImmunity);
+                spawned.SetFlag(CharacterFlags.StaggerImmunity);
                 if (aiScript.Length != 0) {
                     CharacterManager.instance.InsertAI(spawned, aiScript, true);
                 }

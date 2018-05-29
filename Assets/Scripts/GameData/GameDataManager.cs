@@ -29,6 +29,7 @@ public class GameDataManager : MonoBehaviour {
         ParseJSONData("effects/effectdata");
         ParseJSONData("ai/aidata");
         ParseJSONData("items/itemdata");
+        ParseJSONData("items/lootdata");
         ParseJSONData("maps/mapdata");
         ParseJSONData("weapons/attackdata");
         ParseJSONData("weapons/bulletdata");

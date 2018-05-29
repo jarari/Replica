@@ -11,11 +11,9 @@ public class Flame : MonoBehaviour {
     public float tickdelay = 0;
     public Teams team = Teams.None;
     private BoxCollider2D box;
-    private LayerMask characterLayer;
 
     private void Awake() {
         box = GetComponent<BoxCollider2D>();
-        characterLayer = 1 << LayerMask.NameToLayer("Characters");
         id = GetInstanceID();
     }
 
@@ -43,7 +41,7 @@ public class Flame : MonoBehaviour {
         duration -= Time.deltaTime;
         if (duration <= 0)
             Die();
-        Collider2D[] colliding = Physics2D.OverlapBoxAll(transform.TransformPoint(box.offset), box.size, 0, characterLayer);
+        Collider2D[] colliding = Physics2D.OverlapBoxAll(transform.TransformPoint(box.offset), box.size, 0, Helper.characterLayer);
         foreach(Collider2D collider in colliding) {
             if (collider.GetComponentInChildren<Character>() != null && collider.GetComponentInChildren<Character>().GetTeam() != team)
                 collider.GetComponentInChildren<Character>().AddDOT(id, burnduration, damage, tickdelay, null);

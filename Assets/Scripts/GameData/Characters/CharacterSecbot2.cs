@@ -7,7 +7,7 @@ using UnityEngine;
 
 /* 시큐리티 봇 2 클래스 */
 public class CharacterSecbot2 : Character {
-    public override void OnHealthChanged(float delta) {
+    public override void OnStagger(float stagger) {
         if (GetState() != CharacterStates.Uncontrollable) {
             anim.Play("hit");
         }
@@ -15,6 +15,7 @@ public class CharacterSecbot2 : Character {
 
     public override void OnDeath() {
         anim.SetTrigger("Death");
+        SetUncontrollable(true);
         SetFlag(CharacterFlags.Invincible);
     }
 

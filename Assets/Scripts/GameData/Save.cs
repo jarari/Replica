@@ -40,7 +40,7 @@ public static class Save
         //data.WeaponClass = player.GetWeapon().GetClass();
 
         List<SlotData> tempSlots = new List<SlotData>();
-        foreach(InventorySlot inven in Inventory.GetInventory()) {
+        foreach(InventorySlot inven in player.GetInventory().GetList()) {
             tempSlots.Add(new SlotData(inven.item.GetName(), inven.count));
         }
         data.slots = tempSlots.ToArray();
@@ -65,7 +65,7 @@ public static class Save
 
             foreach(SlotData sd in data.slots) {
                 for(int i = 0; i < sd.itemCount; i++)
-                    Inventory.AddItem(sd.itemName);
+                    player.GetInventory().AddItem(sd.itemName);
             }
         }
     }

@@ -28,7 +28,6 @@ public class Weapon : ObjectBase {
 
     protected WeaponTypes type;
     protected Character owner;
-    protected LayerMask characterLayer;
     public Vector2 muzzlePos;
 
     public override void Initialize(string classname) {
@@ -40,7 +39,6 @@ public class Weapon : ObjectBase {
             }
             GetComponent<SpriteRenderer>().sortingOrder = GetOwner().GetComponent<SpriteRenderer>().sortingOrder + 1;
         }
-        characterLayer = (1 << LayerMask.NameToLayer("Characters"));
         muzzlePos = new Vector2((float)GameDataManager.instance.GetData("Data", classname, "MuzzlePos", "X")
                                         , (float)GameDataManager.instance.GetData("Data", classname, "MuzzlePos", "Y"));
     }
@@ -77,6 +75,10 @@ public class Weapon : ObjectBase {
 
     public void FireBullet(string bulletclass, float ang) {
         BulletManager.instance.CreateBullet(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
+    }
+
+    public void CreateEffect(string effectname) {
+        EffectManager.instance.CreateEffect(effectname, transform.position, owner.GetFacingDirection());
     }
 
     public virtual void OnAttack(string eventname) {
@@ -123,26 +125,23 @@ public class Weapon : ObjectBase {
         List<Character> closeEnemies = CharacterManager.instance.GetEnemies(GetOwner().GetTeam()).FindAll
             (c => Helper.IsInBox((Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset - c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset + c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)owner.transform.position + localPos - area / 2f, (Vector2)owner.transform.position + localPos + area / 2f));
         StartCoroutine(Helper.DrawBox((Vector2)owner.transform.position + localPos, area, Color.red));
-        Vector2 hitPos = new Vector2();
+        Vector2 avgHitPos = new Vector2();
         List<Character> actualEnemiesHit = new List<Character>();
         foreach (Character c in closeEnemies) {
             if (c.HasFlag(CharacterFlags.Invincible)) {
                 continue;
             }
+            if (Helper.IsBlockedByMap(transform.position, c.transform.position))
+                continue;
+            Vector2 hitpos = Helper.SnapToBox(c.transform.position, c.GetCollider(), (Vector2)owner.transform.position + localPos);
             actualEnemiesHit.Add(c);
-            float hitposX = Mathf.Clamp(((Vector2)owner.transform.position + localPos).x,
-                c.transform.position.x + c.GetCollider().offset.x - c.GetCollider().size.x / 2f,
-                c.transform.position.x + c.GetCollider().offset.x + c.GetCollider().size.x / 2f);
-            float hitposY = Mathf.Clamp(((Vector2)owner.transform.position + localPos).y,
-                c.transform.position.y + c.GetCollider().offset.y - c.GetCollider().size.y / 2f,
-                c.transform.position.y + c.GetCollider().offset.y + c.GetCollider().size.y / 2f);
-            hitPos.x += hitposX / closeEnemies.Count;
-            hitPos.y += hitposY / closeEnemies.Count;
-            OnWeaponHit(c, new Vector2(hitposX, hitposY), eventname);
+            avgHitPos.x += hitpos.x / closeEnemies.Count;
+            avgHitPos.y += hitpos.y / closeEnemies.Count;
+            OnWeaponHit(c, hitpos, eventname);
         }
         if(actualEnemiesHit.Count > 0) {
             if (GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null)
-                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), hitPos, owner.GetFacingDirection());
+                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), avgHitPos, owner.GetFacingDirection());
         }
     }
 

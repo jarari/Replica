@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 //기본 AI 움직임 클래스
@@ -10,6 +11,7 @@ public class AIBaseController : BasicCharacterMovement {
     protected float maxWanderDist = 3f;
     protected float restingTime = 3f;
     protected float alertRange = 200f;
+    protected float rangeY = 20f;
     protected int direction;
     protected float distance;
     protected float lastX;
@@ -30,6 +32,8 @@ public class AIBaseController : BasicCharacterMovement {
         minWanderDist = (float)GameDataManager.instance.GetData("Data", aidata, "MinWanderDistance");
         maxWanderDist = (float)GameDataManager.instance.GetData("Data", aidata, "MaxWanderDistance");
         restingTime = (float)GameDataManager.instance.GetData("Data", aidata, "RestingTime");
+        if (GameDataManager.instance.GetData("Data", aidata, "AttackRangeY") != null)
+            rangeY = Convert.ToSingle(GameDataManager.instance.GetData("Data", aidata, "AttackRangeY"));
         direction = 1;
         distance = 0;
         restTimer = 1f;
@@ -82,12 +86,12 @@ public class AIBaseController : BasicCharacterMovement {
     /*
      * AI는 매 초마다 ai데이터의 정보값에 따라 다른 영역을 탐색하고 감지함.
      * 플레이어 (또는 플레이어의 아군)이 감지 범위 내에 들어와있고 AI가 해당 방향을 바라보고 있다면 추격 시작.
-     * 감지 범위의 40%부터는 무조건 추격.
+     * 감지 범위의 25%부터는 무조건 추격.
      * 이외의 경우에는 계속 돌아다님. */
     protected virtual void Search() {
         if (distance <= 0) {
-            direction = (int)((Random.Range(0, 2) - 0.5f) * 2f);
-            distance = Random.Range(minWanderDist, maxWanderDist);
+            direction = (int)((UnityEngine.Random.Range(0, 2) - 0.5f) * 2f);
+            distance = UnityEngine.Random.Range(minWanderDist, maxWanderDist);
             lastX = transform.position.x;
             restTimer = restingTime;
         }
@@ -96,8 +100,9 @@ public class AIBaseController : BasicCharacterMovement {
             Character closestPlayer = CharacterManager.instance.GetClosestEnemy(transform.position, character.GetTeam());
             if (closestPlayer != null) {
                 if ((Vector3.Distance(closestPlayer.transform.position, character.transform.position) < recognitionRadius
-                        && Mathf.Sign(closestPlayer.transform.position.x - transform.position.x) == direction)
-                        || Vector3.Distance(closestPlayer.transform.position, character.transform.position) < recognitionRadius * 0.4f) {
+                        && Mathf.Sign(closestPlayer.transform.position.x - transform.position.x) == direction
+                        && !Helper.IsBlockedByMap(closestPlayer.transform.position, character.transform.position))
+                        || Vector3.Distance(closestPlayer.transform.position, character.transform.position) < recognitionRadius * 0.25f) {
                     targetFound = true;
                     target = closestPlayer;
                     SetCommand("Chase");
@@ -108,8 +113,8 @@ public class AIBaseController : BasicCharacterMovement {
         restTimer = Mathf.Clamp(restTimer - Time.deltaTime, 0, restTimer);
         if(restTimer == 0) {
             Walk();
-            if (Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, 0), new Vector2(16, 10), 0, mapLayer) != null
-                            && Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, maxJump), new Vector2(16, 5), 0, mapLayer) != null)
+            if (Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, 0), new Vector2(16, 10), 0, Helper.mapLayer) != null
+                            && Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, maxJump), new Vector2(16, 5), 0, Helper.mapLayer) != null)
                 direction *= -1;
         }
         else {
@@ -129,7 +134,7 @@ public class AIBaseController : BasicCharacterMovement {
                 distance = target.transform.position.x - transform.position.x;
                 if (Mathf.Abs(distance) <= character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f) {
                     if (Mathf.Sign(target.transform.position.x - transform.position.x) == character.GetFacingDirection()
-                        && Helper.GetClosestBoxBorder(target.transform.position, target.GetComponent<BoxCollider2D>(), transform.position).y - transform.position.y <= 100) {
+                        && Helper.GetClosestBoxBorder(target.transform.position, target.GetComponent<BoxCollider2D>(), transform.position).y - transform.position.y <= rangeY) {
                         Attack();
                         return;
                     }

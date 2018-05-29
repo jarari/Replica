@@ -136,9 +136,10 @@ public class GeneralControl : BasicCharacterMovement {
                         }
                     }
 
-                    if (Input.GetKeyDown(KeyCode.G)) {
+                    if (Input.GetKeyDown(KeyCode.G) && character.GetInventory().GetCount("item_grenade") > 0) {
                         if(character.GetState() != CharacterStates.Throw) {
                             character.GetAnimator().Play("throw_ready");
+                            character.GetInventory().ModCount("item_grenade", -1);
                         }
                     }
                     if (Input.GetKeyUp(KeyCode.G) && character.GetState() == CharacterStates.Throw) {

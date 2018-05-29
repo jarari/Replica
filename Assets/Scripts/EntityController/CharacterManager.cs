@@ -29,6 +29,7 @@ public class CharacterManager : MonoBehaviour {
         character.SetTeam(team);
         character_obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = sortorder;
         Characters.Add(character);
+        InventoryManager.CreateInventory(character_obj);
         return character;
     }
 

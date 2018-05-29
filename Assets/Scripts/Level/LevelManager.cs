@@ -316,6 +316,7 @@ public class LevelManager : MonoBehaviour {
         mapMin = new Vector2(minX, minY);
         mapMax = new Vector2(maxX, maxY);
         GetComponent<ScenarySimulation>().Initialize(mapMin, mapMax, BGParents);
+        Helper.InitializeLayerMasks();
 
         foreach (GameObject spawner in GameObject.FindGameObjectsWithTag("Spawner")) {
             spawner.GetComponent<CharacterSpawner>().Initialize();

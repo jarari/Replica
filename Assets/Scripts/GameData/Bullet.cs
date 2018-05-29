@@ -22,14 +22,12 @@ public class Bullet : MonoBehaviour {
     private bool collided = false;
     private bool init = false;
     private bool ignoreGround = false;
-    private LayerMask layer;
     private Dictionary<WeaponStats, float> data;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         collided = false;
-        layer = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Characters"));
     }
     public void Initialize(string classname, Character user, Weapon firedfrom, Dictionary<WeaponStats, float> _data, bool ignoreground) {
         className = classname;

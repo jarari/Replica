@@ -5,7 +5,7 @@ using System.Text;
 
 /* 시큐리티 봇 클래스 */
 public class CharacterSecbot : Character {
-    public override void OnHealthChanged(float delta) {
+    public override void OnStagger(float stagger) {
         if (GetState() != CharacterStates.Uncontrollable) {
             anim.Play("hit");
         }

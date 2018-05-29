@@ -19,6 +19,17 @@ public static class Helper {
     private static float indicator_rand = 30f;
     private static float indicator_yvel = 30f;
     private static float indicator_yup = 30f;
+    public static LayerMask characterLayer;
+    public static LayerMask mapLayer;
+    public static LayerMask groundLayer;
+    public static LayerMask ceilingLayer;
+
+    public static void InitializeLayerMasks() {
+        characterLayer = (1 << LayerMask.NameToLayer("Characters"));
+        groundLayer = 1 << LayerMask.NameToLayer("Ground");
+        mapLayer = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Ceiling"));
+        ceilingLayer = 1 << LayerMask.NameToLayer("Ceiling");
+    }
 
     public static Sprite GetSprite(string path, string name) {
         foreach (Sprite sprite in Resources.LoadAll(path, typeof(Sprite))) {
@@ -104,29 +115,33 @@ public static class Helper {
         return false;
     }
 
-    public static Vector2 SnapToBox(Vector2 pos, Vector2 boxOffset, Vector2 boxSize, Vector2 anotherpos) {
+    public static Vector2 SnapToBox(Vector2 pos, Vector2 boxOffset, Vector2 boxSize, Vector2 from) {
         Vector2 boxMin = pos + boxOffset - boxSize / 2f;
         Vector2 boxMax = pos + boxOffset + boxSize / 2f;
-        return new Vector2(Mathf.Clamp(anotherpos.x, boxMin.x, boxMax.x), Mathf.Clamp(anotherpos.y, boxMin.y, boxMax.y));
+        return new Vector2(Mathf.Clamp(from.x, boxMin.x, boxMax.x), Mathf.Clamp(from.y, boxMin.y, boxMax.y));
     }
 
-    public static Vector2 SnapToBox(Vector2 pos, BoxCollider2D box, Vector2 anotherpos) {
-        return SnapToBox(pos, box.offset, box.size, anotherpos);
+    public static Vector2 SnapToBox(Vector2 pos, BoxCollider2D box, Vector2 from) {
+        return SnapToBox(pos, box.offset, box.size, from);
     }
 
-    public static Vector2 GetClosestBoxBorder(Vector2 pos, Vector2 boxOffset, Vector2 boxSize, Vector2 anotherpos) {
+    public static Vector2 GetClosestBoxBorder(Vector2 pos, Vector2 boxOffset, Vector2 boxSize, Vector2 from) {
         Vector2 boxMin = pos + boxOffset - boxSize / 2f;
         Vector2 boxMax = pos + boxOffset + boxSize / 2f;
-        Vector2 result = new Vector2(Mathf.Clamp(anotherpos.x, boxMin.x, boxMax.x), Mathf.Clamp(anotherpos.y, boxMin.y, boxMax.y));
-        if (result == anotherpos) {
+        Vector2 result = new Vector2(Mathf.Clamp(from.x, boxMin.x, boxMax.x), Mathf.Clamp(from.y, boxMin.y, boxMax.y));
+        if (result == from) {
             Vector2 boxCenter = (boxMin + boxMax) / 2f;
-            result = GetClosestBoxBorder(pos, boxOffset, boxSize, (anotherpos - boxCenter).normalized * Mathf.Max(boxSize.x, boxSize.y));
+            result = GetClosestBoxBorder(pos, boxOffset, boxSize, (from - boxCenter).normalized * Mathf.Max(boxSize.x, boxSize.y));
         }
         return result;
     }
 
-    public static Vector2 GetClosestBoxBorder(Vector2 pos, BoxCollider2D box, Vector2 anotherpos) {
-        return GetClosestBoxBorder(pos, box.offset, box.size, anotherpos);
+    public static Vector2 GetClosestBoxBorder(Vector2 pos, BoxCollider2D box, Vector2 from) {
+        return GetClosestBoxBorder(pos, box.offset, box.size, from);
+    }
+
+    public static bool IsBlockedByMap(Vector2 pos, Vector2 another) {
+        return Physics2D.Raycast(pos, another - pos, Vector3.Distance(pos, another), Helper.mapLayer).collider != null;
     }
 
     public static IEnumerator DrawBox(Vector2 pos, Vector2 area, Color col, float dur = 0.5f) {

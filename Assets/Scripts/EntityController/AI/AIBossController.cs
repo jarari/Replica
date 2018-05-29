@@ -22,7 +22,6 @@ public class AIBossController : BasicCharacterMovement {
         target = CharacterManager.instance.GetPlayer();
         nextActive = Time.realtimeSinceStartup;
         AIEnabled = true;
-        groundLayer = (1 << LayerMask.NameToLayer("Ground"));
         AdditionalData();
     }
 

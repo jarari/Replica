@@ -32,7 +32,8 @@ public enum CharacterStates {
     Invincible = 1,
     AIControlled = 2,
     Boss = 4,
-    KnockBackImmunity = 8
+    KnockBackImmunity = 8,
+    StaggerImmunity = 16
 }
 
 public enum CharacterTypes {
@@ -85,6 +86,12 @@ public abstract class Character : ObjectBase {
 
     protected Dictionary<int, DOT> dotlist = new Dictionary<int, DOT>();
     protected List<DOT> dotlist_noid = new List<DOT>();
+
+    protected List<LootData> droptable = new List<LootData>();
+    protected float lootThrowXMin = 50f;
+    protected float lootThrowXMax = 150f;
+    protected float lootThrowYMin = 300f;
+    protected float lootThrowYMax = 450f;
 
     void Update() {
         uncontrollableTimer = Mathf.Clamp(uncontrollableTimer - Time.deltaTime, 0, uncontrollableTimer);
@@ -159,6 +166,17 @@ public abstract class Character : ObjectBase {
         if (GameDataManager.instance.GetData("Data", className, "KnockBackImmunity") != null)
             if (Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBackImmunity")) == 1)
                 SetFlag(CharacterFlags.KnockBackImmunity);
+
+        if (GameDataManager.instance.GetData("Data", className, "DropTable") != null) {
+            Dictionary<string, object> list = (Dictionary<string, object>)GameDataManager.instance.GetData("Data", classname, "DropTable");
+            int numOfItems = list.Count;
+            foreach(KeyValuePair<string, object> kvp in list) {
+                float chance = Convert.ToSingle(GameDataManager.instance.GetData("Data", classname, "DropTable", kvp.Key, "Chance"));
+                int nmin = Convert.ToInt32(GameDataManager.instance.GetData("Data", classname, "DropTable", kvp.Key, "NumMin"));
+                int nmax = Convert.ToInt32(GameDataManager.instance.GetData("Data", classname, "DropTable", kvp.Key, "NumMax"));
+                droptable.Add(new LootData(kvp.Key, chance, nmin, nmax));
+            }
+        }
     }
 
     public void AddBuff(string name, Dictionary<CharacterStats, float> data, bool isAdd, float time = -1) {
@@ -372,8 +390,13 @@ public abstract class Character : ObjectBase {
 
     public void AddForce(Vector2 force, bool knockdown = false) {
         GetComponentInParent<MoveObject>().AddForce(force);
-        if (knockdown)
+        if (knockdown) {
+            if (force.x > 0)
+                FlipFace(false);
+            else if (force.x < 0)
+                FlipFace(true);
             KnockDown();
+        }
     }
 
     public virtual void KnockDown() {
@@ -402,6 +425,10 @@ public abstract class Character : ObjectBase {
 
     public bool HasFlag(CharacterFlags _flag) {
         return (flag & _flag) != 0;
+    }
+
+    public bool IsPlayer() {
+        return !HasFlag(CharacterFlags.AIControlled);
     }
 
     public bool IsAI() {
@@ -470,8 +497,8 @@ public abstract class Character : ObjectBase {
         if (damage == 0 || HasFlag(CharacterFlags.Invincible)) return;
         if (IsAI() && !IsBoss())
             ((AIBaseController)basecontroller).OnTakeDamage(attacker);
-        if (!IsBoss() && stagger > 0) {
-            AddUncontrollableTime(stagger);
+        if (stagger > 0) {
+            OnStagger(stagger);
         }
         OnHealthChanged(damage);
         ModStat(CharacterStats.Health, -damage);
@@ -483,12 +510,31 @@ public abstract class Character : ObjectBase {
         DoDamage(this, GetCurrentStat(CharacterStats.Health), 0);
     }
 
+    public virtual void OnStagger(float stagger) {
+        if (HasFlag(CharacterFlags.StaggerImmunity))
+            return;
+        AddUncontrollableTime(stagger);
+    }
+
     public virtual void OnHealthChanged(float delta) {
     }
 
     public virtual void OnDeath() {
         if (transform == null)
             return;
+        if (IsAI()) {
+            if(droptable.Count > 0) {
+                foreach (LootData loot in droptable) {
+                    if (Helper.CalcChance(loot.chance)) {
+                        int count = UnityEngine.Random.Range(loot.numMin, loot.numMax + 1);
+                        int direction = (int)((UnityEngine.Random.Range(0, 2) - 0.5f) * 2f);
+                        float throwX = UnityEngine.Random.Range(lootThrowXMax, lootThrowXMax);
+                        float throwY = UnityEngine.Random.Range(lootThrowYMin, lootThrowYMax);
+                        LootManager.instance.CreateLoot(loot.item, count, transform.position, 0, new Vector2(throwX * direction, throwY));
+                    }
+                }
+            }
+        }
         Destroy(gameObject);
     }
 

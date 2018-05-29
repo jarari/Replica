@@ -63,7 +63,7 @@ public static class PlayerPauseUI {
     }
 
     private static void CreateInventory() {
-        List<InventorySlot> inv = Inventory.GetInventory();
+        List<InventorySlot> inv = CharacterManager.instance.GetPlayer().GetInventory().GetList();
         GlobalUIManager uimanager = GlobalUIManager.instance;
         additionalUI = uimanager.CreateImage("inventory_bg", Helper.GetSprite("Sprites/ui/pauseui/inventory_bg", "inventory_bg"), menuPos, 234, 208);
         Vector3 cellsPos = menuPos + new Vector3(14, 104 - inventoryCellY, 0);
@@ -94,10 +94,11 @@ public static class PlayerPauseUI {
     }
 
     public static void UpdateInventoryCell(int i) {
-        List<InventorySlot> inv = Inventory.GetInventory();
-        if (inv.ElementAtOrDefault(i) == null) return;
-        if (inv.ElementAtOrDefault(i).count == 0) {
-            Inventory.RemoveItem(i);
+        Inventory inventory = CharacterManager.instance.GetPlayer().GetInventory();
+        List<InventorySlot> slots = inventory.GetList();
+        if (slots.ElementAtOrDefault(i) == null) return;
+        if (slots.ElementAtOrDefault(i).count == 0) {
+            inventory.RemoveItem(i);
             Object.Destroy(GlobalUIManager.instance.GetUIObject("inventory_image" + i.ToString()));
         }
         //TODO : update item count

@@ -21,15 +21,25 @@ enum SpaceStatus {
     Stackable,
     Full
 }
-public static class Inventory {
-    private static List<InventorySlot> inventory = new List<InventorySlot>();
-    private static int inventoryCount = 9;
-    private static SpaceStatus CheckSpace(string itemname) {
+public class Inventory : MonoBehaviour {
+    private List<InventorySlot> inventory = new List<InventorySlot>();
+    private int inventoryCount = 9;
+
+    private int GetItemIndex(string itemname) {
+        InventorySlot[] temp = inventory.ToArray();
+        for (int i = 0; i < temp.Length; i++) {
+            InventorySlot slot = temp[i];
+            if (slot.item.GetName() == itemname) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    private SpaceStatus CheckSpace(string itemname) {
         InventorySlot[] temp = inventory.ToArray();
         for(int i = 0; i < temp.Length; i++) {
             InventorySlot slot = temp[i];
             if (slot.item.GetName() == itemname && slot.item.IsStackable()) {
-                inventory[i].SetCount(inventory[i].count + 1);
                 return SpaceStatus.Stackable;
             }
         }
@@ -39,35 +49,83 @@ public static class Inventory {
         return SpaceStatus.Empty;
     }
 
-    public static void AddItem(string itemname) {
+    public void AddItem(string itemname, int count = 1) {
         SpaceStatus status = CheckSpace(itemname);
         if (status == SpaceStatus.Empty) {
-            inventory.Add(new InventorySlot(CachedItem.GetItemClass(itemname), 1));
+            inventory.Add(new InventorySlot(CachedItem.GetItemClass(itemname), count));
+        }
+        else if(status == SpaceStatus.Stackable) {
+            int i = GetItemIndex(itemname);
+            inventory[i].SetCount(inventory[i].count + count);
         }
     }
 
-    public static void UseItem(int i) {
+    public void UseItem(int i, int count) {
         if(inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
             if(inventory[i].item.GetItemType() == ItemTypes.Consumable)
-                inventory[i].SetCount(inventory[i].count - 1);
+                inventory[i].SetCount(inventory[i].count - count);
             inventory[i].item.Use();
-            if(inventory[i].item.GetItemType() == ItemTypes.Weapon)
-                PlayerHUD.UpdateAmmo(0);
-            PlayerPauseUI.UpdateInventoryCell(i);
         }
     }
 
-    public static void RemoveItem(int i) {
+    public int GetCount(string itemname) {
+        int i = GetItemIndex(itemname);
+        if (i == -1)
+            return 0;
+        return inventory[i].count;
+    }
+
+    public void SetCount(int i, int count) {
+        if (inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
+            inventory[i].SetCount(inventory[i].count - count);
+        }
+    }
+
+    public void SetCount(string itemname, int count) {
+        int i = GetItemIndex(itemname);
+        if (i != -1)
+            SetCount(i, count);
+    }
+
+    public void ModCount(int i, int count) {
+        if (inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
+            inventory[i].SetCount(inventory[i].count + count);
+        }
+    }
+
+    public void ModCount(string itemname, int count) {
+        int i = GetItemIndex(itemname);
+        if (i != -1)
+            ModCount(i, count);
+    }
+
+    public void UseItem(string itemname, int count) {
+        int i = GetItemIndex(itemname);
+        if (i != -1)
+            UseItem(i, count);
+    }
+
+    public void RemoveItem(int i) {
         if (inventory.ElementAtOrDefault(i) != null) {
             inventory.RemoveAt(i);
         }
     }
 
-    public static List<InventorySlot> GetInventory() {
+    public void RemoveItem(string itemname) {
+        int i = GetItemIndex(itemname);
+        if (i != -1)
+            RemoveItem(i);
+    }
+
+    public List<InventorySlot> GetList() {
         return inventory;
     }
 
-    public static void SetInventory(List<InventorySlot> invenslot) {
-        inventory = invenslot;
+    public void SetInventory(List<InventorySlot> i) {
+        inventory = i;
+    }
+
+    public void EmptyInventory() {
+        inventory.Clear();
     }
 }
