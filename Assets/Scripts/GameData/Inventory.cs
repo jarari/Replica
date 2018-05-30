@@ -61,8 +61,9 @@ public class Inventory : MonoBehaviour {
     }
 
     public void UseItem(int i, int count) {
-        if(inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
-            if(inventory[i].item.GetItemType() == ItemTypes.Consumable)
+        if (inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
+            if (inventory[i].item.GetItemType() != ItemTypes.InfiniteUse
+                || inventory[i].item.GetItemType() != ItemTypes.Weapon)
                 inventory[i].SetCount(inventory[i].count - count);
             inventory[i].item.Use();
         }

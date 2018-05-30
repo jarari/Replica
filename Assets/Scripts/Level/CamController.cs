@@ -13,8 +13,6 @@ public class CamController : MonoBehaviour {
     private float tilesize = 32f;
     private int deadzoneWidth = 200;
     private int deadzoneHeight = 300;
-    private int standardWidth = 1920;
-    private int standardHeight = 1080;
     private float standardAspect;
     private int lastScreenWidth;
     private int lastScreenHeight;
@@ -90,8 +88,8 @@ public class CamController : MonoBehaviour {
     public void SetupCam() {
         lastScreenWidth = Screen.width;
         lastScreenHeight = Screen.height;
-        Camera.main.orthographicSize = (standardHeight / (1f * pixelsPerUnit)) * 0.25f;
-        standardAspect = standardWidth / (float)standardHeight;
+        Camera.main.orthographicSize = (GlobalUIManager.standardHeight / (1f * pixelsPerUnit)) * 0.25f;
+        standardAspect = GlobalUIManager.standardWidth / (float)GlobalUIManager.standardHeight;
         if (Screen.width / (float)Screen.height > standardAspect) {
             float forcedWidth = Screen.height * standardAspect;
             marginWidth = (Screen.width - forcedWidth) / Screen.width;
@@ -104,6 +102,11 @@ public class CamController : MonoBehaviour {
             marginHeight = (Screen.height - forcedHeight) / Screen.height;
             Camera.main.rect = new Rect(0, marginHeight / 2f, 1, 1.0f - marginHeight);
         }
+        PlayerHUD.DrawUI();
+    }
+
+    public Vector2 GetMargin() {
+        return new Vector2(marginWidth, marginHeight);
     }
 
     public Vector3 GetCamPos() {
@@ -115,7 +118,7 @@ public class CamController : MonoBehaviour {
     }
 
     public float GetStandardHeight() {
-        return (standardHeight / (1f * pixelsPerUnit)) * 0.25f;
+        return (GlobalUIManager.standardHeight / (1f * pixelsPerUnit)) * 0.25f;
     }
 
     public Vector2 GetCamSize() {
@@ -173,7 +176,7 @@ public class CamController : MonoBehaviour {
             camPos = Mathf.Sin(t * Mathf.PI / 2f) * (target - origin) + origin;
             if (t >= 1)
                 zoomed = amount;
-            Camera.main.orthographicSize = Mathf.Round((standardHeight / (1f * pixelsPerUnit)) * 0.25f / zoomed);
+            Camera.main.orthographicSize = Mathf.Round((GlobalUIManager.standardHeight / (1f * pixelsPerUnit)) * 0.25f / zoomed);
             yield return null;
         }
         zooming = false;

@@ -69,6 +69,8 @@ public static class CachedItem {
 
 public enum ItemTypes {
     Weapon,
+    Ammo,
+    Grenade,
     Consumable,
     InfiniteUse
 }
