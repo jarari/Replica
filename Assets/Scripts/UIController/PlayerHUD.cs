@@ -23,6 +23,8 @@ public static class PlayerHUD {
         uimanager.SetImageTypeFilled("hp_bar", Image.FillMethod.Horizontal, 0, healthRatio);
         uimanager.CreateImage("ammo_gb", Helper.GetSprite("Sprites/ui/bulletngrenade", "bulletngrenade"), new Vector2(135, 925));
         uimanager.RescaleUI("ammo_gb", 2, 2);
+        uimanager.CreateText("ammo_b", new Vector2(127, 926), "0", 50, 50);
+        uimanager.CreateText("ammo_g", new Vector2(205, 926), "0", 50, 50);
     }
 
     public static void UpdateHealth() {
@@ -31,6 +33,10 @@ public static class PlayerHUD {
         healthRatio = ratio;
     }
 
-    public static void UpdateAmmo(ItemTypes type) {
+    public static void UpdateAmmo(ItemTypes type, int count) {
+        if (type == ItemTypes.Ammo)
+            uimanager.ChangeText("ammo_b", count.ToString());
+        else if(type == ItemTypes.Grenade)
+            uimanager.ChangeText("ammo_g", count.ToString());
     }
 }

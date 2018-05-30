@@ -24,6 +24,7 @@ enum SpaceStatus {
 public class Inventory : MonoBehaviour {
     private List<InventorySlot> inventory = new List<InventorySlot>();
     private int inventoryCount = 9;
+    private GameObject owner;
 
     private int GetItemIndex(string itemname) {
         InventorySlot[] temp = inventory.ToArray();
@@ -49,13 +50,23 @@ public class Inventory : MonoBehaviour {
         return SpaceStatus.Empty;
     }
 
+    public GameObject GetOwner() {
+        return owner;
+    }
+
+    public void SetOwner(GameObject c) {
+        owner = c;
+    }
+
     public void AddItem(string itemname, int count = 1) {
         SpaceStatus status = CheckSpace(itemname);
         if (status == SpaceStatus.Empty) {
             inventory.Add(new InventorySlot(CachedItem.GetItemClass(itemname), count));
+            OnContentChange(CachedItem.GetItemClass(itemname), inventory.Count - 1, 0, count);
         }
         else if(status == SpaceStatus.Stackable) {
             int i = GetItemIndex(itemname);
+            OnContentChange(inventory[i].item, i, inventory[i].count, inventory[i].count + count);
             inventory[i].SetCount(inventory[i].count + count);
         }
     }
@@ -78,7 +89,8 @@ public class Inventory : MonoBehaviour {
 
     public void SetCount(int i, int count) {
         if (inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
-            inventory[i].SetCount(inventory[i].count - count);
+            OnContentChange(inventory[i].item, i, inventory[i].count, count);
+            inventory[i].SetCount(count);
         }
     }
 
@@ -90,6 +102,7 @@ public class Inventory : MonoBehaviour {
 
     public void ModCount(int i, int count) {
         if (inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
+            OnContentChange(inventory[i].item, i, inventory[i].count, inventory[i].count + count);
             inventory[i].SetCount(inventory[i].count + count);
         }
     }
@@ -108,6 +121,7 @@ public class Inventory : MonoBehaviour {
 
     public void RemoveItem(int i) {
         if (inventory.ElementAtOrDefault(i) != null) {
+            OnContentChange(inventory[i].item, i, inventory[i].count, 0);
             inventory.RemoveAt(i);
         }
     }
@@ -128,5 +142,16 @@ public class Inventory : MonoBehaviour {
 
     public void EmptyInventory() {
         inventory.Clear();
+    }
+
+    public void OnContentChange(Item changed, int slot, int oldcount, int newcount) {
+        if (owner.tag.Equals("Character")) {
+            Character c = owner.GetComponent<Character>();
+            if(c != null) {
+                if(c.IsPlayer())
+                    if (changed.GetItemType() == ItemTypes.Ammo || changed.GetItemType() == ItemTypes.Grenade)
+                        PlayerHUD.UpdateAmmo(changed.GetItemType(), newcount);
+            }
+        }
     }
 }

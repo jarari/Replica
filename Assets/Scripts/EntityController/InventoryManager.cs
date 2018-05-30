@@ -23,6 +23,7 @@ public static class InventoryManager {
         if (obj.GetComponent<ObjectBase>() == null)
             return;
         Inventory inventory = obj.AddComponent<Inventory>();
+        inventory.SetOwner(obj);
         inventories.Add(obj, inventory);
         obj.GetComponent<ObjectBase>().SetInventory(inventory);
     }

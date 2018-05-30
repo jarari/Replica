@@ -180,7 +180,7 @@
 			"WeaponType":4,
 			"Damage":10,
 			"SADestruction":0,
-			"AttackSpeed":1.0,
+			"AttackSpeed":1.5,
 			"Stagger":0.1,
 			"MagSize":0,
 			"ReloadTime":0,

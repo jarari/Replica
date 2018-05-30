@@ -341,6 +341,8 @@ public abstract class Character : ObjectBase {
     }
 
     public void ModStat(CharacterStats stat, float val) {
+        if (stat == CharacterStats.Health)
+            OnHealthChanged(val);
         stats[(int)stat] = Mathf.Clamp(GetUnbuffedStat(GetBuffedStat(stats[(int)stat], stat) + val, stat), 0, GetMaxStat(stat));
     }
 
@@ -500,7 +502,6 @@ public abstract class Character : ObjectBase {
         if (stagger > 0) {
             OnStagger(stagger);
         }
-        OnHealthChanged(damage);
         ModStat(CharacterStats.Health, -damage);
         if (GetCurrentStat(CharacterStats.Health) == 0)
             OnDeath();

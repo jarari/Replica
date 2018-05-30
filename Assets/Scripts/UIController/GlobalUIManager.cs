@@ -118,6 +118,11 @@ public class GlobalUIManager : MonoBehaviour {
         }
     }
 
+    public void ChangeText(string uniqueid, string text) {
+        if (NullCheck(uniqueid)) return;
+        UIElement[uniqueid].GetComponent<Text>().text = text;
+    }
+
     public GameObject CreateButton(string uniqueid, string command, int argument, Sprite sprite, Vector2 pos, int width = -1, int height = -1) {
         if (!NullCheck(uniqueid))
             DeleteUIElement(uniqueid);
@@ -135,6 +140,16 @@ public class GlobalUIManager : MonoBehaviour {
             DeleteUIElement(uniqueid);
         GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Image2D"), pos, new Quaternion(), transform);
         obj.GetComponent<Image>().sprite = sprite;
+        AdjustToScreen(obj, pos, width, height);
+        UIElement.Add(uniqueid, obj);
+        return obj;
+    }
+
+    public GameObject CreateText(string uniqueid, Vector2 pos, string text, int width = -1, int height = -1) {
+        if (!NullCheck(uniqueid))
+            DeleteUIElement(uniqueid);
+        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Text2D"), pos, new Quaternion(), transform);
+        obj.GetComponent<Text>().text = text;
         AdjustToScreen(obj, pos, width, height);
         UIElement.Add(uniqueid, obj);
         return obj;
