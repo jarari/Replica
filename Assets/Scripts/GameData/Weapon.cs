@@ -122,6 +122,8 @@ public class Weapon : ObjectBase {
 
     IEnumerator HitCheck(float normalizedtime, Vector2 localPos, Vector2 area, string eventname) {
         yield return new WaitWhile(() => owner.GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime < normalizedtime);
+        if (owner.GetState() != CharacterStates.Attack)
+            yield break;
         List<Character> closeEnemies = CharacterManager.instance.GetEnemies(GetOwner().GetTeam()).FindAll
             (c => Helper.IsInBox((Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset - c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset + c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)owner.transform.position + localPos - area / 2f, (Vector2)owner.transform.position + localPos + area / 2f));
         StartCoroutine(Helper.DrawBox((Vector2)owner.transform.position + localPos, area, Color.red));
