@@ -128,6 +128,7 @@ public class AIBaseController : BasicCharacterMovement {
         if(target == null) {
             targetFound = false;
             SetCommand("Search");
+            character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
         }
         else {
             if(character.GetState() != CharacterStates.Attack) {

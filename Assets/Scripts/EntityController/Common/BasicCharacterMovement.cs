@@ -384,6 +384,7 @@ public class BasicCharacterMovement : MoveObject {
         int dir = (int)Mathf.Sign(dx);
         maxJump = Mathf.Pow(character.GetCurrentStat(CharacterStats.JumpPower), 2) / 3924f;
         if (character.GetUncontrollableTimeLeft() == 0) {
+            character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
             RaycastHit2D rayup = Physics2D.Raycast(transform.position, new Vector2(0, 1), maxJump, Helper.groundLayer);
             RaycastHit2D rayunder = Physics2D.Raycast((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 33), new Vector2(0, -1), 128f, Helper.groundLayer);
             if (dist > xradius) {
