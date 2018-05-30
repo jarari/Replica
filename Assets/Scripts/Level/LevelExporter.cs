@@ -14,7 +14,7 @@ public class LevelExporter : MonoBehaviour {
         StartCoroutine(WaitTillInit());
     }
     IEnumerator WaitTillInit() {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitWhile(() => CamController.instance == null);
         Cursor.visible = true;
         string data = "{";
         foreach(GameObject obj in  FindObjectsOfType<GameObject>()) {
@@ -111,6 +111,7 @@ public class LevelExporter : MonoBehaviour {
             playerspawner.characterType = CharacterTypes.Boss;
             playerspawner.characterClass = "character_dummy";
             playerspawner.weaponClass = "weapon_ai_dummy";
+            playerspawner.spawnerType = CharacterSpawnerTypes.Once;
             LevelManager.instance.Initialize();
             CamController.instance.AttachCam(playerspawner.GetLastSpawn().transform);
             playerspawner.GetLastSpawn().SetFlag(CharacterFlags.Invincible);

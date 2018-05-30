@@ -1,23 +1,16 @@
 {
-	"item_mg4":
-	{
-		"Type":0,
-		"Stackable":false,
-		"SpritePath":"Sprites/ui/item/item_mg4",
-		"SpriteName":"item_mg4"
-	},
-	"item_dangdangpo":
-	{
-		"Type":0,
-		"Stackable":false,
-		"SpritePath":"Sprites/ui/item/item_dangdangpo",
-		"SpriteName":"item_dangdangpo"
-	},
-	"item_mre":
+	"item_bullet":
 	{
 		"Type":1,
 		"Stackable":true,
-		"SpritePath":"Sprites/ui/item/item_mre",
-		"SpriteName":"item_mre"
+		"SpritePath":"Sprites/ui/item/item_mg4",
+		"SpriteName":"item_mg4"
+	},
+	"item_grenade":
+	{
+		"Type":1,
+		"Stackable":true,
+		"SpritePath":"Sprites/ui/item/item_dangdangpo",
+		"SpriteName":"item_dangdangpo"
 	}
 }

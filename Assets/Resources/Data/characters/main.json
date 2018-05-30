@@ -39,7 +39,7 @@
 		"Stats":
 		{
 			"Health":1000,
-			"MoveSpeed":450.0,
+			"MoveSpeed":1500.0,
 			"JumpPower":675.0,
 			"MeleeArmor":10,
 			"RangeArmor":10
@@ -91,6 +91,21 @@
 		{
 			"X":1.0,
 			"Y":1.0
+		},
+		"DropTable":
+		{
+			"loot_hp":
+			{
+				"Chance":1,
+				"NumMin":1,
+				"NumMax":1
+			},
+			"loot_bullet":
+			{
+				"Chance":1,
+				"NumMin":2,
+				"NumMax":4
+			}
 		}
 	},
 	"character_secbot2":
@@ -122,6 +137,21 @@
 		{
 			"X":1.0,
 			"Y":1.0
+		},
+		"DropTable":
+		{
+			"loot_hp":
+			{
+				"Chance":1,
+				"NumMin":1,
+				"NumMax":1
+			},
+			"loot_grenade":
+			{
+				"Chance":1,
+				"NumMin":1,
+				"NumMax":2
+			}
 		}
 	}
 }

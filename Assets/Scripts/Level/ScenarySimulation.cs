@@ -32,13 +32,16 @@ public class ScenarySimulation : MonoBehaviour {
         BGParents = BGp;
         bgLength.Clear();
         bgDist.Clear();
-        List<Transform> sorter = new List<Transform>();
-        foreach(GameObject parent in BGParents) {
+        for(int i = 0; i < BGParents.Count; i++) {
+            GameObject parent = BGParents[i];
             if (parent.transform.childCount > 0) {
-                foreach (Transform child in parent.transform)
-                    sorter.Add(child);
-                bgLength.Add(sorter.OrderBy(t => t.position.x).Last().position.x - sorter.OrderBy(t => t.position.x).First().position.x - camWidth);
-                sorter.Clear();
+                float xmax = -Mathf.Infinity;
+                float xmin = Mathf.Infinity;
+                foreach (Transform child in parent.transform) {
+                    xmax = Mathf.Max(xmax, child.position.x);
+                    xmin = Mathf.Min(xmin, child.position.x);
+                }
+                bgLength.Add(xmax - xmin);
             }
             else {
                 bgLength.Add(0);
@@ -53,16 +56,16 @@ public class ScenarySimulation : MonoBehaviour {
     private void LateUpdate() {
         if (!init) return;
         Vector3 camPos = CamController.instance.GetCamPos();
-        float distX = camPos.x - mapMin.x;
-        float distY = camPos.y - mapMin.y - CamController.instance.GetCamSize().y;
-
+        Vector2 camSize = CamController.instance.GetCamSize();
+        float mapCompleted = (camPos.x - mapMin.x - camSize.x) / (mapLength - camSize.x * 2f);
+        float distY = camPos.y - mapMin.y - camSize.y;
         float a = Mathf.Atan(distY / farthestDist);
 
         for(int i = 0; i < BGParents.Count; i++) {
             float triA = Mathf.PI / 2f - a + Mathf.Atan(distY / bgDist[i]);
             float triHyp = Mathf.Sqrt(Mathf.Pow(bgDist[i], 2) + Mathf.Pow(distY, 2));
             Vector3 pos = BGParents[i].transform.position;
-            pos.x = camPos.x - distX * bgLength[i] / mapLength - CamController.instance.GetCamSize().x;
+            pos.x = mapMin.x + (mapLength - camSize.x * 2f) * mapCompleted - bgLength[i] * mapCompleted + camSize.x * mapCompleted * 2f;
             pos.y = camPos.y + Mathf.Cos(triA) * triHyp;
             BGParents[i].transform.position = pos;
         }
