@@ -39,6 +39,7 @@ public class WeaponGunkata : Weapon {
             if (owner.GetInventory().GetCount("item_bullet") > 0) {
                 FireBullet("bullet_gunkata_finish", 90);
                 owner.GetInventory().ModCount("item_bullet", -1);
+                CreateEffect("effect_attack_basic_finish");
             }
         }
     }
