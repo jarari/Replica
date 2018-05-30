@@ -14,7 +14,8 @@ public class LevelManager : MonoBehaviour {
     private bool loadOnce = false;
     private static string[] essentialSprites = {
         "items",
-        "effects"
+        "effects",
+        "ui"
     };
     public bool debug = false;
     private void Awake() {

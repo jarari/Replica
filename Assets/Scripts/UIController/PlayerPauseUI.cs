@@ -48,13 +48,13 @@ public static class PlayerPauseUI {
         GlobalUIManager uimanager = GlobalUIManager.instance;
         menuPos = CharacterManager.instance.GetPlayer().transform.position + new Vector3(zoomMenuAdjustX, zoomMenuAdjustY, 0);
         CamController.instance.ZoomCam(CharacterManager.instance.GetPlayer().transform.position + new Vector3(zoomMenuAdjustX - 32f, zoomMenuAdjustY, 0), 2f, 0.5f);
-        pauseUI = uimanager.CreateImage("pauseui_bg", Helper.GetSprite("Sprites/ui/pauseui/pauseui_bg", "pauseui_bg"), menuPos, 234, 208);
+        pauseUI = uimanager.CreateImageWorld("pauseui_bg", Helper.GetSprite("Sprites/ui/pauseui/pauseui_bg", "pauseui_bg"), menuPos, 234, 208);
         Vector3 btnPos = menuPos + new Vector3(14, 104 - YFromTitle - buttonPadding, 0);
-        uimanager.FocusObject(uimanager.CreateButton("pauseui_btn_stats", "ShowMenu", 1, Helper.GetSprite("Sprites/ui/pauseui/pauseui_button_stats", "pauseui_button_stats"), btnPos, 181, 38, pauseUI.transform));
+        uimanager.FocusObject(uimanager.CreateButtonWorld("pauseui_btn_stats", "ShowMenu", 1, Helper.GetSprite("Sprites/ui/pauseui/pauseui_button_stats", "pauseui_button_stats"), btnPos, 181, 38, pauseUI.transform));
         btnPos -= new Vector3(0, buttonPadding, 0);
-        uimanager.CreateButton("pauseui_btn_inventory", "ShowMenu", 2, Helper.GetSprite("Sprites/ui/pauseui/pauseui_button_inventory", "pauseui_button_inventory"), btnPos, 181, 38, pauseUI.transform);
+        uimanager.CreateButtonWorld("pauseui_btn_inventory", "ShowMenu", 2, Helper.GetSprite("Sprites/ui/pauseui/pauseui_button_inventory", "pauseui_button_inventory"), btnPos, 181, 38, pauseUI.transform);
         btnPos -= new Vector3(0, buttonPadding, 0);
-        uimanager.CreateButton("pauseui_btn_option", "ShowMenu", 3, Helper.GetSprite("Sprites/ui/pauseui/pauseui_button_option", "pauseui_button_option"), btnPos, 181, 38, pauseUI.transform);
+        uimanager.CreateButtonWorld("pauseui_btn_option", "ShowMenu", 3, Helper.GetSprite("Sprites/ui/pauseui/pauseui_button_option", "pauseui_button_option"), btnPos, 181, 38, pauseUI.transform);
         lastMenu = 0;
         currentMenu = 0;
         if (lastFocus.ContainsKey(currentMenu) && lastFocus[currentMenu] != null) {
@@ -65,13 +65,13 @@ public static class PlayerPauseUI {
     private static void CreateInventory() {
         List<InventorySlot> inv = CharacterManager.instance.GetPlayer().GetInventory().GetList();
         GlobalUIManager uimanager = GlobalUIManager.instance;
-        additionalUI = uimanager.CreateImage("inventory_bg", Helper.GetSprite("Sprites/ui/pauseui/inventory_bg", "inventory_bg"), menuPos, 234, 208);
+        additionalUI = uimanager.CreateImageWorld("inventory_bg", Helper.GetSprite("Sprites/ui/pauseui/inventory_bg", "inventory_bg"), menuPos, 234, 208);
         Vector3 cellsPos = menuPos + new Vector3(14, 104 - inventoryCellY, 0);
-        uimanager.CreateImage("inventory_cells", Helper.GetSprite("Sprites/ui/pauseui/inventory_cells", "inventory_cells"), cellsPos, 170, 170, additionalUI.transform);
+        uimanager.CreateImageWorld("inventory_cells", Helper.GetSprite("Sprites/ui/pauseui/inventory_cells", "inventory_cells"), cellsPos, 170, 170, additionalUI.transform);
         for(int i = 1; i > -2; i--) { //row ↓
             for(int j = -1; j < 2; j++) { //column ->
                 int buttonnum = (1 - i) * 3 + (j + 1);
-                GameObject button = uimanager.CreateButton("inventory_cell" + buttonnum.ToString(), "item_showmenu", buttonnum,
+                GameObject button = uimanager.CreateButtonWorld("inventory_cell" + buttonnum.ToString(), "item_showmenu", buttonnum,
                     Helper.GetSprite("Sprites/ui/pauseui/inventory_button", "inventory_button"), cellsPos
                     + new Vector3(j * (cellSize + cellPadding), i * (cellSize + cellPadding), 0), cellSize, cellSize, additionalUI.transform);
                 Color c = button.GetComponent<Button>().colors.normalColor;
@@ -81,7 +81,7 @@ public static class PlayerPauseUI {
                 button.GetComponent<Button>().colors = cb;
                 button.name = "inventory_cell" + buttonnum.ToString();
                 if(inv.ElementAtOrDefault(buttonnum) != null) {
-                    uimanager.CreateImage("inventory_image" + buttonnum.ToString(), inv[buttonnum].item.GetImage(), cellsPos
+                    uimanager.CreateImageWorld("inventory_image" + buttonnum.ToString(), inv[buttonnum].item.GetImage(), cellsPos
                     + new Vector3(j * (cellSize + cellPadding), i * (cellSize + cellPadding), 0), cellSize, cellSize, button.transform);
                 }
                 if (i == 1 && j == -1)

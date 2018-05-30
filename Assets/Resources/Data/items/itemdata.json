@@ -8,7 +8,7 @@
 	},
 	"item_grenade":
 	{
-		"Type":1,
+		"Type":2,
 		"Stackable":true,
 		"SpritePath":"Sprites/ui/item/item_dangdangpo",
 		"SpriteName":"item_dangdangpo"

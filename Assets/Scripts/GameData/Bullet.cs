@@ -131,6 +131,7 @@ public class Bullet : MonoBehaviour {
 
     private void OnDestroy() {
         if (!collided) return;
+        BulletManager.instance.OnBulletHit(this);
         if(anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
             Vector3 temp = collisionNorm;
             temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;

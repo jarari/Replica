@@ -50,9 +50,9 @@ public class CharacterSpawner : MonoBehaviour {
                 spawned.GiveWeapon("weapon_gunkata");
                 spawned.GiveWeapon("weapon_sword");
                 //Save.DataLoad();
-                //PlayerHUD.Initialize();
                 //PlayerHUD.UpdateHealth(spawned.GetCurrentStat(CharacterStats.Health) / spawned.GetMaxStat(CharacterStats.Health));
                 CharacterManager.instance.InsertControl(spawned);
+                PlayerHUD.Initialize();
                 CamController.instance.AttachCam(spawned.transform);
                 break;
             case CharacterTypes.AI:

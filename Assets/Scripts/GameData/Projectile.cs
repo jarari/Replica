@@ -143,8 +143,8 @@ public class Projectile : MonoBehaviour {
         }
     }
 
-    protected virtual void OnDestroy() {
-        if(GameDataManager.instance.GetData("Data", className, "ShakeCam") == null || (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null && (int)GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != 0))
+    protected virtual void Explode() {
+        if (GameDataManager.instance.GetData("Data", className, "ShakeCam") == null || (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null && (int)GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != 0))
             CamController.instance.ShakeCam(data[WeaponStats.Damage] / 20f, Mathf.Clamp(data[WeaponStats.Damage] / 50f, 0, 2));
         List<Character> closeEnemies = CharacterManager.instance.GetAllCharacters().FindAll(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position) <= range);
         foreach (Character c in closeEnemies) {
@@ -163,10 +163,15 @@ public class Projectile : MonoBehaviour {
                     mult = 0.25f;
             }
             c.DoDamage(attacker, dmgdata.damage * mult, dmgdata.stagger);
-            if(GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !c.HasFlag(CharacterFlags.KnockBackImmunity)) {
+            if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !c.HasFlag(CharacterFlags.KnockBackImmunity)) {
                 c.AddForce((c.transform.position - transform.position).normalized * Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack")) * mult, true);
             }
         }
+    }
+
+    protected void OnDestroy() {
+        Explode();
         ExplosionEffect();
+        BulletManager.instance.OnProjectileHit(this);
     }
 }
