@@ -164,7 +164,10 @@ public class AIBaseController : BasicCharacterMovement {
     }
 
     protected virtual void Attack() {
-        if (Time.realtimeSinceStartup < nextAttack) return;
+        if (Time.realtimeSinceStartup < nextAttack) {
+            character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
+            return;
+        }
         nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
         character.AddUncontrollableTime(Mathf.Min(1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed), 0.2f));
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
