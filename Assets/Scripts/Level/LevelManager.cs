@@ -27,11 +27,18 @@ public class LevelManager : MonoBehaviour {
         }
         if (debug)
             StartCoroutine(Debugger());
+        else {
+            Save.DataLoad();
+        }
     }
 
     IEnumerator Debugger() {
         yield return new WaitForEndOfFrame();
-        LoadMap("map_stage01");
+        //LoadMap("map_stage01");
+        foreach (GameObject bgparent in GameObject.FindGameObjectsWithTag("BG")) {
+            BGParents.Add(bgparent);
+        }
+        Initialize();
     }
 
     private void PreloadEssentialSprites() {

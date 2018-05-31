@@ -51,11 +51,12 @@ public static class Save
 
     public static void DataLoad()
     {
-        if(File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
+        string stage = "map_stage01";
+        if (File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
         {
             file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.Open);
             bf = new BinaryFormatter();
-            player = CharacterManager.instance.GetPlayer();
+            /*player = CharacterManager.instance.GetPlayer();
 
             PlayerData data = (PlayerData)bf.Deserialize(file);
             file.Close();
@@ -66,7 +67,8 @@ public static class Save
             foreach(SlotData sd in data.slots) {
                 for(int i = 0; i < sd.itemCount; i++)
                     player.GetInventory().AddItem(sd.itemName);
-            }
+            }*/
         }
+        LevelManager.instance.LoadMap(stage);
     }
 }

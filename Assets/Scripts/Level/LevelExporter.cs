@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 public class LevelExporter : MonoBehaviour {
+    public bool ScenearySimulation = true;
     private int counter = 0;
     private int BGlayerCount = 0;
     private Dictionary<int, GameObject> BGParents = new Dictionary<int, GameObject>();
@@ -108,15 +109,20 @@ public class LevelExporter : MonoBehaviour {
             }
         }
         if(playerspawner != null) {
-            playerspawner.characterType = CharacterTypes.Boss;
-            playerspawner.characterClass = "character_dummy";
-            playerspawner.weaponClass = "weapon_ai_dummy";
-            playerspawner.spawnerType = CharacterSpawnerTypes.Once;
-            LevelManager.instance.Initialize();
-            CamController.instance.AttachCam(playerspawner.GetLastSpawn().transform);
-            playerspawner.GetLastSpawn().SetFlag(CharacterFlags.Invincible);
-            playerspawner.GetLastSpawn().SetFlag(CharacterFlags.KnockBackImmunity);
-            ScenarySimulation.instance.Initialize(LevelManager.instance.GetMapMin(), LevelManager.instance.GetMapMax(), BGp);
+            if (ScenearySimulation) {
+                playerspawner.characterType = CharacterTypes.Boss;
+                playerspawner.characterClass = "character_dummy";
+                playerspawner.weaponClass = "weapon_ai_dummy";
+                playerspawner.spawnerType = CharacterSpawnerTypes.Once;
+                LevelManager.instance.Initialize();
+                CamController.instance.AttachCam(playerspawner.GetLastSpawn().transform);
+                playerspawner.GetLastSpawn().SetFlag(CharacterFlags.Invincible);
+                playerspawner.GetLastSpawn().SetFlag(CharacterFlags.KnockBackImmunity);
+                ScenarySimulation.instance.Initialize(LevelManager.instance.GetMapMin(), LevelManager.instance.GetMapMax(), BGp);
+            }
+            else {
+                LevelManager.instance.Initialize();
+            }
         }
     }
 
