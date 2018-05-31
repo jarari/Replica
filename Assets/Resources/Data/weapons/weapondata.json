@@ -150,7 +150,7 @@
 		"Stats":
 		{
 			"WeaponType":4,
-			"Damage":10,
+			"Damage":50,
 			"SADestruction":0,
 			"AttackSpeed":0.5,
 			"Stagger":0,
@@ -178,7 +178,7 @@
 		"Stats":
 		{
 			"WeaponType":4,
-			"Damage":10,
+			"Damage":50,
 			"SADestruction":0,
 			"AttackSpeed":0.6,
 			"Stagger":0,
