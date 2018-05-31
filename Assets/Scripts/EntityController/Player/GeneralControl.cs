@@ -18,8 +18,6 @@ public class GeneralControl : BasicCharacterMovement {
         }
         if (!PlayerPauseUI.IsPaused()) {
             if (character.GetUncontrollableTimeLeft() == 0 && !character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("hit")) {
-                if (!character.IsOnGround())
-                    sprint = false;
 
                 if (Input.GetKey(KeyCode.RightArrow)) {
                     if (waitDoubleTab && doubletabKey == KeyCode.RightArrow) {
