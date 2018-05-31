@@ -291,6 +291,8 @@ public class LevelManager : MonoBehaviour {
 
     public void DestroyMap() {
 		isMapActive = false;
+        if(ScenarySimulation.instance != null)
+            ScenarySimulation.instance.OnMapDestroy();
         if(createdObjs.Count > 0) {
             foreach(KeyValuePair<int, GameObject> kvp in createdObjs) {
 				if(kvp.Value != null) {

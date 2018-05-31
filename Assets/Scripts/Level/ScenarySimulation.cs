@@ -53,6 +53,11 @@ public class ScenarySimulation : MonoBehaviour {
         init = true;
     }
 
+    public void OnMapDestroy() {
+        BGParents.Clear();
+        init = false;
+    }
+
     private void LateUpdate() {
         if (!init) return;
         Vector3 camPos = CamController.instance.GetCamPos();
