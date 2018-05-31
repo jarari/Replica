@@ -41,7 +41,7 @@ public class Loot : ObjectBase {
         canPickup = false;
     }
 
-    private void LandDust() {
+    protected void LandDust() {
         if (GameDataManager.instance.GetData("Data", className, "Sprites", "dust") != null)
             EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "dust"),
                 transform.position, 0);
