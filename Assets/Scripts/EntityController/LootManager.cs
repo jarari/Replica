@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class LootManager : MonoBehaviour {
     public static LootManager instance;
+	private List<Loot> loots = new List<Loot>();
+
     void Awake() {
         if (instance == null) {
             instance = this;
@@ -15,7 +17,15 @@ public class LootManager : MonoBehaviour {
         }
     }
 
+	public List<Loot> GetLoots() {
+		return loots;
+	}
+	public void RemoveLoot(Loot loot) {
+		loots.Remove(loot);
+	}
+	
     public GameObject CreateLoot(string classname, int count, Vector2 pos, float angle, Vector2 vel = new Vector2()) {
+		if(!LevelManager.instance.isMapActive) return null;
         GameObject loot_obj = (GameObject)Instantiate(Resources.Load("Prefab/Loot"), pos, new Quaternion());
         string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
         if (script == null || script.Length == 0)
@@ -26,6 +36,7 @@ public class LootManager : MonoBehaviour {
         ang.z = angle;
         loot_obj.transform.eulerAngles = ang;
         loot.Initialize(classname, count);
+		loots.Add(loot);
         return loot_obj;
     }
 }

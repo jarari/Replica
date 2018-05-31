@@ -20,7 +20,8 @@ public static class InventoryManager {
     }
 
     public static void CreateInventory(GameObject obj) {
-        if (obj.GetComponent<ObjectBase>() == null)
+		if(!LevelManager.instance.isMapActive) return;
+		if (obj.GetComponent<ObjectBase>() == null)
             return;
         Inventory inventory = obj.AddComponent<Inventory>();
         inventory.SetOwner(obj);

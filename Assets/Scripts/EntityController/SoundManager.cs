@@ -16,7 +16,8 @@ public class SoundManager : MonoBehaviour {
     }
 
     public void RequestSound(GameObject obj, string path, float vol = 1f, float pitch = 1f, bool loop = false) {
-        AudioSource As = obj.AddComponent<AudioSource>();
+		if(!LevelManager.instance.isMapActive) return;
+		AudioSource As = obj.AddComponent<AudioSource>();
         if (Resources.Load(path) == null) return;
         As.clip = (AudioClip)Resources.Load(path);
         As.volume = vol;
@@ -34,7 +35,8 @@ public class SoundManager : MonoBehaviour {
     }
 
     public void RequestObjectIndependentSound(Vector3 pos, string path, float vol = 1f, float pitch = 1f, bool loop = false) {
-        GameObject obj = new GameObject();
+		if(!LevelManager.instance.isMapActive) return;
+		GameObject obj = new GameObject();
         obj.transform.position = pos;
         AudioSource As = obj.AddComponent<AudioSource>();
         if (Resources.Load(path) == null) return;

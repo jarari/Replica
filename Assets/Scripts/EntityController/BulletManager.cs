@@ -35,7 +35,8 @@ public class BulletManager : MonoBehaviour {
     }
 
     public Bullet CreateBullet(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data, bool ignoreGround = false) {
-        GameObject bullet_obj = (GameObject)Instantiate(Resources.Load("Prefab/Bullet"), pos, new Quaternion());
+		if(!LevelManager.instance.isMapActive) return null;
+		GameObject bullet_obj = (GameObject)Instantiate(Resources.Load("Prefab/Bullet"), pos, new Quaternion());
         Bullet bullet;
         if (GameDataManager.instance.GetData("Data", classname, "ScriptClass") != null && (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass") != "") {
             bullet = (Bullet)bullet_obj.gameObject.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
@@ -56,7 +57,8 @@ public class BulletManager : MonoBehaviour {
     }
 
     public Projectile CreateProjectile(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, Dictionary<WeaponStats, float> _data, bool candirecthit) {
-        GameObject projectile_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
+		if(!LevelManager.instance.isMapActive) return null;
+		GameObject projectile_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
         Projectile projectile;
         if (GameDataManager.instance.GetData("Data", classname, "ScriptClass") != null && (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass") != "") {
             projectile = (Projectile)projectile_obj.gameObject.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
@@ -75,7 +77,8 @@ public class BulletManager : MonoBehaviour {
     }
 
     public Throwable CreateThrowable(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, float torque, Dictionary<WeaponStats, float> _data, bool candirecthit = true) {
-        GameObject throwable_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
+		if(!LevelManager.instance.isMapActive) return null;
+		GameObject throwable_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
         Throwable throwable;
         if (GameDataManager.instance.GetData("Data", classname, "ScriptClass") != null && (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass") != "") {
             throwable = (Throwable)throwable_obj.gameObject.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));

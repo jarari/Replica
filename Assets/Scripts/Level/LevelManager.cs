@@ -18,6 +18,8 @@ public class LevelManager : MonoBehaviour {
         "ui"
     };
     public bool debug = false;
+	public bool isMapActive = false;
+
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -288,23 +290,37 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void DestroyMap() {
+		isMapActive = false;
         if(createdObjs.Count > 0) {
-            for(int i = createdObjs.Count - 1; i > -1; i--) {
-                DestroyObject(createdObjs[i]);
-            }
+            foreach(KeyValuePair<int, GameObject> kvp in createdObjs) {
+				if(kvp.Value != null) {
+					DestroyObject(kvp.Value);
+				}
+			}
         }
-        foreach (GameObject spawner in GameObject.FindGameObjectsWithTag("Spawner")) {
-            spawner.SetActive(false);
-        }
+		createdObjs.Clear();
         if (CharacterManager.instance != null) {
             List<Character> characters = CharacterManager.instance.GetAllCharacters();
             for (int i = characters.Count - 1; i > -1; i--) {
                 characters[i].Kill();
             }
         }
+		if(EffectManager.instance != null) {
+			List<Effect> effects = EffectManager.instance.GetEffects();
+			for(int i = 0; i < effects.Count - 1; i++) {
+				DestroyObject(effects[i].gameObject);
+			}
+		}
+		if(LootManager.instance != null) {
+			List<Loot> loots = LootManager.instance.GetLoots();
+			for(int i = 0; i < loots.Count - 1; i++) {
+				DestroyObject(loots[i].gameObject);
+			}
+		}
     }
 
     public void Initialize() {
+		isMapActive = true;
         float minX = 99999999999;
         float minY = 99999999999;
         float maxX = -99999999999;
@@ -341,4 +357,6 @@ public class LevelManager : MonoBehaviour {
     public Vector2 GetMapMax() {
         return mapMax;
     }
+
+
 }

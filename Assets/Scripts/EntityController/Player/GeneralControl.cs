@@ -186,6 +186,9 @@ public class GeneralControl : BasicCharacterMovement {
             }
             if (Input.GetKeyDown(KeyCode.Escape))
                 PlayerPauseUI.PauseToggle();
+			if(Input.GetKeyDown(KeyCode.Delete)) {
+				LevelManager.instance.DestroyMap();
+			}
         }
         else {
             if (Input.GetKeyDown(KeyCode.Escape))

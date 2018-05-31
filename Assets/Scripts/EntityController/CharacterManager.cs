@@ -23,7 +23,8 @@ public class CharacterManager : MonoBehaviour {
     }
 
     public Character CreateCharacter(string classname, Vector3 pos, Teams team, int sortorder = 0) {
-        GameObject character_obj = (GameObject)Instantiate(Resources.Load("Prefab/Character"), pos, new Quaternion());
+		if(!LevelManager.instance.isMapActive) return null;
+		GameObject character_obj = (GameObject)Instantiate(Resources.Load("Prefab/Character"), pos, new Quaternion());
         Character character = (Character)character_obj.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
         character.Initialize(classname);
         character.SetTeam(team);

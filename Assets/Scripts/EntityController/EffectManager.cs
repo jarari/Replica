@@ -6,6 +6,8 @@ using UnityEngine;
  * 여기서는 오브젝트에 부착된 이펙트, 오브젝트와 독립된 이펙트, 오브젝트와 독립되어 특정 방향으로 움직이는 이펙트 생성 가능 */
 public class EffectManager : MonoBehaviour {
     public static EffectManager instance;
+	private List<Effect> effects = new List<Effect>();
+
     void Awake() {
         if (instance == null) {
             instance = this;
@@ -15,8 +17,19 @@ public class EffectManager : MonoBehaviour {
         }
     }
 
-    public void CreateEffect(string classname, Vector3 pos, int dir, Transform parent = null) {
-        GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect"), pos, new Quaternion());
+	public List<Effect> GetEffects() {
+		return effects;
+	}
+
+	public void RemoveEffect(Effect effect) {
+		effects.Remove(effect);
+	}
+
+    public Effect CreateEffect(string classname, Vector3 pos, int dir, Transform parent = null) {
+		if(!LevelManager.instance.isMapActive) return null;
+		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect"), pos, new Quaternion());
+		Effect effect = effect_obj.GetComponent<Effect>();
+
         if(dir != 0) {
             Vector3 lscale = effect_obj.transform.localScale;
             lscale.x = lscale.x * dir;
@@ -26,10 +39,14 @@ public class EffectManager : MonoBehaviour {
         if(parent != null) {
             effect_obj.transform.SetParent(parent);
         }
+
+		effects.Add(effect);
+		return effect;
     }
 
     public void CreateEffect(string classname, Vector3 pos, float angle, Transform parent = null) {
-        GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect"), pos, new Quaternion());
+		if(!LevelManager.instance.isMapActive) return;
+		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect"), pos, new Quaternion());
         Vector3 ang = effect_obj.transform.eulerAngles;
         ang.z = angle;
         effect_obj.transform.eulerAngles = ang;
@@ -40,7 +57,8 @@ public class EffectManager : MonoBehaviour {
     }
 
     public void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, int dir, Transform parent = null) {
-        GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect_Moving"), pos, new Quaternion());
+		if(!LevelManager.instance.isMapActive) return;
+		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect_Moving"), pos, new Quaternion());
         Vector3 lscale = effect_obj.transform.localScale;
         lscale.x = lscale.x * dir;
         effect_obj.transform.localScale = lscale;
@@ -52,7 +70,8 @@ public class EffectManager : MonoBehaviour {
     }
 
     public void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, float angle, Transform parent = null) {
-        GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect_Moving"), pos, new Quaternion());
+		if(!LevelManager.instance.isMapActive) return;
+		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect_Moving"), pos, new Quaternion());
         Vector3 ang = effect_obj.transform.eulerAngles;
         ang.z = angle;
         effect_obj.transform.eulerAngles = ang;

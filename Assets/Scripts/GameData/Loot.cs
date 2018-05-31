@@ -17,7 +17,7 @@ public class LootData {
     }
 }
 
-class Loot : ObjectBase {
+public class Loot : ObjectBase {
     protected bool canPickup = false;
     protected string item = "";
     protected int count = 0;
@@ -41,7 +41,7 @@ class Loot : ObjectBase {
         canPickup = false;
     }
 
-    protected void LandDust() {
+    private void LandDust() {
         if (GameDataManager.instance.GetData("Data", className, "Sprites", "dust") != null)
             EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "dust"),
                 transform.position, 0);
@@ -73,4 +73,8 @@ class Loot : ObjectBase {
                 c.transform.position, 0, c.transform);
         DestroyObject(gameObject);
     }
+
+	public void OnDestroy() {
+		LootManager.instance.RemoveLoot(this);
+	}
 }

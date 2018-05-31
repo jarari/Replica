@@ -65,4 +65,9 @@ public class Effect : MonoBehaviour {
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
         DestroyObject(gameObject);
     }
+
+	// 이펙트 오브젝트 제거시에 리스트도 즉시 제거
+	private void OnDestroy() {
+		EffectManager.instance.RemoveEffect(this);
+	}
 }
