@@ -80,6 +80,10 @@ public class ObjectBase : MonoBehaviour {
         return box;
     }
 
+    public Rigidbody2D GetRigidbody() {
+        return rb;
+    }
+
     public void FlipFace(bool right) {
         facingRight = right;
         Vector3 lscale = transform.localScale;
