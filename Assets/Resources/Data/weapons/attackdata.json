@@ -91,7 +91,7 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 200,
     "HitBox": {
       "0":{
         "Time": 3,
@@ -110,7 +110,7 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 200,
     "HitBox": {
       "0":{
         "Time": 1,
@@ -129,7 +129,7 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 400,
+    "ChargeAmount": 300,
     "HitBox": {
       "0":{
         "Time": 2,
@@ -167,7 +167,7 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 550,
+    "ChargeAmount": 400,
 	"KnockBack": {
         "X": 150,
         "Y": 950
@@ -266,7 +266,7 @@
     "DamageMultiplier": 3,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 600,
+    "ChargeAmount": 450,
 	"KnockBack": {
         "X": 300,
         "Y": 800
