@@ -18,10 +18,12 @@ public class CamController : MonoBehaviour {
     private int lastScreenHeight;
     private float marginWidth = 0;
     private float marginHeight = 0;
+    private int camRight = 75;
     private int camUp = 0;
-    private float smoothVal = 10f;
+    private float smoothValMin = 30f;
+    private float smoothValMax = 50f;
+    private float smoothDiv = 15f;
     private float zoomed = 1f;
-    private int pixelsPerUnit = 1;
     private bool shaking = false;
     private bool zooming = false;
 
@@ -29,7 +31,7 @@ public class CamController : MonoBehaviour {
         return Mathf.Clamp(x, LevelManager.instance.GetMapMin().x + GetCamSize().x + tilesize / 2f, LevelManager.instance.GetMapMax().x - GetCamSize().x - tilesize / 2f);
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         if (target == null || LevelManager.instance == null || zoomed != 1f)
             return;
         if (lastScreenWidth != Screen.width || lastScreenHeight != Screen.height)
@@ -37,17 +39,17 @@ public class CamController : MonoBehaviour {
         Vector3 deltapos = target.position - lastTargetPos;
         lastTargetPos = target.position;
         if (Mathf.Abs(target.position.x - camTargetPos.x) > deadzoneWidth / 2f)
-            camTargetPos.x = target.position.x - deadzoneWidth / 2f * Mathf.Sign(target.position.x - camTargetPos.x);
+            camTargetPos.x = target.position.x + deltapos.x - deadzoneWidth / 2f * Mathf.Sign(target.position.x - camTargetPos.x);
         if (Mathf.Abs(deltapos.x) / Time.deltaTime < 1)
             camTargetPos.x = target.position.x;
         if (Mathf.Abs(target.position.y - camTargetPos.y) > deadzoneHeight / 2f)
-            camTargetPos.y = target.position.y - deadzoneHeight / 2f * Mathf.Sign(target.position.y - camTargetPos.y);
+            camTargetPos.y = target.position.y + deltapos.y - deadzoneHeight / 2f * Mathf.Sign(target.position.y - camTargetPos.y);
         if (Mathf.Abs(deltapos.y) / Time.deltaTime < 1)
             camTargetPos.y = target.position.y + camUp;
-        camTargetPos.x = ClampCamX(camTargetPos.x);
-        Vector3 deltacam = (camTargetPos - camPos) / smoothVal;
-        if(deltacam.magnitude <= 0.05) {
-            deltacam *= smoothVal;
+        camTargetPos.x = ClampCamX(camTargetPos.x + camRight * Mathf.Clamp(deltapos.x / smoothDiv, -1, 1));
+        Vector3 deltacam = (camTargetPos - camPos);
+        if(deltacam.magnitude > 0.025f) {
+            deltacam /= Mathf.Clamp(smoothValMax - deltacam.magnitude / smoothDiv, smoothValMin, smoothValMax);
         }
         camPos += deltacam;
     }
@@ -58,8 +60,8 @@ public class CamController : MonoBehaviour {
         if (shaking && !PlayerPauseUI.IsPaused())
             temptarget += shakeCamVec;
         Vector3 roundedPos = new Vector3(0, 0, -10) {
-            x = (Mathf.Round(temptarget.x * pixelsPerUnit) / pixelsPerUnit),
-            y = (Mathf.Round(temptarget.y * pixelsPerUnit) / pixelsPerUnit)
+            x = (Mathf.Round(temptarget.x * Helper.PixelsPerUnit) / Helper.PixelsPerUnit),
+            y = (Mathf.Round(temptarget.y * Helper.PixelsPerUnit) / Helper.PixelsPerUnit)
         };
         transform.position = roundedPos;
     }
@@ -88,7 +90,7 @@ public class CamController : MonoBehaviour {
     public void SetupCam() {
         lastScreenWidth = Screen.width;
         lastScreenHeight = Screen.height;
-        Camera.main.orthographicSize = (GlobalUIManager.standardHeight / (1f * pixelsPerUnit)) * 0.25f;
+        Camera.main.orthographicSize = (GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f;
         standardAspect = GlobalUIManager.standardWidth / (float)GlobalUIManager.standardHeight;
         if (Screen.width / (float)Screen.height > standardAspect) {
             float forcedWidth = Screen.height * standardAspect;
@@ -118,7 +120,7 @@ public class CamController : MonoBehaviour {
     }
 
     public float GetStandardHeight() {
-        return (GlobalUIManager.standardHeight / (1f * pixelsPerUnit)) * 0.25f;
+        return (GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f;
     }
 
     public Vector2 GetCamSize() {
@@ -176,7 +178,7 @@ public class CamController : MonoBehaviour {
             camPos = Mathf.Sin(t * Mathf.PI / 2f) * (target - origin) + origin;
             if (t >= 1)
                 zoomed = amount;
-            Camera.main.orthographicSize = Mathf.Round((GlobalUIManager.standardHeight / (1f * pixelsPerUnit)) * 0.25f / zoomed);
+            Camera.main.orthographicSize = Mathf.Round((GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f / zoomed);
             yield return null;
         }
         zooming = false;
