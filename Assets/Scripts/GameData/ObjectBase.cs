@@ -15,7 +15,6 @@ public class ObjectBase : MonoBehaviour {
     protected bool onGround = true;
     protected bool facingRight = true;
     protected float height = 1;
-    protected int pixelsPerUnit = 1;
     public virtual void Initialize(string classname) {
         className = classname;
         anim = GetComponent<Animator>();
@@ -156,8 +155,8 @@ public class ObjectBase : MonoBehaviour {
 
     protected virtual void LateUpdate() {
         Vector2 pos = transform.position;
-        pos.x = Mathf.Round(pos.x * pixelsPerUnit) / pixelsPerUnit;
-        pos.y = Mathf.Round(pos.y * pixelsPerUnit) / pixelsPerUnit;
+        pos.x = Mathf.Round(pos.x * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
+        pos.y = Mathf.Round(pos.y * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
         transform.position = pos;
     }
 }

@@ -70,8 +70,8 @@ public class ScenarySimulation : MonoBehaviour {
             float triA = Mathf.PI / 2f - a + Mathf.Atan(distY / bgDist[i]);
             float triHyp = Mathf.Sqrt(Mathf.Pow(bgDist[i], 2) + Mathf.Pow(distY, 2));
             Vector3 pos = BGParents[i].transform.position;
-            pos.x = mapMin.x + (mapLength - camSize.x * 2f) * mapCompleted - bgLength[i] * mapCompleted + camSize.x * mapCompleted * 2f;
-            pos.y = camPos.y + Mathf.Cos(triA) * triHyp;
+            pos.x = Mathf.Round((mapMin.x + (mapLength - camSize.x * 2f) * mapCompleted - bgLength[i] * mapCompleted + camSize.x * mapCompleted * 2f) * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
+            pos.y = Mathf.Round((camPos.y + Mathf.Cos(triA) * triHyp) * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
             BGParents[i].transform.position = pos;
         }
     }

@@ -19,6 +19,7 @@ public static class Helper {
     private static float indicator_rand = 30f;
     private static float indicator_yvel = 30f;
     private static float indicator_yup = 30f;
+    public static int PixelsPerUnit = 1;
     public static LayerMask characterLayer;
     public static LayerMask mapLayer;
     public static LayerMask groundLayer;
