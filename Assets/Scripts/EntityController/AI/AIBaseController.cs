@@ -113,8 +113,8 @@ public class AIBaseController : BasicCharacterMovement {
         restTimer = Mathf.Clamp(restTimer - Time.deltaTime, 0, restTimer);
         if(restTimer == 0) {
             Walk();
-            if (Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, 0), new Vector2(16, 10), 0, Helper.mapLayer) != null
-                            && Physics2D.OverlapBox((Vector2)transform.position + new Vector2(32 * dir, maxJump), new Vector2(16, 5), 0, Helper.mapLayer) != null)
+            if (Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(32 * dir, -box.size.y + 16), new Vector2(16, 5), 0, Helper.mapLayer) != null
+                            && Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(32 * dir, maxJump - box.size.y), new Vector2(16, 5), 0, Helper.mapLayer) != null)
                 direction *= -1;
         }
         else {
