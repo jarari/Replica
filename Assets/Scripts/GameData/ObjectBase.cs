@@ -153,4 +153,11 @@ public class ObjectBase : MonoBehaviour {
         if (anim != null)
             anim.SetBool("onGround", onGround);
     }
+
+    protected virtual void LateUpdate() {
+        Vector2 pos = transform.position;
+        pos.x = Mathf.Round(pos.x * pixelsPerUnit) / pixelsPerUnit;
+        pos.y = Mathf.Round(pos.y * pixelsPerUnit) / pixelsPerUnit;
+        transform.position = pos;
+    }
 }
