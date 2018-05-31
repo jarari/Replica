@@ -86,6 +86,10 @@ public class Weapon : ObjectBase {
             if(owner.GetComponent<Rigidbody2D>().velocity.y < 300)
                 owner.GetController().SetVelY(300);
         }
+        if (GameDataManager.instance.GetData("Data", eventname, "Unstoppable") != null &&
+            Convert.ToInt32(GameDataManager.instance.GetData("Data", eventname, "Unstoppable")) == 1) {
+            owner.SetFlag(CharacterFlags.UnstoppableAttack);
+        }
         if(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount") != null) {
             owner.GetController().ForceMove(0);
             owner.AddForce(Vector2.right * Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount")) * owner.GetFacingDirection());

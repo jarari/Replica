@@ -33,7 +33,8 @@ public enum CharacterStates {
     AIControlled = 2,
     Boss = 4,
     KnockBackImmunity = 8,
-    StaggerImmunity = 16
+    StaggerImmunity = 16,
+    UnstoppableAttack = 32
 }
 
 public enum CharacterTypes {

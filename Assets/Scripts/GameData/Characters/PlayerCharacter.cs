@@ -11,8 +11,10 @@ public class PlayerCharacter : Character {
             if (GetState() != CharacterStates.Uncontrollable) {
                 if (delta >= GetMaxStat(CharacterStats.Health) * 0.5f)
                     anim.Play("hit_crit");
-                else
-                    anim.Play("hit_normal");
+                else {
+                    if(!HasFlag(CharacterFlags.UnstoppableAttack))
+                        anim.Play("hit_normal");
+                }
             }
         }
     }
