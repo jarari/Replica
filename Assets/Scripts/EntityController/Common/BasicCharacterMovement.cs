@@ -286,7 +286,7 @@ public class BasicCharacterMovement : MoveObject {
     }
 
     /* 공격 이벤트 */
-    protected void OnAttackEvent(string eventname) {
+    protected virtual void OnAttackEvent(string eventname) {
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
         character.SetState(CharacterStates.Attack);
         if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("gunkata")) {
@@ -304,7 +304,7 @@ public class BasicCharacterMovement : MoveObject {
     }
 
     /* 기타 무기 이벤트 (타이밍에 맞게 특정 행동을 하기 위함) */
-    protected void OnWeaponEvent(string eventname) {
+    protected virtual void OnWeaponEvent(string eventname) {
         if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("gunkata")) {
             character.GetWeapon(WeaponTypes.Pistol).OnWeaponEvent(eventname);
         }
@@ -364,10 +364,12 @@ public class BasicCharacterMovement : MoveObject {
         if (invincible == 1)
             character.SetFlag(CharacterFlags.Invincible);
         character.GetAnimator().SetBool("DiscardFromAnyState", true);
+        StartCoroutine(OnHitRecoverEvent(character.GetUncontrollableTimeLeft() + 0.25f, invincible));
     }
 
     /* 피격 회복 이벤트 */
-    protected virtual void OnHitRecoverEvent(int invincible) {
+    protected IEnumerator OnHitRecoverEvent(float delay, int invincible) {
+        yield return new WaitForSeconds(delay);
         if(invincible == 1)
             character.RemoveFlag(CharacterFlags.Invincible);
         character.GetAnimator().SetBool("DiscardFromAnyState", false);
@@ -456,8 +458,8 @@ public class BasicCharacterMovement : MoveObject {
                     }
                 }
             }
-            if (Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(box.size.x / 2f + 32 * dir, 16 - box.size.y / 2f), new Vector2(16, 5), 0, Helper.mapLayer) != null
-                            && Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(box.size.x / 2f + 32 * dir, maxJump - box.size.y / 2f), new Vector2(16, 5), 0, Helper.mapLayer) != null) {
+            if (Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(box.size.x / 2f * character.GetFacingDirection(), 16 - box.size.y / 2f), new Vector2(16, 5), 0, Helper.mapLayer) != null
+                            && Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(box.size.x / 2f * character.GetFacingDirection(), maxJump - box.size.y / 2f), new Vector2(16, 5), 0, Helper.mapLayer) == null) {
                 Jump();
             }
             if (Mathf.Abs(dy) > 32f && character.IsOnGround() && character.GetState() != CharacterStates.Jump) {

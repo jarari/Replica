@@ -5,6 +5,26 @@ using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System;
 
+[Flags] public enum KeyCombo {
+    None = 0x0,
+    Left = 0x1,
+    Up = 0x10,
+    Right = 0x100,
+    Down = 0x1000,
+    X = 0x10000
+}
+
+public class ComboData {
+    public List<KeyCombo> keyCombos = new List<KeyCombo>();
+    public List<string> nextPossibleCombos = new List<string>();
+    public bool isJumpAttack = false;
+    public ComboData(List<KeyCombo> c, List<string> n, bool ja = false) {
+        keyCombos = c;
+        nextPossibleCombos = n;
+        isJumpAttack = ja;
+    }
+}
+
 /* 게임에 쓰일 데이터들을 관리하는 클래스
  * 모든 데이터는 json 형태로 관리하며
  * 이 클래스에서 ParseJSONData로 호출하면 등록됨. */
@@ -12,6 +32,8 @@ public class GameDataManager : MonoBehaviour {
     public static GameDataManager instance;
     public bool debug = false;
     private Dictionary<string, object> GameData;
+    private Dictionary<string, ComboData> basicCombos;
+    private Dictionary<string, ComboData> continuousCombos;
     void Awake() {
         if (instance == null) {
             instance = this;
@@ -36,6 +58,67 @@ public class GameDataManager : MonoBehaviour {
         ParseJSONData("weapons/projectiledata");
         if (!debug)
             GlobalUIManager.instance.LoadScene(1);
+    }
+
+    private void ParseComboData(Dictionary<string, object> data) {
+        basicCombos = new Dictionary<string, ComboData>();
+        continuousCombos = new Dictionary<string, ComboData>();
+        foreach(string key in data.Keys) {
+            if(GetData(data, key, "Combo") != null) {
+                List<KeyCombo> keyCombos = new List<KeyCombo>();
+                List<string> nextPossibleCombos = new List<string>();
+                bool isBasic = false;
+                bool isJumpAttack = false;
+                if (GetData(data, key, "Combo", "IsBasic") != null && Convert.ToSingle(GetData(data, key, "Combo", "IsBasic")) == 1)
+                    isBasic = true;
+                if (GetData(data, key, "Combo", "IsJumpAttack") != null && Convert.ToSingle(GetData(data, key, "Combo", "IsJumpAttack")) == 1)
+                    isJumpAttack = true;
+                foreach (string keycombo in ((Dictionary<string, object>)GetData(data, key, "Combo", "Keys")).Values) {
+                    switch (keycombo) {
+                        case "Left":
+                            keyCombos.Add(KeyCombo.Left);
+                            break;
+                        case "Up":
+                            keyCombos.Add(KeyCombo.Up);
+                            break;
+                        case "Right":
+                            keyCombos.Add(KeyCombo.Right);
+                            break;
+                        case "Down":
+                            keyCombos.Add(KeyCombo.Down);
+                            break;
+                        case "LeftUp":
+                            keyCombos.Add(KeyCombo.Left | KeyCombo.Up);
+                            break;
+                        case "RightUp":
+                            keyCombos.Add(KeyCombo.Right | KeyCombo.Up);
+                            break;
+                        case "LeftDown":
+                            keyCombos.Add(KeyCombo.Left | KeyCombo.Down);
+                            break;
+                        case "RightDown":
+                            keyCombos.Add(KeyCombo.Right | KeyCombo.Down);
+                            break;
+                        case "X":
+                            keyCombos.Add(KeyCombo.X);
+                            break;
+                    }
+                }
+                if (GetData(data, key, "Combo", "PossibleCombos") != null) {
+                    foreach (string nextcombo in ((Dictionary<string, object>)GetData(data, key, "Combo", "PossibleCombos")).Values) {
+                        nextPossibleCombos.Add(nextcombo);
+                    }
+                }
+                if (isBasic) {
+                    basicCombos.Add(key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
+                }
+                else {
+                    continuousCombos.Add(key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
+                }
+            }
+        }
+        //GameData.Add("BasicCombos", basicCombos);
+        //GameData.Add("ContinuousCombos", continuousCombos);
     }
 
     /* JSON 안의 모든 내용을 찾아서 Dictionary화 시키는 함수.
@@ -67,6 +150,8 @@ public class GameDataManager : MonoBehaviour {
 
             if (GameData.ContainsKey("Data")) {
                 Dictionary<string, object> temp = RecursiveDigger(WholeFile);
+                if (filename == "weapons/attackdata")
+                    ParseComboData(temp);
                 Dictionary<string, object> data = (Dictionary<string, object>)GameData["Data"];
                 foreach (KeyValuePair<string, object> kvp in temp) {
                     data.Add(kvp.Key, kvp.Value);
@@ -129,6 +214,13 @@ public class GameDataManager : MonoBehaviour {
         if (tempDict.ContainsKey(Keys[Keys.Length - 1]))
             return tempDict[Keys[Keys.Length - 1]];
         return null;
+    }
+
+    public Dictionary<string, ComboData> GetBasicComboData() {
+        return basicCombos;
+    }
+    public Dictionary<string, ComboData> GetContinuousComboData() {
+        return continuousCombos;
     }
 
     /* 빠른 접근을 위한 스탯 관련 함수들 */

@@ -16,7 +16,16 @@
           "Y": 46
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_basic_02"
+		},
+		"IsBasic":1
+	}
   },
   "attack_basic_02": {
     "DamageMultiplier": 1,
@@ -35,7 +44,15 @@
           "Y": 34
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_basic_03"
+		}
+	}
   },
   "attack_basic_03": {
     "DamageMultiplier": 1,
@@ -54,12 +71,21 @@
           "Y": 98
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_basic_04"
+		}
+	}
   },
   "attack_basic_04": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
+	"Unstoppable":1,
     "ChargeAmount": 300,
     "KnockBack": {
         "X": 600,
@@ -77,15 +103,29 @@
           "Y": 150
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_basic_finish"
+		}
+	}
   },
   "attack_basic_finish": {
     "DamageMultiplier": 3,
     "SADestruction": 0,
     "Stagger": 0,
+	"Unstoppable":1,
     "ChargeAmount": 0,
     "HitBox": {
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		}
+	}
   },
   "attack_fist_01": {
     "DamageMultiplier": 1,
@@ -104,7 +144,18 @@
           "Y": 50
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"Down",
+			"1":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_fist_02",
+			"1":"attack_fist_upper"
+		},
+		"IsBasic":1
+	}
   },
   "attack_fist_02": {
     "DamageMultiplier": 1,
@@ -123,7 +174,16 @@
           "Y": 50
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_fist_03",
+			"1":"attack_fist_upper"
+		}
+	}
   },
   "attack_fist_03": {
     "DamageMultiplier": 1,
@@ -142,12 +202,22 @@
           "Y": 46
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_fist_04",
+			"1":"attack_fist_upper"
+		}
+	}
   },
   "attack_fist_04": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
+	"Unstoppable":1,
     "ChargeAmount": 400,
     "HitBox": {
       "0":{
@@ -161,12 +231,22 @@
           "Y": 62
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_fist_04",
+			"1":"attack_fist_upper"
+		}
+	}
   },
   "attack_fist_upper": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
+	"Unstoppable":1,
     "ChargeAmount": 400,
 	"KnockBack": {
         "X": 150,
@@ -184,7 +264,15 @@
           "Y": 278
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"Down",
+			"1":"RightDown",
+			"2":"Right",
+			"3":"X"
+		}
+	}
   },
   "attack_sword_01": {
     "DamageMultiplier": 1,
@@ -203,7 +291,17 @@
           "Y": 110
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"Up",
+			"1":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_sword_02"
+		},
+		"IsBasic":1
+	}
   },
   "attack_sword_02": {
     "DamageMultiplier": 1,
@@ -222,7 +320,15 @@
           "Y": 96
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_sword_03"
+		}
+	}
   },
   "attack_sword_03": {
     "DamageMultiplier": 1,
@@ -241,12 +347,21 @@
           "Y": 82
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_sword_04"
+		}
+	}
   },
   "attack_sword_04": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
+	"Unstoppable":1,
     "ChargeAmount": 300,
     "HitBox": {
       "0":{
@@ -260,12 +375,21 @@
           "Y": 114
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"PossibleCombos":{
+			"0":"attack_sword_finish"
+		}
+	}
   },
   "attack_sword_finish": {
     "DamageMultiplier": 3,
     "SADestruction": 0,
     "Stagger": 0,
+	"Unstoppable":1,
     "ChargeAmount": 450,
 	"KnockBack": {
         "X": 300,
@@ -283,7 +407,12 @@
           "Y": 222
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		}
+	}
   },
   "hg_forward": {
     "DamageMultiplier": 1,
@@ -345,7 +474,14 @@
           "Y": 150
         }
       }
-    }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		},
+		"IsBasic":1,
+		"IsJumpAttack":1
+	}
   },
   "throw_up": {
 	"ThrowAngle":45,
