@@ -9,7 +9,7 @@ public class MoveObject : MonoBehaviour {
     protected float maxSpeed = 0.0f;
     protected float accel = 20f;
     protected float realSpeed = 0.0f;
-    protected float dir = 0;
+    protected float movedir = 0;
     protected float lastdir = 0;
     protected bool movedThisFrame = false;
     protected Character character;
@@ -24,16 +24,16 @@ public class MoveObject : MonoBehaviour {
      * a 값으로 속도를 조절할 수는 있지만 최대 속도를 넘어설 수는 없음 */
     public void Move(float a) {
         movedThisFrame = true;
-        lastdir = dir;
-        dir = a;
+        lastdir = movedir;
+        movedir = a;
         maxSpeed = character.GetCurrentStat(CharacterStats.MoveSpeed);
         realSpeed = Mathf.Clamp(realSpeed + maxSpeed / 15f, 0, maxSpeed);
-        if(Mathf.Abs(GetComponent<Rigidbody2D>().velocity.x) < Mathf.Abs(dir * realSpeed)) {
-            float velX = Mathf.Clamp(dir * realSpeed, -maxSpeed, maxSpeed);
+        if(Mathf.Abs(GetComponent<Rigidbody2D>().velocity.x) < Mathf.Abs(movedir * realSpeed)) {
+            float velX = Mathf.Clamp(movedir * realSpeed, -maxSpeed, maxSpeed);
             GetComponent<Rigidbody2D>().velocity = new Vector2(velX, GetComponent<Rigidbody2D>().velocity.y);
         }
-        else if(dir * GetComponent<Rigidbody2D>().velocity.x < 0){
-            float velX = GetComponent<Rigidbody2D>().velocity.x + dir * realSpeed;
+        else if(movedir * GetComponent<Rigidbody2D>().velocity.x < 0){
+            float velX = GetComponent<Rigidbody2D>().velocity.x + movedir * realSpeed;
             GetComponent<Rigidbody2D>().velocity = new Vector2(velX, GetComponent<Rigidbody2D>().velocity.y);
         }
     }
@@ -57,12 +57,12 @@ public class MoveObject : MonoBehaviour {
 
     void LateUpdate () {
         if (character == null) return;
-        if (character.GetUncontrollableTimeLeft() > 0 || !movedThisFrame || lastdir * dir < 0) {
+        if (character.GetUncontrollableTimeLeft() > 0 || !movedThisFrame || lastdir * movedir < 0) {
             realSpeed = 0.0f;
             return;
         }
         movedThisFrame = false;
-        //GetComponent<Rigidbody2D>().velocity = new Vector2(dir * realSpeed, GetComponent<Rigidbody2D>().velocity.y);
-        dir = 0;
+        //GetComponent<Rigidbody2D>().velocity = new Vector2(movedir * realSpeed, GetComponent<Rigidbody2D>().velocity.y);
+        movedir = 0;
     }
 }

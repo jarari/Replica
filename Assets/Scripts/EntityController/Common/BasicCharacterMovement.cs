@@ -456,8 +456,8 @@ public class BasicCharacterMovement : MoveObject {
                     }
                 }
             }
-            if (Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(32 * dir, -box.size.y + 16), new Vector2(16, 5), 0, Helper.mapLayer) != null
-                            && Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(32 * dir, maxJump - box.size.y), new Vector2(16, 5), 0, Helper.mapLayer) != null) {
+            if (Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(box.size.x / 2f + 32 * dir, 16 - box.size.y / 2f), new Vector2(16, 5), 0, Helper.mapLayer) != null
+                            && Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(box.size.x / 2f + 32 * dir, maxJump - box.size.y / 2f), new Vector2(16, 5), 0, Helper.mapLayer) != null) {
                 Jump();
             }
             if (Mathf.Abs(dy) > 32f && character.IsOnGround() && character.GetState() != CharacterStates.Jump) {
