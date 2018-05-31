@@ -144,6 +144,8 @@ public class Projectile : MonoBehaviour {
     }
 
     protected virtual void Explode() {
+        if (GameDataManager.instance.GetData("Data", className, "ShakeCam") == null || (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null && (int)GameDataManager.instance.GetData("Data", className, "Sprites", "ShakeCam") != 0))
+            CamController.instance.ShakeCam(data[WeaponStats.Damage] / 20f, Mathf.Clamp(data[WeaponStats.Damage] / 50f, 0, 2));
         List<Character> closeEnemies = CharacterManager.instance.GetAllCharacters().FindAll(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position) <= range);
         foreach (Character c in closeEnemies) {
             if (c.HasFlag(CharacterFlags.Invincible))
@@ -168,12 +170,6 @@ public class Projectile : MonoBehaviour {
     }
 
     protected void OnDestroy() {
-        if (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null) {
-            if(Vector2.Distance(CharacterManager.instance.GetPlayer().transform.position, transform.position) < Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Radius"))){
-                CamController.instance.ShakeCam(Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Magnitude"))
-                , Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Duration")));
-            }
-        }
         Explode();
         ExplosionEffect();
         BulletManager.instance.OnProjectileHit(this);

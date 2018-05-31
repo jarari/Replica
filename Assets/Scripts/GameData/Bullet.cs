@@ -131,12 +131,6 @@ public class Bullet : MonoBehaviour {
 
     private void OnDestroy() {
         if (!collided) return;
-        if (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null) {
-            if (Vector2.Distance(CharacterManager.instance.GetPlayer().transform.position, transform.position) < Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Radius"))) {
-                CamController.instance.ShakeCam(Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Magnitude"))
-                , Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Duration")));
-            }
-        }
         BulletManager.instance.OnBulletHit(this);
         if(anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
             Vector3 temp = collisionNorm;
