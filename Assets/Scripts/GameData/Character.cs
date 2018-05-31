@@ -93,7 +93,9 @@ public abstract class Character : ObjectBase {
     protected float lootThrowYMin = 300f;
     protected float lootThrowYMax = 450f;
 
-    void Update() {
+    protected float colliderPushAmount = 50f;
+
+    protected void Update() {
         uncontrollableTimer = Mathf.Clamp(uncontrollableTimer - Time.deltaTime, 0, uncontrollableTimer);
         if (uncontrollableTimer > 0 || forceUncontrollable)
             uncontrollable = true;
@@ -152,7 +154,30 @@ public abstract class Character : ObjectBase {
                 }
             }
         }
-    }    
+    }
+
+    protected override void FixedUpdate() {
+        base.FixedUpdate();
+        Collider2D[] colliders = new Collider2D[64];
+        Physics2D.OverlapBoxNonAlloc((Vector2)transform.position + box.offset, box.size, 0, colliders, Helper.characterLayer);
+        foreach (Collider2D col in colliders) {
+            if(col != null) {
+                if (col.gameObject != gameObject) {
+                    Character c = col.GetComponent<Character>();
+                    if (!c.GetClass().Equals(GetClass())) {
+                        float xDiff = (transform.position.x - c.transform.position.x);
+                        int pushDir = 1;
+                        if (xDiff > 0) {
+                            pushDir = -1;
+                        }
+                        if (Mathf.Abs(c.GetRigidbody().velocity.x) < colliderPushAmount) {
+                            c.AddForce(Vector2.right * pushDir * colliderPushAmount);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public override void Initialize(string classname) {
         base.Initialize(classname);
@@ -344,9 +369,9 @@ public abstract class Character : ObjectBase {
     }
 
     public void ModStat(CharacterStats stat, float val) {
+        stats[(int)stat] = Mathf.Clamp(GetUnbuffedStat(GetBuffedStat(stats[(int)stat], stat) + val, stat), 0, GetMaxStat(stat));
         if (stat == CharacterStats.Health)
             OnHealthChanged(val);
-        stats[(int)stat] = Mathf.Clamp(GetUnbuffedStat(GetBuffedStat(stats[(int)stat], stat) + val, stat), 0, GetMaxStat(stat));
     }
 
     public void SetCurrentStat(CharacterStats stat, float val) {
