@@ -18,8 +18,8 @@ public class CamController : MonoBehaviour {
     private int lastScreenHeight;
     private float marginWidth = 0;
     private float marginHeight = 0;
-    private int camUp = 155;
-    private float smoothVal = 15f;
+    private int camUp = 0;
+    private float smoothVal = 10f;
     private float zoomed = 1f;
     private int pixelsPerUnit = 1;
     private bool shaking = false;
