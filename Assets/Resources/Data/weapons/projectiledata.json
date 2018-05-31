@@ -12,6 +12,12 @@
 			"controller":"throwable_grenade_controller",
 			"hit":"effect_grenade_explosion"
 		},
+		"ShakeCam":
+		{
+			"Radius":500,
+			"Magnitude":4.0,
+			"Duration":0.5
+		},
 		"CookTime":3
 	}
 }
