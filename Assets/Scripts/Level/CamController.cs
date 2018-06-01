@@ -18,26 +18,40 @@ public class CamController : MonoBehaviour {
     private int lastScreenHeight;
     private float marginWidth = 0;
     private float marginHeight = 0;
-    private int camRight = 75;
-    private int camUp = 0;
-    private float smoothValMin = 30f;
-    private float smoothValMax = 50f;
-    private float smoothDiv = 15f;
-    private float zoomed = 1f;
+    private int camUp = 50;
+
+	//private int camRight = 25;
+	//private float smoothValMin = 30f;
+	//private float smoothValMax = 50f;
+	//private float smoothDiv = 10f;
+
+	private float zoomed = 1f;
     private bool shaking = false;
     private bool zooming = false;
 
-    private float ClampCamX(float x) {
-        return Mathf.Clamp(x, LevelManager.instance.GetMapMin().x + GetCamSize().x + tilesize / 2f, LevelManager.instance.GetMapMax().x - GetCamSize().x - tilesize / 2f);
-    }
+	//asd
+	private Rigidbody2D rigb2D;
+	private Vector3 lastTargetVel;
+	private Vector3 targetAcceleration_lerp;
+	private Vector3 targetVelocity;
 
-    private void FixedUpdate() {
+	private float smoothVal = 1f;
+	private float bobbing = 0.5f;
+	//asd
+
+	private float ClampCamX(float x) {
+		return Mathf.Clamp(x, LevelManager.instance.GetMapMin().x + GetCamSize().x + tilesize / 2f, LevelManager.instance.GetMapMax().x - GetCamSize().x - tilesize / 2f);
+	}
+	private void FixedUpdate() {
         if (target == null || LevelManager.instance == null || zoomed != 1f)
             return;
         if (lastScreenWidth != Screen.width || lastScreenHeight != Screen.height)
             SetupCam();
-        Vector3 deltapos = target.position - lastTargetPos;
+
+		/*
+		Vector3 deltapos = target.position - lastTargetPos;
         lastTargetPos = target.position;
+
         if (Mathf.Abs(target.position.x - camTargetPos.x) > deadzoneWidth / 2f)
             camTargetPos.x = target.position.x + deltapos.x - deadzoneWidth / 2f * Mathf.Sign(target.position.x - camTargetPos.x);
         if (Mathf.Abs(deltapos.x) / Time.deltaTime < 1)
@@ -46,26 +60,51 @@ public class CamController : MonoBehaviour {
             camTargetPos.y = target.position.y + deltapos.y - deadzoneHeight / 2f * Mathf.Sign(target.position.y - camTargetPos.y);
         if (Mathf.Abs(deltapos.y) / Time.deltaTime < 1)
             camTargetPos.y = target.position.y + camUp;
-        camTargetPos.x = ClampCamX(camTargetPos.x + camRight * Mathf.Clamp(deltapos.x / smoothDiv, -1, 1));
-        Vector3 deltacam = (camTargetPos - camPos);
-        if(deltacam.magnitude > 0.025f) {
-            deltacam /= Mathf.Clamp(smoothValMax - deltacam.magnitude / smoothDiv, smoothValMin, smoothValMax);
-        }
+
+        camTargetPos.x = ClampCamX(camTargetPos.x) + camRight * Mathf.Clamp(deltapos.x / smoothDiv, -1, 1);
+
+        Vector3 deltacam = (camTargetPos - camPos) * 100.0f * Time.deltaTime / smoothVal;
+        //if(deltacam.magnitude > 0.025f) {
+        //    deltacam /= Mathf.Clamp(smoothValMax - deltacam.magnitude / smoothDiv, smoothValMin, smoothValMax);
+        //}
         camPos += deltacam;
-    }
+		*/
+
+		//asd
+		
+		targetVelocity = rigb2D.velocity;
+		Vector3 targetAcceleration = Vector3.zero;
+
+		if(lastTargetVel.magnitude > 0) {
+			targetAcceleration = (targetVelocity - lastTargetVel) / Time.deltaTime;
+		}
+		lastTargetVel = targetVelocity;
+
+		targetAcceleration_lerp += (targetAcceleration - targetAcceleration_lerp) * Time.deltaTime;
+		targetAcceleration_lerp.y = targetAcceleration_lerp.y * 0.8f;
+
+		camTargetPos = target.position;
+		camTargetPos.x = ClampCamX(camTargetPos.x);
+		camTargetPos.y = camTargetPos.y + camUp;
+
+		camPos += (camTargetPos + targetVelocity * (0.5f + 0.2f * bobbing) + targetAcceleration_lerp * (0.2f * bobbing) - camPos) * 2.0f * Time.deltaTime / smoothVal;
+		
+		//asd
+	}
 
     private void LateUpdate() {
-        Vector3 temptarget = camPos;
-        temptarget.x = ClampCamX(temptarget.x);
-        if (shaking && !PlayerPauseUI.IsPaused())
+		Vector3 temptarget = camPos;
+		//temptarget.x = ClampCamX(temptarget.x);
+		if(shaking && !PlayerPauseUI.IsPaused())
             temptarget += shakeCamVec;
         Vector3 roundedPos = new Vector3(0, 0, -10) {
             x = (Mathf.Round(temptarget.x * Helper.PixelsPerUnit) / Helper.PixelsPerUnit),
             y = (Mathf.Round(temptarget.y * Helper.PixelsPerUnit) / Helper.PixelsPerUnit)
         };
         transform.position = roundedPos;
-    }
-    private void Awake() {
+	}
+
+	private void Awake() {
         if (instance == null) {
             instance = this;
         }
@@ -84,7 +123,11 @@ public class CamController : MonoBehaviour {
         camTargetPos = p.position + new Vector3(0, camUp, -10);
         camTargetPos.x = ClampCamX(camTargetPos.x);
         camPos = camTargetPos;
-        //ShakeCam(10f, 5);
+		//ShakeCam(10f, 5);
+
+		//asd
+		rigb2D = p.GetComponent<Rigidbody2D>();
+		//asd
     }
     
     public void SetupCam() {
