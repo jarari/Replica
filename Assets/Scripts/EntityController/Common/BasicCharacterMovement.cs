@@ -364,13 +364,24 @@ public class BasicCharacterMovement : MoveObject {
         if (invincible == 1)
             character.SetFlag(CharacterFlags.Invincible);
         character.GetAnimator().SetBool("DiscardFromAnyState", true);
-        StartCoroutine(OnHitRecoverEvent(character.GetUncontrollableTimeLeft() + 0.25f, invincible));
+        if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("knockout"))
+            StartCoroutine(OnKnockoutRecoverEvent(invincible));
+        else
+            StartCoroutine(OnHitRecoverEvent(character.GetUncontrollableTimeLeft() + 0.25f, invincible));
     }
 
     /* 피격 회복 이벤트 */
     protected IEnumerator OnHitRecoverEvent(float delay, int invincible) {
         yield return new WaitForSeconds(delay);
         if(invincible == 1)
+            character.RemoveFlag(CharacterFlags.Invincible);
+        if(character.GetAnimator().GetInteger("State") == 8)
+            character.GetAnimator().SetBool("DiscardFromAnyState", false);
+    }
+
+    protected IEnumerator OnKnockoutRecoverEvent(int invincible) {
+        yield return new WaitWhile(() => !character.IsOnGround() || character.GetUncontrollableTimeLeft() > 0);
+        if (invincible == 1)
             character.RemoveFlag(CharacterFlags.Invincible);
         character.GetAnimator().SetBool("DiscardFromAnyState", false);
         character.SetUncontrollable(false);
