@@ -23,9 +23,6 @@ public class GeneralControl : BasicCharacterMovement {
     private void EvaluateCombo(List<KeyCombo> kc) {
         if (nextAttack >= Time.time || character.GetState() == CharacterStates.Shift)
             return;
-        foreach(KeyCombo k in kc) {
-            Debug.Log(k);
-        }
         if (character.GetState() != CharacterStates.Attack || currentCombo == null) {
             foreach(KeyValuePair<string, ComboData> kvp in GameDataManager.instance.GetBasicComboData()) {
                 if ((character.IsOnGround() && !kvp.Value.isJumpAttack)
@@ -67,6 +64,7 @@ public class GeneralControl : BasicCharacterMovement {
                         i++;
                     }
                     if (match) {
+                        Debug.Log(nextCombo);
                         currentCombo = next;
                         character.GetAnimator().Play(nextCombo);
                     }
