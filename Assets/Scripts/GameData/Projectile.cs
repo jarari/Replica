@@ -43,7 +43,7 @@ public class Projectile : MonoBehaviour {
             anim = null;
         }
         if (GameDataManager.instance.GetData("Data", className, "PhysicsMaterial") != null) {
-            rb.sharedMaterial = Helper.GetPhysicsMaterial2D((string)GameDataManager.instance.GetData("Data", className, "PhysicsMaterial"));
+            rb.sharedMaterial = Helper.GetPhysicsMaterial2D("Sprites/tileset/physicsmat", (string)GameDataManager.instance.GetData("Data", className, "PhysicsMaterial"));
         }
         if (GameDataManager.instance.GetData("Data", className, "FallOff50") != null) {
             falloff50 = range * Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "FallOff50"));

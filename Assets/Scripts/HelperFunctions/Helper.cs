@@ -19,6 +19,7 @@ public static class Helper {
     private static float indicator_rand = 30f;
     private static float indicator_yvel = 30f;
     private static float indicator_yup = 30f;
+    private static Dictionary<string, Material> cachedMaterials = new Dictionary<string, Material>();
     public static int PixelsPerUnit = 1;
     public static LayerMask characterLayer;
     public static LayerMask mapLayer;
@@ -40,14 +41,38 @@ public static class Helper {
         return null;
     }
 
-    public static PhysicsMaterial2D GetPhysicsMaterial2D(string name) {
-        foreach (PhysicsMaterial2D mat in Resources.LoadAll("Sprites/tileset/physicsmat", typeof(PhysicsMaterial2D))) {
+    public static PhysicsMaterial2D GetPhysicsMaterial2D(string path, string name) {
+        foreach (PhysicsMaterial2D mat in Resources.LoadAll(path, typeof(PhysicsMaterial2D))) {
             if (mat.name == name)
                 return mat;
         }
         return null;
     }
 
+    public static Material GetMaterial(string path, string name) {
+        foreach (Material mat in Resources.LoadAll(path, typeof(Material))) {
+            if (mat.name == name)
+                return mat;
+        }
+        return null;
+    }
+
+    public static Texture GetTexture(string path, string name) {
+        foreach (Texture tex in Resources.LoadAll(path, typeof(Texture))) {
+            if (tex.name == name)
+                return tex;
+        }
+        return null;
+    }
+
+    public static Flare GetFlare(string path, string name) {
+        foreach (Flare flr in Resources.LoadAll(path, typeof(Flare))) {
+            if (flr.name == name)
+                return flr;
+        }
+        return null;
+    }
+    
     public static bool CalcChance(float chance) {
         return Random.Range(0.00f, 1.00f) <= chance;
     }
