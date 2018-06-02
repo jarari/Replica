@@ -48,8 +48,6 @@ public class CamController : MonoBehaviour {
 	private void FixedUpdate() {
         if (target == null || LevelManager.instance == null || zoomed != 1f)
             return;
-        if (lastScreenWidth != Screen.width || lastScreenHeight != Screen.height)
-            SetupCam();
 
 		/*
 		Vector3 deltapos = target.position - lastTargetPos;
@@ -101,7 +99,10 @@ public class CamController : MonoBehaviour {
 	}
 
     private void LateUpdate() {
-		Vector3 temptarget = camPos;
+        if (lastScreenWidth != Screen.width || lastScreenHeight != Screen.height)
+            SetupCam();
+
+        Vector3 temptarget = camPos;
 		//temptarget.x = ClampCamX(temptarget.x);
 		if(shaking && !PlayerPauseUI.IsPaused())
             temptarget += shakeCamVec;
@@ -142,20 +143,23 @@ public class CamController : MonoBehaviour {
         lastScreenWidth = Screen.width;
         lastScreenHeight = Screen.height;
         Camera.main.orthographicSize = (GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f;
-        standardAspect = GlobalUIManager.standardWidth / (float)GlobalUIManager.standardHeight;
-        if (Screen.width / (float)Screen.height > standardAspect) {
-            float forcedWidth = Screen.height * standardAspect;
-            marginWidth = (Screen.width - forcedWidth) / Screen.width;
-            marginHeight = 0;
-            Camera.main.rect = new Rect(marginWidth / 2f, 0, 1.0f - marginWidth, 1);
-        }
-        else if(Screen.width / (float)Screen.height < standardAspect) {
-            float forcedHeight = Screen.width / standardAspect;
-            marginWidth = 0;
-            marginHeight = (Screen.height - forcedHeight) / Screen.height;
-            Camera.main.rect = new Rect(0, marginHeight / 2f, 1, 1.0f - marginHeight);
-        }
+        Vector2 forcedSize = GetForcedScreenSize();
+        marginWidth = (Screen.width - forcedSize.x) / Screen.width;
+        marginHeight = (Screen.height - forcedSize.y) / Screen.height;
+        Camera.main.rect = new Rect(marginWidth / 2f, marginHeight / 2f, 1.0f - marginWidth, 1.0f - marginHeight);
         PlayerHUD.DrawUI();
+    }
+
+    public Vector2 GetForcedScreenSize() {
+        standardAspect = GlobalUIManager.standardWidth / (float)GlobalUIManager.standardHeight;
+        Vector2 forcedSize = new Vector2(Screen.width, Screen.height);
+        if (Screen.width / (float)Screen.height > standardAspect) {
+            forcedSize.x = Screen.height * standardAspect;
+        }
+        else if (Screen.width / (float)Screen.height < standardAspect) {
+            forcedSize.y = Screen.width / standardAspect;
+        }
+        return forcedSize;
     }
 
     public Vector2 GetMargin() {
