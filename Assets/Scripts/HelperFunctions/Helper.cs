@@ -97,14 +97,20 @@ public static class Helper {
     }
 
     public static float BallisticsAngCalc(float distance, float height, float velocity, bool min) {
-        float partial = Mathf.Sqrt(Mathf.Pow(velocity, 4) - 981 * (981 * Mathf.Pow(distance, 2) + 2 * height * Mathf.Pow(velocity, 2)));
+        float absGrav = Mathf.Abs(Physics2D.gravity.y);
+        float partial = Mathf.Sqrt(Mathf.Pow(velocity, 4) - absGrav * (absGrav * Mathf.Pow(distance, 2) + 2 * height * Mathf.Pow(velocity, 2)));
         float ang = 0;
         if (min)
-            ang = Mathf.Min(Mathf.Atan((Mathf.Pow(velocity, 2) + partial) / (981 * distance)), Mathf.Atan((Mathf.Pow(velocity, 2) - partial) / (981 * distance)));
+            ang = Mathf.Min(Mathf.Atan((Mathf.Pow(velocity, 2) + partial) / (absGrav * distance)), Mathf.Atan((Mathf.Pow(velocity, 2) - partial) / (absGrav * distance)));
         else
-            ang = Mathf.Max(Mathf.Atan((Mathf.Pow(velocity, 2) + partial) / (981 * distance)), Mathf.Atan((Mathf.Pow(velocity, 2) - partial) / (981 * distance)));
+            ang = Mathf.Max(Mathf.Atan((Mathf.Pow(velocity, 2) + partial) / (absGrav * distance)), Mathf.Atan((Mathf.Pow(velocity, 2) - partial) / (absGrav * distance)));
         ang *= Mathf.Rad2Deg;
         return ang;
+    }
+
+    public static List<Vector2> GetTrajectoryPath(Vector2 origin, float angle, float velocity, int drawCount = 20) {
+        List<Vector2> traj = new List<Vector2>();
+        return traj;
     }
 
     public static float BallisticsMaxRangeCalc(float velocity) {
