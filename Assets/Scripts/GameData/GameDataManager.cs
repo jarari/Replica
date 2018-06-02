@@ -111,6 +111,7 @@ public class GameDataManager : MonoBehaviour {
                 }
                 if (isBasic) {
                     basicCombos.Add(key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
+                    continuousCombos.Add(key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
                 }
                 else {
                     continuousCombos.Add(key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
