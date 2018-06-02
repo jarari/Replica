@@ -68,13 +68,13 @@ public class GlobalUIManager : MonoBehaviour {
         if (margin.x != 0) {
             _width = (int)(_width * (1.0f - margin.x));
             _height = (int)(_height * (1.0f - margin.x));
-            rect.position = screenCorner + new Vector2(pos.x * heightRatio, pos.y * heightRatio);
+            obj.transform.position = screenCorner + new Vector2(pos.x * heightRatio, pos.y * heightRatio);
         }
         else if (margin.y != 0) {
-            rect.position = screenCorner + new Vector2(pos.x * widthRatio, pos.y * widthRatio);
+            obj.transform.position = screenCorner + new Vector2(pos.x * widthRatio, pos.y * widthRatio);
         }
         else {
-            rect.position = pos;
+            obj.transform.position = pos;
         }
         rect.sizeDelta = new Vector2(_width, _height);
     }
