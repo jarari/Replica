@@ -23,7 +23,7 @@
 			"Offset_X":0.0,
 			"Offset_Y":-0.5,
 			"Size_X":30.0,
-			"Size_Y":102.0
+			"Size_Y":98.0
 		},
 		"Scale":
 		{
@@ -52,7 +52,7 @@
 		"Collider":
 		{
 			"Offset_X":0.0,
-			"Offset_Y":-0.5,
+			"Offset_Y":2.0,
 			"Size_X":30.0,
 			"Size_Y":102.0
 		},
@@ -83,7 +83,7 @@
 		"Collider":
 		{
 			"Offset_X":0.0,
-			"Offset_Y":1.0,
+			"Offset_Y":2.5,
 			"Size_X":30.0,
 			"Size_Y":75.0
 		},

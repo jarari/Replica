@@ -145,6 +145,7 @@ public class GeneralControl : BasicCharacterMovement {
 		}
 		
 		if (!PlayerPauseUI.IsPaused()) {
+			Debug.Log(character.GetState());
             if (character.GetUncontrollableTimeLeft() == 0) {
 				
 				//이동
@@ -155,18 +156,20 @@ public class GeneralControl : BasicCharacterMovement {
 					else {
 						if(sprintDoubleTabTimerToggle) {
 							sprintDoubleTabTimer = sprintDoubleTabTime;
-							sprintDoubleTabTimerToggle = false; // 타이머 연속 생성 제한
+							sprintDoubleTabTimerToggle = false; // 타이머 연속 초기화 제한
 						}
 
 						if(canSprint && walk == 1) { // 떼고 다시 누를 때 이전에 누른 키의 방향이 같아야 함
 							sprint = 1;
+							waitSprintDoubleTab = false; // 스프린트 시작 시 타이머 종료 (무조건 더블탭에만 반응 삼연타시 불가)
+							sprintDoubleTabTimer = 0f;
 						}
 						else {
-							canSprint = false; // 스프린트 중 방향 전환 시 스프린트 유지 제한
 							sprint = 0;
 							Walk(1);
 							walk = 1;
 						}
+						canSprint = false; // 스프린트 중 방향 전환 시 스프린트 유지 제한
 					}
                 }
                 else if (Input.GetKey(KeyCode.LeftArrow)) {
@@ -181,13 +184,15 @@ public class GeneralControl : BasicCharacterMovement {
 
 						if(canSprint && walk == -1) {
 							sprint = -1;
+							waitSprintDoubleTab = false;
+							sprintDoubleTabTimer = 0f;
 						}
 						else {
-							canSprint = false;
 							sprint = 0;
 							Walk(-1);
 							walk = -1;
 						}
+						canSprint = false;
 					}
 				}
 				else {
@@ -411,7 +416,8 @@ public class GeneralControl : BasicCharacterMovement {
                     }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Escape))
+
+			if (Input.GetKeyDown(KeyCode.Escape))
                 PlayerPauseUI.PauseToggle();
 			if(Input.GetKeyDown(KeyCode.Delete)) {
 				LevelManager.instance.DestroyMap();
