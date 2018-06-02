@@ -396,6 +396,11 @@ public class GeneralControl : BasicCharacterMovement {
 			if(Input.GetKeyDown(KeyCode.Delete)) {
 				LevelManager.instance.DestroyMap();
 			}
+            if(character.GetState() == CharacterStates.Throw) {
+                string throwPose = "throw_mid";
+                if (Input.GetKey(KeyCode.DownArrow))
+                    throwPose = "throw_down";
+            }
         }
         else {
             if (Input.GetKeyDown(KeyCode.Escape))
