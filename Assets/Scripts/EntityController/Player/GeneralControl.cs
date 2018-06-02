@@ -13,6 +13,8 @@ public class GeneralControl : BasicCharacterMovement {
     private List<KeyCombo> keyCombos = new List<KeyCombo>();
     private List<KeyCombo> queuedCombos = new List<KeyCombo>();
     private KeyCombo keyLocked = KeyCombo.None;
+    private KeyCode comboLeft = KeyCode.LeftArrow;
+    private KeyCode comboRight = KeyCode.RightArrow;
     private float keyComboTimer = 0;
     private float keyComboTime = 0.2f;
     private float nextAttack = 0;
@@ -23,9 +25,7 @@ public class GeneralControl : BasicCharacterMovement {
     private void EvaluateCombo(List<KeyCombo> kc) {
         if (nextAttack >= Time.time || character.GetState() == CharacterStates.Shift)
             return;
-        foreach(KeyCombo k in kc) {
-            Debug.Log(k);
-        }
+        Debug.Log("Eval");
         if (character.GetState() != CharacterStates.Attack || currentCombo == null) {
             foreach(KeyValuePair<string, ComboData> kvp in GameDataManager.instance.GetBasicComboData()) {
                 if ((character.IsOnGround() && !kvp.Value.isJumpAttack)
@@ -45,6 +45,7 @@ public class GeneralControl : BasicCharacterMovement {
                     if (match) {
                         currentCombo = kvp.Value;
                         character.GetAnimator().Play(kvp.Key);
+                        nextAttack = Time.time + 0.25f;
                     }
                 }
             }
@@ -67,8 +68,10 @@ public class GeneralControl : BasicCharacterMovement {
                         i++;
                     }
                     if (match) {
+                        Debug.Log(nextCombo);
                         currentCombo = next;
                         character.GetAnimator().Play(nextCombo);
+                        nextAttack = Time.time + 0.25f;
                     }
                 }
             }
@@ -212,7 +215,15 @@ public class GeneralControl : BasicCharacterMovement {
                     && character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsName("HG Continue"))
                     Sit();
 
-                if (Input.GetKey(KeyCode.LeftArrow)) {
+                if(keyCombos.Count == 0) {
+                    comboLeft = KeyCode.LeftArrow;
+                    comboRight = KeyCode.RightArrow;
+                    if (!character.IsFacingRight()) {
+                        comboLeft = comboRight;
+                        comboRight = KeyCode.LeftArrow;
+                    }
+                }
+                if (Input.GetKey(comboLeft)) {
                     KeyCombo combo = KeyCombo.Left;
                     keyComboTimer = keyComboTime;
                     if (Input.GetKey(KeyCode.UpArrow)) {
@@ -228,17 +239,17 @@ public class GeneralControl : BasicCharacterMovement {
                 if (Input.GetKey(KeyCode.UpArrow)) {
                     KeyCombo combo = KeyCombo.Up;
                     keyComboTimer = keyComboTime;
-                    if (Input.GetKey(KeyCode.LeftArrow)) {
+                    if (Input.GetKey(comboLeft)) {
                         combo |= KeyCombo.Left;
                     }
-                    else if (Input.GetKey(KeyCode.RightArrow)) {
+                    else if (Input.GetKey(comboRight)) {
                         combo |= KeyCombo.Right;
                     }
                     if (keyCombos.Count == 0 || combo != keyCombos[keyCombos.Count - 1])
                         keyCombos.Add(combo);
                     keyLocked = combo;
                 }
-                if (Input.GetKey(KeyCode.RightArrow)) {
+                if (Input.GetKey(comboRight)) {
                     KeyCombo combo = KeyCombo.Right;
                     keyComboTimer = keyComboTime;
                     if (Input.GetKey(KeyCode.UpArrow)) {
@@ -254,10 +265,10 @@ public class GeneralControl : BasicCharacterMovement {
                 if (Input.GetKey(KeyCode.DownArrow)) {
                     KeyCombo combo = KeyCombo.Down;
                     keyComboTimer = keyComboTime;
-                    if (Input.GetKey(KeyCode.LeftArrow)) {
+                    if (Input.GetKey(comboLeft)) {
                         combo |= KeyCombo.Left;
                     }
-                    else if (Input.GetKey(KeyCode.RightArrow)) {
+                    else if (Input.GetKey(comboRight)) {
                         combo |= KeyCombo.Right;
                     }
                     if (keyCombos.Count == 0 || combo != keyCombos[keyCombos.Count - 1])
@@ -286,9 +297,11 @@ public class GeneralControl : BasicCharacterMovement {
                         keyCombos.Clear();
                     }
                     else {
+                        queuedCombos.Clear();
                         foreach (KeyCombo key in keyCombos) {
                             queuedCombos.Add(key);
                         }
+                        keyCombos.Clear();
                     }
                 }
 

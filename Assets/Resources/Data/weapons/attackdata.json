@@ -22,7 +22,9 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_basic_02"
+			"0":"attack_basic_02",
+			"1":"attack_fist_01",
+			"2":"attack_sword_01"
 		},
 		"IsBasic":1
 	}
@@ -50,7 +52,9 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_basic_03"
+			"0":"attack_basic_03",
+			"1":"attack_fist_01",
+			"2":"attack_sword_01"
 		}
 	}
   },
@@ -152,7 +156,8 @@
 		},
 		"PossibleCombos":{
 			"0":"attack_fist_02",
-			"1":"attack_fist_upper"
+			"1":"attack_fist_upper",
+			"2":"attack_sword_01"
 		},
 		"IsBasic":1
 	}
@@ -181,7 +186,8 @@
 		},
 		"PossibleCombos":{
 			"0":"attack_fist_03",
-			"1":"attack_fist_upper"
+			"1":"attack_fist_upper",
+			"2":"attack_sword_01"
 		}
 	}
   },
@@ -237,8 +243,7 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_fist_04",
-			"1":"attack_fist_upper"
+			"0":"attack_fist_upper"
 		}
 	}
   },
@@ -298,7 +303,8 @@
 			"1":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_sword_02"
+			"0":"attack_sword_02",
+			"1":"attack_fist_01"
 		},
 		"IsBasic":1
 	}
@@ -326,7 +332,8 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_sword_03"
+			"0":"attack_sword_03",
+			"1":"attack_fist_01"
 		}
 	}
   },

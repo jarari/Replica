@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,14 +12,12 @@ public class LevelExporter : MonoBehaviour {
     private int BGlayerCount = 0;
     private Dictionary<int, GameObject> BGParents = new Dictionary<int, GameObject>();
     private CharacterSpawner playerspawner;
-    private void Awake() {
-        StartCoroutine(WaitTillInit());
-    }
-    IEnumerator WaitTillInit() {
-        yield return new WaitWhile(() => CamController.instance == null);
+
+    public void ExportMap() {
+        BGParents.Clear();
         Cursor.visible = true;
         string data = "{";
-        foreach(GameObject obj in  FindObjectsOfType<GameObject>()) {
+        foreach (GameObject obj in FindObjectsOfType<GameObject>()) {
             bool tagged = false;
             switch (obj.tag) {
                 case "Ground":
@@ -36,9 +35,9 @@ public class LevelExporter : MonoBehaviour {
                     data += HandleObject(obj, "Spawner");
                     counter++;
                     break;
-                case "DirectionalLight":
+                case "Light":
                     tagged = true;
-                    data += HandleObject(obj, "DirectionalLight");
+                    data += HandleObject(obj, "Light");
                     counter++;
                     break;
                 case "BG_Object":
@@ -48,13 +47,13 @@ public class LevelExporter : MonoBehaviour {
                     break;
                 case "BG":
                     tagged = true;
-                    if(obj.transform.childCount > 0) {
+                    if (obj.transform.childCount > 0) {
                         int index = 0;
                         SpriteRenderer sr = null;
                         while (sr == null) {
                             index++;
                             sr = obj.transform.GetChild(index).GetComponent<SpriteRenderer>();
-                            if(index == obj.transform.childCount && sr == null) {
+                            if (index == obj.transform.childCount && sr == null) {
                                 Debug.Log("No objects with SpriteRenderer was found for this background layer!");
                                 break;
                             }
@@ -79,7 +78,7 @@ public class LevelExporter : MonoBehaviour {
                     break;
             }
             if (tagged) continue;
-            if(obj.transform.parent != null) {
+            if (obj.transform.parent != null) {
                 if (obj.transform.parent.tag == "BG") {
                     data += HandleObject(obj, "BG_Layer");
                     counter++;
@@ -95,19 +94,14 @@ public class LevelExporter : MonoBehaviour {
                 "json");
         if (path.Length != 0)
             System.IO.File.WriteAllText(path, data);
+    }
+    private void Awake() {
+        StartCoroutine(WaitTillInit());
+    }
+    IEnumerator WaitTillInit() {
+        yield return new WaitWhile(() => CamController.instance == null);
 
-        List<GameObject> BGp = new List<GameObject>();
-        int i = 0;
-        while(BGParents.Count > 0) {
-            List<int> tempkeys = new List<int>(BGParents.Keys);
-            foreach (int key in tempkeys) {
-                if(key == i) {
-                    BGp.Add(BGParents[key]);
-                    BGParents.Remove(i);
-                    i++;
-                }
-            }
-        }
+        List<GameObject> BGp = new List<GameObject>(GameObject.FindGameObjectsWithTag("BG"));
         if(playerspawner != null) {
             if (ScenearySimulation) {
                 playerspawner.characterType = CharacterTypes.Boss;
@@ -126,7 +120,14 @@ public class LevelExporter : MonoBehaviour {
         }
     }
 
+    private string GetPathToAsset(UnityEngine.Object asset) {
+        string extensionPattern = @"\.[a-zA-Z0-9]*";
+        Regex extensionRegex = new Regex(extensionPattern);
+        return extensionRegex.Replace(AssetDatabase.GetAssetPath(asset).Replace("Assets/Resources/", ""), "");
+    }
+
     private string HandleObject(GameObject obj, string tag) {
+        
         string jsondata = "\"" + counter.ToString()
             + "\":{\"ID\":" + obj.GetInstanceID().ToString()
             + ",\"Tag\":\"" + tag
@@ -142,53 +143,82 @@ public class LevelExporter : MonoBehaviour {
             + "},";
         Debug.Log("Processing object " + obj.name
             + "\n\tTag: " + tag);
-        if (obj.transform.parent != null && obj.transform.parent.name != "LevelCreated")
+        if (obj.transform.parent != null && obj.transform.parent.name != "LevelCreated") {
+            if (obj.transform.parent.CompareTag("MainCamera")) {
+                jsondata += "\"ParentIsCam\":1,";
+            }
             jsondata += "\"Parent\":" + obj.transform.parent.gameObject.GetInstanceID().ToString() + ",";
+        }
         if (obj.GetComponent<SpriteRenderer>() != null) {
             SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
-            jsondata += "\"SpritePath\":\"" + AssetDatabase.GetAssetPath(sr.sprite).Replace("Assets/Resources/", "").Replace(".png", "")
+            jsondata += "\"Sprite\":{"
+            + "\"SpritePath\":\"" + GetPathToAsset(sr.sprite)
             + "\",\"SpriteName\":\"" + sr.sprite.name
             + "\",\"FlipX\":" + Convert.ToInt32(sr.flipX).ToString()
             + ",\"FlipY\":" + Convert.ToInt32(sr.flipY).ToString()
-            + ",\"Material\":\"" + sr.material.name
+            + ",\"MaterialPath\":\"" + GetPathToAsset(sr.sharedMaterial)
+            + "\",\"MaterialName\":\"" + sr.sharedMaterial.name
             + "\",\"SortingLayer\":\"" + sr.sortingLayerName
             + "\",\"SortOrder\":" + Convert.ToInt32(sr.sortingOrder).ToString()
-            + ",";
+            + "},";
         }
         if (obj.GetComponent<Animator>() != null) {
             Animator anim = obj.GetComponent<Animator>();
-            jsondata += "\"Controller\":\"" + AssetDatabase.GetAssetPath(anim.runtimeAnimatorController).Replace("Assets/Resources/", "").Replace(".animcontroller", "").Replace(".overrideController", "")
+            jsondata += "\"Controller\":\"" + GetPathToAsset(anim.runtimeAnimatorController)
             + "\",";
         }
         if (obj.GetComponent<CharacterSpawner>() != null) {
             CharacterSpawner cs = obj.GetComponent<CharacterSpawner>();
-            jsondata += "\"Delay\":" + cs.delay.ToString()
-            + ",\"CharacterClass\":\"" + cs.characterClass
-            + "\",\"Team\":" + Convert.ToInt32(cs.team).ToString()
-            + ",\"WeaponClass\":\"" + cs.weaponClass
-            + "\",\"CharacterType\":" + Convert.ToInt32(cs.characterType).ToString()
-            + ",\"SpawnerType\":" + Convert.ToInt32(cs.spawnerType).ToString()
-            + ",";
+            jsondata += "\"Spawner\":{"
+                + "\"Delay\":" + cs.delay.ToString()
+                + ",\"CharacterClass\":\"" + cs.characterClass
+                + "\",\"Team\":" + Convert.ToInt32(cs.team).ToString()
+                + ",\"WeaponClass\":\"" + cs.weaponClass
+                + "\",\"CharacterType\":" + Convert.ToInt32(cs.characterType).ToString()
+                + ",\"SpawnerType\":" + Convert.ToInt32(cs.spawnerType).ToString()
+                + "},";
             if (cs.characterType == CharacterTypes.Player)
                 playerspawner = cs;
         }
         if(obj.GetComponent<BoxCollider2D>() != null) {
-            jsondata += "\"BoxOffset\":{\"X\":" + obj.GetComponent<BoxCollider2D>().offset.x.ToString()
+            jsondata += "\"BoxCollider\":{"
+                + "\"BoxOffset\":{\"X\":" + obj.GetComponent<BoxCollider2D>().offset.x.ToString()
                             + ",\"Y\":" + obj.GetComponent<BoxCollider2D>().offset.y.ToString()
-            + "},\"BoxSize\":{\"X\":" + obj.GetComponent<BoxCollider2D>().size.x.ToString()
+                + "},\"BoxSize\":{\"X\":" + obj.GetComponent<BoxCollider2D>().size.x.ToString()
                             + ",\"Y\":" + obj.GetComponent<BoxCollider2D>().size.y.ToString()
-            + "},";
+                + "}"
+                + "},";
         }
         if (obj.GetComponent<Trigger>() != null) {
             string[] args = obj.GetComponent<Trigger>().arguments;
             int triggercount = 0;
-            jsondata += "\"TriggerAction\":\"" + obj.GetComponent<Trigger>().action
-            + "\",\"TriggerArguments\":{";
+            jsondata += "\"Trigger\":{"
+                + "\"TriggerAction\":\"" + obj.GetComponent<Trigger>().action
+                + "\",\"TriggerArguments\":{";
             foreach (string arg in args) {
                 jsondata += "\"" + triggercount.ToString() + "\":\"" + arg + "\",";
             }
             jsondata = jsondata.Substring(0, jsondata.Length - 1);
-            jsondata += "},";
+            jsondata += "}"
+                + "},";
+        }
+        if(obj.GetComponent<Light>() != null) {
+            Light light = obj.GetComponent<Light>();
+            jsondata += "\"Light\":{"
+                + "\"Type\":" + light.type
+                + ",\"Range\":" + light.range
+                + ",\"Color\":{"
+                + "\"R\":" + light.color.r + ","
+                + "\"G\":" + light.color.g + ","
+                + "\"B\":" + light.color.b
+                + "},\"Mode\":" + light.lightmapBakeType
+                + ",\"CookiePath\":\"" + GetPathToAsset(light.cookie) + "\""
+                + ",\"CookieName\":\"" + light.cookie.name + "\""
+                + ",\"FlarePath\":\"" + GetPathToAsset(light.flare) + "\""
+                + ",\"FlareName\":\"" + light.flare.name + "\""
+                + ",\"RenderMode\":" + light.renderMode
+                + ",\"CullingMask\":" + light.cullingMask
+                + "},";
         }
         return jsondata.Substring(0, jsondata.Length - 1) + "},";
     }

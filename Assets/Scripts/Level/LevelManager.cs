@@ -7,6 +7,7 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour {
     public static LevelManager instance;
     private Dictionary<int, GameObject> createdObjs = new Dictionary<int, GameObject>();
+    private Dictionary<int, int> inheritances = new Dictionary<int, int>();
     private List<GameObject> BGParents = new List<GameObject>();
     private Dictionary<string, object> mapdata = null;
     private Vector2 mapMin;
@@ -127,55 +128,34 @@ public class LevelManager : MonoBehaviour {
                 BGParentKeys.Add(key);
                 BGParents[i].tag = "BG";
             }
-
-            Dictionary<int, int> inheritances = new Dictionary<int, int>();
+            
             foreach (KeyValuePair<string, object> entity in mapdata) {
                 GameObject obj = null;
                 if (!entity.Value.GetType().Equals(typeof(Dictionary<string, object>))) continue;
                 switch((string)GameDataManager.instance.GetData(mapdata, entity.Key, "Tag")) {
                     case "Ground":
                         obj = CreatePrefab("Ground", entity.Key, basePos, true);
-                        ApplySpriteRenderer(obj, entity.Key);
+                        ApplyComponents(obj, entity.Key);
                         break;
                     case "Ceiling":
                         obj = CreatePrefab("Ceiling", entity.Key, basePos, true);
-                        ApplySpriteRenderer(obj, entity.Key);
+                        ApplyComponents(obj, entity.Key);
                         break;
                     case "Spawner":
                         obj = CreatePrefab("Spawner", entity.Key, basePos);
-                        ApplySpawner(obj, entity.Key);
+                        ApplyComponents(obj, entity.Key);
                         break;
-                    case "DirectionalLight":
+                    case "Light":
+                        obj = CreateEmptyObject(entity.Key, basePos);
+                        ApplyComponents(obj, entity.Key);
                         break;
                     case "BG_Object":
                         obj = CreateEmptyObject(entity.Key, basePos);
-                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "SpritePath") != null) {
-                            obj.AddComponent<SpriteRenderer>();
-                            ApplySpriteRenderer(obj, entity.Key);
-                        }
-                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "Controller") != null) {
-                            obj.AddComponent<Animator>();
-                            ApplyAnimator(obj, entity.Key);
-                        }
-                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "Parent") != null) {
-                            inheritances.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, entity.Key, "ID")),
-                                Convert.ToInt32(GameDataManager.instance.GetData(mapdata, entity.Key, "Parent")));
-                        }
+                        ApplyComponents(obj, entity.Key);
                         break;
                     case "BG_Layer":
                         obj = CreateEmptyObject(entity.Key, basePos);
-                        if(GameDataManager.instance.GetData(mapdata, entity.Key, "SpritePath") != null) {
-                            obj.AddComponent<SpriteRenderer>();
-                            ApplySpriteRenderer(obj, entity.Key);
-                        }
-                        if(GameDataManager.instance.GetData(mapdata, entity.Key, "Controller") != null) {
-                            obj.AddComponent<Animator>();
-                            ApplyAnimator(obj, entity.Key);
-                        }
-                        if (GameDataManager.instance.GetData(mapdata, entity.Key, "Parent") != null) {
-                            inheritances.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, entity.Key, "ID")),
-                                Convert.ToInt32(GameDataManager.instance.GetData(mapdata, entity.Key, "Parent")));
-                        }
+                        ApplyComponents(obj, entity.Key);
                         break;
                     case "BG_Farthest":
                         obj = CreateEmptyObject(entity.Key, basePos);
@@ -183,7 +163,7 @@ public class LevelManager : MonoBehaviour {
                         break;
                     case "Trigger":
                         obj = CreatePrefab("Trigger", entity.Key, basePos);
-                        ApplyTrigger(obj, entity.Key);
+                        ApplyComponents(obj, entity.Key);
                         break;
                 }
             }
@@ -195,6 +175,7 @@ public class LevelManager : MonoBehaviour {
                     }
                 }
             }
+            inheritances.Clear();
 
             if (!loadOnce)
                 PreloadEssentialSprites();
@@ -244,49 +225,104 @@ public class LevelManager : MonoBehaviour {
         return obj;
     }
 
+    private void ApplyComponents(GameObject obj, string key) {
+        if (GameDataManager.instance.GetData(mapdata, key, "Sprite") != null)
+            ApplySpriteRenderer(obj, key);
+        if (GameDataManager.instance.GetData(mapdata, key, "Controller") != null)
+            ApplyAnimator(obj, key);
+        if (GameDataManager.instance.GetData(mapdata, key, "Spawner") != null)
+            ApplySpawner(obj, key);
+        if (GameDataManager.instance.GetData(mapdata, key, "Trigger") != null)
+            ApplyTrigger(obj, key);
+        if (GameDataManager.instance.GetData(mapdata, key, "BoxCollider") != null)
+            ApplyBoxCollider(obj, key);
+        if (GameDataManager.instance.GetData(mapdata, key, "Light") != null)
+            ApplyLight(obj, key);
+        if (GameDataManager.instance.GetData(mapdata, key, "Parent") != null) {
+            if(GameDataManager.instance.GetData(mapdata, key, "ParentIsCam") != null) {
+                inheritances.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "ID")),
+                Camera.main.GetInstanceID());
+            }
+            else {
+                inheritances.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "ID")),
+                Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Parent")));
+            }
+        }
+    }
+
     private void ApplySpriteRenderer(GameObject obj, string key) {
         SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
-        sr.sprite = Helper.GetSprite((string)GameDataManager.instance.GetData(mapdata, key, "SpritePath"),
-                                                                (string)GameDataManager.instance.GetData(mapdata, key, "SpriteName"));
-        sr.flipX = Convert.ToBoolean(GameDataManager.instance.GetData(mapdata, key, "FlipX"));
-        sr.flipY = Convert.ToBoolean(GameDataManager.instance.GetData(mapdata, key, "FlipY"));
-        foreach (Material mat in sr.materials) {
-            if (mat.name == (string)GameDataManager.instance.GetData(mapdata, key, "Material"))
-                sr.material = mat;
-        }
-        sr.sortingLayerName = (string)GameDataManager.instance.GetData(mapdata, key, "SortingLayer");
-        sr.sortingOrder = Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "SortOrder"));
+        if (sr == null)
+            sr = obj.AddComponent<SpriteRenderer>();
+        sr.sprite = Helper.GetSprite((string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "SpritePath"),
+                                                                (string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "SpriteName"));
+        sr.flipX = Convert.ToBoolean(GameDataManager.instance.GetData(mapdata, key, "Sprite", "FlipX"));
+        sr.flipY = Convert.ToBoolean(GameDataManager.instance.GetData(mapdata, key, "Sprite", "FlipY"));
+        sr.material = Helper.GetMaterial((string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "MaterialPath"),
+            (string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "MaterialName"));
+        sr.sortingLayerName = (string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "SortingLayer");
+        sr.sortingOrder = Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Sprite", "SortOrder"));
     }
 
     private void ApplyAnimator(GameObject obj, string key) {
-        obj.GetComponent<Animator>().runtimeAnimatorController = (RuntimeAnimatorController)Resources.Load((string)GameDataManager.instance.GetData(mapdata, key, "Controller"));
+        Animator anim = obj.GetComponent<Animator>();
+        if (anim == null)
+            anim = obj.AddComponent<Animator>();
+        anim.runtimeAnimatorController = (RuntimeAnimatorController)Resources.Load((string)GameDataManager.instance.GetData(mapdata, key, "Controller"));
     }
 
     private void ApplySpawner(GameObject obj, string key) {
         CharacterSpawner cs = obj.GetComponent<CharacterSpawner>();
-        cs.delay = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Delay"));
-        cs.characterClass = (string)GameDataManager.instance.GetData(mapdata, key, "CharacterClass");
+        if (cs == null)
+            cs = obj.AddComponent<CharacterSpawner>();
+        cs.delay = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Spawner", "Delay"));
+        cs.characterClass = (string)GameDataManager.instance.GetData(mapdata, key, "Spawner", "CharacterClass");
         PreloadSprites("characters", cs.characterClass);
-        cs.team = (Teams)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Team"));
-        cs.weaponClass = (string)GameDataManager.instance.GetData(mapdata, key, "WeaponClass");
-        cs.characterType = (CharacterTypes)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "CharacterType"));
-        cs.spawnerType = (CharacterSpawnerTypes)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "SpawnerType"));
+        cs.team = (Teams)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Spawner", "Team"));
+        cs.weaponClass = (string)GameDataManager.instance.GetData(mapdata, key, "Spawner", "WeaponClass");
+        cs.characterType = (CharacterTypes)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Spawner", "CharacterType"));
+        cs.spawnerType = (CharacterSpawnerTypes)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Spawner", "SpawnerType"));
     }
 
     private void ApplyTrigger(GameObject obj, string key) {
         Trigger tr = obj.GetComponent<Trigger>();
-        tr.action = (string)GameDataManager.instance.GetData(mapdata, key, "TriggerAction");
+        if (tr == null)
+            tr = obj.AddComponent<Trigger>();
+        tr.action = (string)GameDataManager.instance.GetData(mapdata, key, "Trigger", "TriggerAction");
         List<string> args = new List<string>();
-        foreach(KeyValuePair<string, object> arg in (Dictionary<string, object>)GameDataManager.instance.GetData(mapdata, key, "TriggerArguments")) {
+        foreach (KeyValuePair<string, object> arg in (Dictionary<string, object>)GameDataManager.instance.GetData(mapdata, key, "Trigger", "TriggerArguments")) {
             args.Add((string)arg.Value);
         }
         tr.arguments = args.ToArray();
-        BoxCollider2D box = obj.GetComponent<BoxCollider2D>();
-        box.offset = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxOffset", "X"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxOffset", "Y")));
-        box.size = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxSize", "X"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxSize", "Y")));
         tr.Initialize();
+    }
+
+    private void ApplyBoxCollider(GameObject obj, string key) {
+        BoxCollider2D box = obj.GetComponent<BoxCollider2D>();
+        if (box == null)
+            box = obj.AddComponent<BoxCollider2D>();
+        box.offset = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxCollider", "BoxOffset", "X"))
+                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxCollider", "BoxOffset", "Y")));
+        box.size = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxCollider", "BoxSize", "X"))
+                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxCollider", "BoxSize", "Y")));
+    }
+
+    private void ApplyLight(GameObject obj, string key) {
+        Light light = obj.GetComponent<Light>();
+        if (light == null)
+            light = obj.AddComponent<Light>();
+        light.type = (LightType)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "Type"));
+        light.range = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Range"));
+        light.color = new Color(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "R"))
+            , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "G"))
+            , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "B")));
+        light.lightmapBakeType = (LightmapBakeType)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "Mode"));
+        light.cookie = Helper.GetTexture((string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookiePath")
+            , (string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookieName"));
+        light.flare = Helper.GetFlare((string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlarePath"),
+            (string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlareName"));
+        light.renderMode = (LightRenderMode)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "RenderMode"));
+        light.cullingMask = Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "CullingMask"));
     }
 
     public void DestroyMap() {
@@ -323,10 +359,10 @@ public class LevelManager : MonoBehaviour {
 
     public void Initialize() {
 		isMapActive = true;
-        float minX = 99999999999;
-        float minY = 99999999999;
-        float maxX = -99999999999;
-        float maxY = -99999999999;
+        float minX = Mathf.Infinity;
+        float minY = Mathf.Infinity;
+        float maxX = -Mathf.Infinity;
+        float maxY = -Mathf.Infinity;
         foreach(GameObject obj in GameObject.FindGameObjectsWithTag("Ceiling")) {
             minX = Mathf.Min(obj.transform.position.x, minX);
             minY = Mathf.Min(obj.transform.position.y, minY);
