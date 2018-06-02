@@ -5,8 +5,6 @@ using UnityEngine;
 
 /* 플레이어 조작 */
 public class GeneralControl : BasicCharacterMovement {
-    private float sprintDoubleTabTimer = 0;
-    private float sprintDoubleTabTime = 0.3f;
     private float attackPostComboTimer = 0;
     private float attackPostComboTime = 0.075f;
     private ComboData currentCombo;
@@ -18,9 +16,16 @@ public class GeneralControl : BasicCharacterMovement {
     private float keyComboTimer = 0;
     private float keyComboTime = 0.2f;
     private float nextAttack = 0;
-    protected KeyCode doubletabKey;
-    protected bool waitDoubleTab = false;
-    protected bool sprint = false;
+
+
+	//이동 관련 변수
+	private float sprintDoubleTabTimer = 0;
+	private float sprintDoubleTabTime = 0.3f;
+	protected bool waitSprintDoubleTab = false;
+	protected bool canSprint = false;
+	protected int sprint = 0;
+	protected int walk = 0;
+	protected bool sprintDoubleTabTimerToggle = false;
 
     private void EvaluateCombo(List<KeyCombo> kc) {
         if (nextAttack >= Time.time || character.GetState() == CharacterStates.Shift)
@@ -98,12 +103,7 @@ public class GeneralControl : BasicCharacterMovement {
 
     protected override void Update() {
         base.Update();
-        if (sprintDoubleTabTimer != 0)
-            sprintDoubleTabTimer = Mathf.Clamp(sprintDoubleTabTimer - Time.deltaTime, 0, sprintDoubleTabTimer);
-        if (sprintDoubleTabTimer == 0) {
-            doubletabKey = KeyCode.None;
-            waitDoubleTab = false;
-        }
+
         if (nextAttack < Time.time && queuedCombos.Count > 0) {
             EvaluateCombo(queuedCombos);
             keyLocked = KeyCombo.None;
@@ -134,52 +134,72 @@ public class GeneralControl : BasicCharacterMovement {
                 character.RemoveFlag(CharacterFlags.UnstoppableAttack);
             }
         }
-        if (!PlayerPauseUI.IsPaused()) {
-            if (character.GetUncontrollableTimeLeft() == 0) {
 
+		//스프린트 타이머
+		if(sprintDoubleTabTimer > 0) {
+			sprintDoubleTabTimer = Mathf.Max(sprintDoubleTabTimer - Time.deltaTime, 0);
+			waitSprintDoubleTab = true;
+		}
+		else {
+			waitSprintDoubleTab = false;
+		}
+		
+		if (!PlayerPauseUI.IsPaused()) {
+            if (character.GetUncontrollableTimeLeft() == 0) {
+				
+				//이동
                 if (Input.GetKey(KeyCode.RightArrow)) {
-                    if (waitDoubleTab && doubletabKey == KeyCode.RightArrow) {
-                        sprint = true;
-                        Sprint(1);
-                    }
-                    else {
-                        sprintDoubleTabTimer = sprintDoubleTabTime;
-                        if (doubletabKey != KeyCode.RightArrow)
-                            waitDoubleTab = false;
-                        doubletabKey = KeyCode.RightArrow;
-                        if (sprint) {
-                            Sprint(1);
-                        }
-                        else {
-                            Walk(1);
-                        }
-                    }
+					if(sprint == 1) {
+						Sprint(1);
+					}
+					else {
+						if(sprintDoubleTabTimerToggle) {
+							sprintDoubleTabTimer = sprintDoubleTabTime;
+							sprintDoubleTabTimerToggle = false; // 타이머 연속 생성 제한
+						}
+
+						if(canSprint && walk == 1) { // 떼고 다시 누를 때 이전에 누른 키의 방향이 같아야 함
+							sprint = 1;
+						}
+						else {
+							canSprint = false; // 스프린트 중 방향 전환 시 스프린트 유지 제한
+							sprint = 0;
+							Walk(1);
+							walk = 1;
+						}
+					}
                 }
                 else if (Input.GetKey(KeyCode.LeftArrow)) {
-                    if (waitDoubleTab && doubletabKey == KeyCode.LeftArrow) {
-                        sprint = true;
-                        Sprint(-1);
-                    }
-                    else {
-                        sprintDoubleTabTimer = sprintDoubleTabTime;
-                        if (doubletabKey != KeyCode.LeftArrow)
-                            waitDoubleTab = false;
-                        doubletabKey = KeyCode.LeftArrow;
-                        if (sprint) {
-                            Sprint(-1);
-                        }
-                        else {
-                            Walk(-1);
-                        }
-                    }
-                }
+					if(sprint == -1) {
+						Sprint(-1);
+					}
+					else {
+						if(sprintDoubleTabTimerToggle) {
+							sprintDoubleTabTimer = sprintDoubleTabTime;
+							sprintDoubleTabTimerToggle = false;
+						}
 
-                if(!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow)){
-                    sprint = false;
-                    if (sprintDoubleTabTimer > 0 &&
-                     (doubletabKey == KeyCode.RightArrow || doubletabKey == KeyCode.LeftArrow))
-                        waitDoubleTab = true;
-                }
+						if(canSprint && walk == -1) {
+							sprint = -1;
+						}
+						else {
+							canSprint = false;
+							sprint = 0;
+							Walk(-1);
+							walk = -1;
+						}
+					}
+				}
+				else {
+					sprint = 0; //키 미입력시 스프린트 풀림
+					if(waitSprintDoubleTab) { // 타이머 동작 중 키를 뗐을 때 다시 누르면 스프린트 가능하게 함
+						canSprint = true;
+					}
+					else { // 타이머가 다 돼야 타이머 재생성 가능 하게 함
+						canSprint = false;
+						sprintDoubleTabTimerToggle = true;
+					}
+				}
 
                 if (Input.GetKeyDown(KeyCode.LeftShift)) {
                     if (Input.GetKey(KeyCode.LeftArrow)) {

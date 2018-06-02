@@ -5,14 +5,14 @@ using UnityEngine;
 public class CamController : MonoBehaviour {
     public static CamController instance;
     private Transform target;
-    private Vector3 lastTargetPos;
+    //private Vector3 lastTargetPos;
     private Vector3 camTargetPos;
     private Vector3 camPos;
     private Vector3 shakeCamVec;
     private Coroutine zoomCoroutine;
     private float tilesize = 32f;
-    private int deadzoneWidth = 200;
-    private int deadzoneHeight = 300;
+    //private int deadzoneWidth = 200;
+    //private int deadzoneHeight = 300;
     private float standardAspect;
     private int lastScreenWidth;
     private int lastScreenHeight;
@@ -24,7 +24,7 @@ public class CamController : MonoBehaviour {
 	//private float smoothValMin = 30f;
 	//private float smoothValMax = 50f;
 	//private float smoothDiv = 10f;
-
+	 
 	private float zoomed = 1f;
     private bool shaking = false;
     private bool zooming = false;
@@ -34,9 +34,12 @@ public class CamController : MonoBehaviour {
 	private Vector3 lastTargetVel;
 	private Vector3 targetAcceleration_lerp;
 	private Vector3 targetVelocity;
+	private Vector3 targetVelocity_lerp;
 
 	private float smoothVal = 1f;
-	private float bobbing = 0.5f;
+	private float smoothValAcc = 3f;
+	private float smoothValVel = 4f / 3f;
+	private float bobbing = 0.3f;
 	//asd
 
 	private float ClampCamX(float x) {
@@ -78,15 +81,20 @@ public class CamController : MonoBehaviour {
 		}
 		lastTargetVel = targetVelocity;
 
-		targetAcceleration_lerp += (targetAcceleration - targetAcceleration_lerp) * Time.deltaTime;
-		targetAcceleration_lerp.y = targetAcceleration_lerp.y * 0.8f;
+		targetAcceleration_lerp += (targetAcceleration - targetAcceleration_lerp) * Time.deltaTime / smoothValAcc;
+		targetAcceleration_lerp.y = targetAcceleration_lerp.y * 0.1f;
+
+		targetVelocity_lerp = Vector3.Lerp(targetVelocity_lerp, targetVelocity * 2f, Time.deltaTime / smoothValVel);
+		targetVelocity_lerp.y = targetVelocity_lerp.y * 0.6f * bobbing;
 
 		camTargetPos = target.position;
 		camTargetPos.x = ClampCamX(camTargetPos.x);
 		camTargetPos.y = camTargetPos.y + camUp;
 
-		camPos += (camTargetPos + targetVelocity * (0.5f + 0.2f * bobbing) + targetAcceleration_lerp * (0.2f * bobbing) - camPos) * 2.0f * Time.deltaTime / smoothVal;
-		
+		camPos += ((camTargetPos + targetVelocity_lerp * 0.25f + targetVelocity * (0.1f + 0.1f * bobbing)) + targetAcceleration_lerp * 0.25f * bobbing - camPos) * 10.0f * Time.deltaTime / smoothVal;
+		//camPos += (camTargetPos - camPos) * Time.deltaTime / smoothVal;
+		//camPos += (camTargetPos + targetAcceleration_lerp * (0.2f * bobbing) - camPos) * 2.0f * Time.deltaTime / smoothValAcc;
+		//camPos += (camTargetPos + targetVelocity * (0.4f + 0.2f * bobbing) - camPos) * Time.deltaTime / smoothValVel;
 		//asd
 	}
 
@@ -120,7 +128,7 @@ public class CamController : MonoBehaviour {
         SetupCam();
         zoomed = 1f;
         target = p;
-        lastTargetPos = target.position;
+        //lastTargetPos = target.position;
         camTargetPos = p.position + new Vector3(0, camUp, -10);
         camTargetPos.x = ClampCamX(camTargetPos.x);
         camPos = camTargetPos;
