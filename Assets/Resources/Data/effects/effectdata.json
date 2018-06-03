@@ -1045,5 +1045,24 @@
 			"X":0.0,
 			"Y":0.0
 		}
+	},
+	"effect_attack_basic_upper":
+	{
+		"Loop":0,
+		"Rotation":0.0,
+		"Sprites":
+		{
+			"controller":"effect_attack_basic_upper"
+		},
+		"Scale":
+		{
+			"X":1.0,
+			"Y":1.0
+		},
+		"Position":
+		{
+			"X":0.0,
+			"Y":0.0
+		}
 	}
 }

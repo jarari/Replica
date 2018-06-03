@@ -54,7 +54,8 @@
 		"PossibleCombos":{
 			"0":"attack_basic_03",
 			"1":"attack_fist_01",
-			"2":"attack_sword_01"
+			"2":"attack_sword_01",
+			"3":"attack_basic_upper"
 		}
 	}
   },
@@ -81,7 +82,8 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_basic_04"
+			"0":"attack_basic_04",
+			"1":"attack_basic_upper"
 		}
 	}
   },
@@ -113,7 +115,8 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_basic_finish"
+			"0":"attack_basic_finish",
+			"1":"attack_basic_upper"
 		}
 	}
   },
@@ -587,6 +590,37 @@
 	"KnockBack": {
         "X": 650,
         "Y": 100
+    },
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"Down",
+			"1":"RightDown",
+			"2":"Right",
+			"3":"X"
+		}
+	}
+  },
+  "attack_basic_upper": {
+    "DamageMultiplier": 1.5,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"Unstoppable":1,
+	"KnockBack": {
+        "X": 100,
+        "Y": 500
     },
     "HitBox": {
       "0":{

@@ -123,7 +123,6 @@ public class GeneralControl : BasicCharacterMovement {
                     attackPostComboTimer = Mathf.Clamp(attackPostComboTimer + Time.deltaTime, 0, attackPostComboTime);
                 }
                 else {
-                    Debug.Log("cancel");
                     character.GetAnimator().SetTrigger("CancelAttack");
                 }
             }
