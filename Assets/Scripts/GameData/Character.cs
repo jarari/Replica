@@ -186,10 +186,14 @@ public abstract class Character : ObjectBase {
         for (int i = 0; i < (int)CharacterStats.EndOfEnums; i++)
             stats[i] = GetBaseStat((CharacterStats)i);
 
-        GetComponent<CircleCollider2D>().offset = new Vector2(0, -box.size.y / 2f + 0.05f);
-        GetComponent<CircleCollider2D>().radius = 0.6f;
+		float circleRadius = 0.5f;
+		float circleOffsetY = box.offset.y + 0.5f;
+		GetComponents<CircleCollider2D>()[0].radius = circleRadius;
+		GetComponents<CircleCollider2D>()[0].offset = new Vector2(-box.size.x / 2f + circleRadius, -box.size.y / 2f - circleRadius + circleOffsetY);
+		GetComponents<CircleCollider2D>()[1].radius = circleRadius;
+		GetComponents<CircleCollider2D>()[1].offset = new Vector2(box.size.x / 2f - circleRadius, -box.size.y / 2f - circleRadius + circleOffsetY);
 
-        if (GameDataManager.instance.GetData("Data", className, "Sprites", "hasSub") != null)
+		if(GameDataManager.instance.GetData("Data", className, "Sprites", "hasSub") != null)
             hasSubSprite = Convert.ToInt32(GameDataManager.instance.GetData("Data", className, "Sprites", "hasSub"));
 
         if (GameDataManager.instance.GetData("Data", className, "KnockBackImmunity") != null)
