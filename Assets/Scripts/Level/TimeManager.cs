@@ -20,7 +20,7 @@ public class TimeManager : MonoBehaviour {
         float lastrun = Time.realtimeSinceStartup;
         currentPriority = priority;
         while (endTime > Time.realtimeSinceStartup && priority == currentPriority) {
-            if (PlayerPauseUI.IsPaused()) {
+            if (MenuManager.instance.IsPaused()) {
                 endTime += Time.realtimeSinceStartup - lastrun;
             }
             lastrun = Time.realtimeSinceStartup;
@@ -33,7 +33,7 @@ public class TimeManager : MonoBehaviour {
     private IEnumerator PauseTime() {
         float before = Time.timeScale;
         Time.timeScale = 0;
-        yield return new WaitWhile(() => PlayerPauseUI.IsPaused());
+        yield return new WaitWhile(() => MenuManager.instance.IsPaused());
         Time.timeScale = before;
     }
 

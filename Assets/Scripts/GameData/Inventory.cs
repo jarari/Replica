@@ -30,7 +30,7 @@ public class Inventory : MonoBehaviour {
         InventorySlot[] temp = inventory.ToArray();
         for (int i = 0; i < temp.Length; i++) {
             InventorySlot slot = temp[i];
-            if (slot.item.GetName() == itemname) {
+            if (slot.item.GetClassName() == itemname) {
                 return i;
             }
         }
@@ -40,7 +40,7 @@ public class Inventory : MonoBehaviour {
         InventorySlot[] temp = inventory.ToArray();
         for(int i = 0; i < temp.Length; i++) {
             InventorySlot slot = temp[i];
-            if (slot.item.GetName() == itemname && slot.item.IsStackable()) {
+            if (slot.item.GetClassName() == itemname && slot.item.IsStackable()) {
                 return SpaceStatus.Stackable;
             }
         }

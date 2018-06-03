@@ -37,13 +37,10 @@ public class BulletManager : MonoBehaviour {
     public Bullet CreateBullet(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data, bool ignoreGround = false) {
 		if(!LevelManager.instance.isMapActive) return null;
 		GameObject bullet_obj = (GameObject)Instantiate(Resources.Load("Prefab/Bullet"), pos, new Quaternion());
-        Bullet bullet;
-        if (GameDataManager.instance.GetData("Data", classname, "ScriptClass") != null && (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass") != "") {
-            bullet = (Bullet)bullet_obj.gameObject.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
-        }
-        else {
-            bullet = bullet_obj.gameObject.AddComponent<Bullet>();
-        }
+        string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
+        if (script == null || script.Length == 0)
+            script = "Bullet";
+        Bullet bullet = (Bullet)bullet_obj.AddComponent(Type.GetType(script));
         Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
         Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[1], user.GetComponentsInParent<Collider2D>()[0]);
         Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[1]);
@@ -59,13 +56,10 @@ public class BulletManager : MonoBehaviour {
     public Projectile CreateProjectile(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, Dictionary<WeaponStats, float> _data, bool candirecthit) {
 		if(!LevelManager.instance.isMapActive) return null;
 		GameObject projectile_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
-        Projectile projectile;
-        if (GameDataManager.instance.GetData("Data", classname, "ScriptClass") != null && (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass") != "") {
-            projectile = (Projectile)projectile_obj.gameObject.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
-        }
-        else {
-            projectile = projectile_obj.gameObject.AddComponent<Projectile>();
-        }
+        string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
+        if (script == null || script.Length == 0)
+            script = "Projectile";
+        Projectile projectile = (Projectile)projectile_obj.AddComponent(Type.GetType(script));
         Physics2D.IgnoreCollision(projectile_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
         Physics2D.IgnoreCollision(projectile_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[1]);
         Vector3 ang = projectile_obj.transform.eulerAngles;
@@ -79,13 +73,10 @@ public class BulletManager : MonoBehaviour {
     public Throwable CreateThrowable(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, float torque, Dictionary<WeaponStats, float> _data, bool candirecthit = true) {
 		if(!LevelManager.instance.isMapActive) return null;
 		GameObject throwable_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
-        Throwable throwable;
-        if (GameDataManager.instance.GetData("Data", classname, "ScriptClass") != null && (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass") != "") {
-            throwable = (Throwable)throwable_obj.gameObject.AddComponent(Type.GetType((string)GameDataManager.instance.GetData("Data", classname, "ScriptClass")));
-        }
-        else {
-            throwable = throwable_obj.gameObject.AddComponent<Throwable>();
-        }
+        string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
+        if (script == null || script.Length == 0)
+            script = "Throwable";
+        Throwable throwable = (Throwable)throwable_obj.AddComponent(Type.GetType(script));
         Physics2D.IgnoreCollision(throwable_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
         Physics2D.IgnoreCollision(throwable_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[1]);
         Vector3 ang = throwable_obj.transform.eulerAngles;

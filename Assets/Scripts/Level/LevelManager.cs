@@ -28,6 +28,7 @@ public class LevelManager : MonoBehaviour {
         else if (instance != this) {
             Destroy(gameObject);
         }
+        Cursor.visible = false;
         if (debug)
             StartCoroutine(Debugger());
         else {

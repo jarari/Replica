@@ -108,13 +108,75 @@ public static class Helper {
         return ang;
     }
 
-    public static List<Vector2> GetTrajectoryPath(Vector2 origin, float angle, float velocity, int drawCount = 20) {
-        List<Vector2> traj = new List<Vector2>();
+    private static List<Vector3> polyFit(List<Vector3> poly, int lineCount) {
+        List<Vector3> fitted = new List<Vector3>();
+        float b = 0;
+        float c = -Mathf.Infinity;
+        float xmin = Mathf.Infinity;
+        float xmax = -Mathf.Infinity;
+        foreach(Vector3 point in poly) {
+            if(c < point.y) {
+                c = point.y;
+                b = point.x;
+            }
+            xmin = Mathf.Min(xmin, point.x);
+            xmax = Mathf.Max(xmax, point.x);
+        }
+        //a(x-b)^2 + c
+        //a(point.x - b)^2 + c = point.y
+        //a(point.x - b)^2 = point.y - c
+        //a = (point.y - c) / (point.x - b)^2
+        float xminusb = poly[0].x - b;
+        int index = 0;
+        if (xminusb == 0) {
+            xminusb = poly[poly.Count - 1].x - b;
+            index = poly.Count - 1;
+        }
+        float a = (poly[index].y - c) / Mathf.Pow(xminusb, 2);
+        float dx = (xmax - xmin) / (lineCount - 1);
+        for(int i = 0; i < lineCount; i++) {
+            fitted.Add(new Vector2(xmin + dx * i, a * Mathf.Pow(xmin + dx * i - b, 2) + c));
+        }
+        return fitted;
+    }
+
+    public static List<Vector3> GetTrajectoryPath(Vector3 origin, float angle, float velocity, Character filter, int lineCount = 20) {
+        List<Vector3> traj = new List<Vector3>();
+        Vector3 pos = origin;
+        pos.z = origin.z + 10;
+        Vector3 vel = new Vector2(Mathf.Cos(Mathf.Deg2Rad * angle), Mathf.Sin(Mathf.Deg2Rad * angle)) * velocity;
+        Vector3 grav = Physics2D.gravity;
+        for(int i = 0; i < lineCount; i++) {
+            traj.Add(pos);
+            vel = vel + grav * Time.fixedDeltaTime;
+            RaycastHit2D rayhit = Physics2D.Raycast(pos, pos + vel * Time.fixedDeltaTime, (vel * Time.fixedDeltaTime).magnitude, mapLayer | characterLayer);
+            if (rayhit.collider != null) {
+                if (rayhit.collider.CompareTag("Character")) {
+                    if(rayhit.collider.GetComponent<Character>() != filter) {
+                        pos = rayhit.point;
+                        break;
+                    }
+                    else {
+                        pos = pos + vel * Time.fixedDeltaTime;
+                    }
+                }
+                else {
+                    pos = rayhit.point;
+                    break;
+                }
+            }
+            else {
+                pos = pos + vel * Time.fixedDeltaTime;
+            }
+        }
+        pos.z = origin.z + 10;
+        traj.Add(pos);
+        traj = polyFit(traj, lineCount);
         return traj;
     }
 
     public static float BallisticsMaxRangeCalc(float velocity) {
-        return Mathf.Pow(velocity, 2) / 981f;
+        return Mathf.Pow(velocity, 2) / Mathf.Abs(Physics2D.gravity.y);
     }
 
     public static float Vector2ToAng(Vector2 vec) {

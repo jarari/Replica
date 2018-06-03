@@ -144,7 +144,7 @@ public class GeneralControl : BasicCharacterMovement {
 			waitSprintDoubleTab = false;
 		}
 		
-		if (!PlayerPauseUI.IsPaused()) {
+		if (!MenuManager.instance.IsPaused()) {
             if (character.GetUncontrollableTimeLeft() == 0) {
 				
 				//이동
@@ -412,7 +412,7 @@ public class GeneralControl : BasicCharacterMovement {
                 }
             }
             if (Input.GetKeyDown(KeyCode.Escape))
-                PlayerPauseUI.PauseToggle();
+                MenuManager.instance.PauseToggle();
 			if(Input.GetKeyDown(KeyCode.Delete)) {
 				LevelManager.instance.DestroyMap();
 			}
@@ -420,11 +420,14 @@ public class GeneralControl : BasicCharacterMovement {
                 string throwPose = "throw_mid";
                 if (Input.GetKey(KeyCode.DownArrow))
                     throwPose = "throw_down";
+                else if (Input.GetKey(KeyCode.UpArrow))
+                    throwPose = "throw_up";
+                PlayerHUD.DrawGrenadeTrajectory(throwPose, grenadeChargeRatio);
             }
         }
         else {
             if (Input.GetKeyDown(KeyCode.Escape))
-                PlayerPauseUI.GoBack();
+                MenuManager.instance.GoBack();
         }
     }
 }

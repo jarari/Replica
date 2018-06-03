@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +8,9 @@ using UnityEngine.UI;
 
 public class GlobalUIManager : MonoBehaviour {
     public static GlobalUIManager instance;
+    public MeshFilter grenadeUImf;
+    [HideInInspector]
+    public Mesh grenadeUImesh;
     public static Canvas canvas;
     public static int standardHeight = 1080;
     public static int standardWidth = 1920;
@@ -20,11 +24,14 @@ public class GlobalUIManager : MonoBehaviour {
         }
         canvas = GetComponent<Canvas>();
         DontDestroyOnLoad(this);
+        grenadeUImesh = new Mesh();
+        grenadeUImf.mesh = grenadeUImesh;
+        grenadeUImf.GetComponent<MeshRenderer>().sortingLayerName = "Ground";
     }
 
-    public void LoadScene(int scene) {
+    public void LoadScene(string scene) {
         LoadingScreen.instance.Close();
-        StartCoroutine(LoadSceneAsync(scene));
+        StartCoroutine(LoadSceneAsync(Convert.ToInt32(scene)));
     }
 
     IEnumerator LoadSceneAsync(int scene) {
@@ -60,9 +67,12 @@ public class GlobalUIManager : MonoBehaviour {
         int _height = height;
         if (img != null) {
             Sprite sprite = img.sprite;
-            if (width == -1 || height == -1) {
+            if (width == -1) {
                 _width = (int)sprite.rect.size.x;
                 _height = (int)sprite.rect.size.y;
+            }
+            else if(height == -1) {
+                _height = (int)(sprite.rect.size.y / sprite.rect.size.x * _width);
             }
         }
         if (margin.x != 0) {
@@ -79,7 +89,7 @@ public class GlobalUIManager : MonoBehaviour {
         rect.sizeDelta = new Vector2(_width, _height);
     }
 
-    public void RescaleUI(string uniqueid, int scaleX, int scaleY) {
+    public void RescaleUI(string uniqueid, float scaleX, float scaleY) {
         if (NullCheck(uniqueid)) return;
         RectTransform rect = UIElement[uniqueid].GetComponent<RectTransform>();
         rect.localScale = new Vector3(scaleX, scaleY, 1);
@@ -123,10 +133,15 @@ public class GlobalUIManager : MonoBehaviour {
         UIElement[uniqueid].GetComponent<Text>().text = text;
     }
 
-    public GameObject CreateButton(string uniqueid, string command, int argument, Sprite sprite, Vector2 pos, int width = -1, int height = -1) {
+    public void SetTextSize(string uniqueid, int size) {
+        if (NullCheck(uniqueid)) return;
+        UIElement[uniqueid].GetComponent<Text>().fontSize = size;
+    }
+
+    public GameObject CreateButton(string uniqueid, string command, string argument, Sprite sprite, Vector2 pos, Transform parent, int width = -1, int height = -1) {
         if (!NullCheck(uniqueid))
             DeleteUIElement(uniqueid);
-        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Button2D"), pos, new Quaternion(), transform);
+        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Button2D"), pos, new Quaternion(), parent);
         obj.GetComponent<Image>().sprite = sprite;
         AdjustToScreen(obj, pos, width, height);
         obj.GetComponent<GenericButton>().Command = command;
@@ -135,21 +150,46 @@ public class GlobalUIManager : MonoBehaviour {
         return obj;
     }
 
-    public GameObject CreateImage(string uniqueid, Sprite sprite, Vector2 pos, int width = -1, int height = -1) {
+    public GameObject CreateButton(string uniqueid, string command, string argument, Sprite sprite, Vector2 pos, int width = -1, int height = -1) {
+        return CreateButton(uniqueid, command, argument, sprite, pos, transform, width, height);
+    }
+
+    public GameObject CreateImage(string uniqueid, Sprite sprite, Vector2 pos, Transform parent, int width = -1, int height = -1) {
         if (!NullCheck(uniqueid))
             DeleteUIElement(uniqueid);
-        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Image2D"), pos, new Quaternion(), transform);
+        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Image2D"), pos, new Quaternion(), parent);
         obj.GetComponent<Image>().sprite = sprite;
         AdjustToScreen(obj, pos, width, height);
         UIElement.Add(uniqueid, obj);
         return obj;
     }
 
-    public GameObject CreateText(string uniqueid, Vector2 pos, string text, int width = -1, int height = -1) {
+    public GameObject CreateImage(string uniqueid, Sprite sprite, Vector2 pos, int width = -1, int height = -1) {
+        return CreateImage(uniqueid, sprite, pos, transform, width, height);
+    }
+
+    public GameObject CreatePanel(string uniqueid, Vector2 pos, Transform parent, int width = -1, int height = -1) {
+        return CreateImage(uniqueid, Helper.GetSprite("Sprites/ui/menu", "panel"), pos, parent, width, height);
+    }
+
+    public GameObject CreateText(string uniqueid, Vector2 pos, string text, Transform parent, int width = -1, int height = -1) {
         if (!NullCheck(uniqueid))
             DeleteUIElement(uniqueid);
-        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Text2D"), pos, new Quaternion(), transform);
+        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Text2D"), pos, new Quaternion(), parent);
         obj.GetComponent<Text>().text = text;
+        AdjustToScreen(obj, pos, width, height);
+        UIElement.Add(uniqueid, obj);
+        return obj;
+    }
+
+    public GameObject CreateText(string uniqueid, Vector2 pos, string text, int width = -1, int height = -1) {
+        return CreateText(uniqueid, pos, text, transform, width, height);
+    }
+
+    public GameObject CreateScrollView(string uniqueid, Vector2 pos, Transform parent, int width = -1, int height = -1) {
+        if (!NullCheck(uniqueid))
+            DeleteUIElement(uniqueid);
+        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/ScrollView"), pos, new Quaternion(), parent);
         AdjustToScreen(obj, pos, width, height);
         UIElement.Add(uniqueid, obj);
         return obj;
@@ -184,7 +224,7 @@ public class GlobalUIManager : MonoBehaviour {
         return obj;
     }
 
-    public GameObject CreateButtonWorld(string uniqueid, string command, int argument, Sprite sprite, Vector3 pos, int width, int height, Transform parent = null) {
+    public GameObject CreateButtonWorld(string uniqueid, string command, string argument, Sprite sprite, Vector3 pos, int width, int height, Transform parent = null) {
         if (!NullCheck(uniqueid)) return null;
         GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Button"), pos, new Quaternion(), parent);
         obj.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
@@ -227,5 +267,9 @@ public class GlobalUIManager : MonoBehaviour {
             DestroyObject(UIElement[id]);
             UIElement.Remove(id);
         }
+    }
+
+    public Vector2 GetStandardScreenSize() {
+        return new Vector2(standardWidth, standardHeight);
     }
 }

@@ -18,6 +18,8 @@ public class BasicCharacterMovement : MoveObject {
     protected float targetApproachRange;
     protected float subX = -1f;
     protected float grenadeCharge = 0f;
+    protected float grenadeChargeRatio = 0f;
+    protected float grenadeThrowMin = 0.25f;
     protected bool goingdown = false;
 
     // Use this for initialization
@@ -78,6 +80,8 @@ public class BasicCharacterMovement : MoveObject {
         }
         else {
             grenadeCharge = Mathf.Clamp(grenadeCharge + Time.deltaTime, 0, character.GetCurrentStat(CharacterStats.GrenadeFullCharge));
+            grenadeChargeRatio = Mathf.Clamp(grenadeCharge / character.GetCurrentStat(CharacterStats.GrenadeFullCharge)
+            , grenadeThrowMin, 1);
         }
 
         
@@ -338,6 +342,7 @@ public class BasicCharacterMovement : MoveObject {
         if (character.GetState() == CharacterStates.Throw)
             character.GetAnimator().Play("idle_loop");
         grenadeCharge = 0;
+        grenadeChargeRatio = 0;
     }
 
     /* 수류탄 투척 함수.
@@ -345,13 +350,13 @@ public class BasicCharacterMovement : MoveObject {
      * 차후 인벤토리에서 수류탄 갯수를 확인하여 해당 수류탄을 던질 수 있도록 바꿀 계획 */
     protected void OnThrowGrenade(string eventname) {
         //Get grenade class, not yet implemented for now.
-        Vector2 throwpos = (Vector2)transform.position + new Vector2((float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "X")
+        Vector2 throwpos = (Vector2)transform.position + new Vector2((float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "X") * character.GetFacingDirection()
                                         , (float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "Y"));
         float throwang = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ThrowAngle"));
         character.GiveWeapon("weapon_grenade");
         Weapon grenade = character.GetWeapon(WeaponTypes.Throwable);
         BulletManager.instance.CreateThrowable("throwable_grenade", throwpos, character, grenade,
-            character.GetCurrentStat(CharacterStats.GrenadeThrowPower) * grenadeCharge / character.GetCurrentStat(CharacterStats.GrenadeFullCharge),
+            character.GetCurrentStat(CharacterStats.GrenadeThrowPower) * grenadeChargeRatio,
             character.GetCurrentStat(grenade, WeaponStats.Range), 90 - (90 - throwang) * character.GetFacingDirection(), 300,
             grenade.GetEssentialStats());
         character.RemoveWeapon(WeaponTypes.Throwable);
@@ -380,11 +385,11 @@ public class BasicCharacterMovement : MoveObject {
     }
 
     protected IEnumerator OnKnockoutRecoverEvent(int invincible) {
-        yield return new WaitWhile(() => !character.IsOnGround() || character.GetUncontrollableTimeLeft() > 0);
+        yield return new WaitWhile(() => character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("knockout"));
+        character.SetUncontrollable(false);
         if (invincible == 1)
             character.RemoveFlag(CharacterFlags.Invincible);
         character.GetAnimator().SetBool("DiscardFromAnyState", false);
-        character.SetUncontrollable(false);
     }
 
     /* 다양한 용도로 쓸 수 있는 좌표를 향해 가기 함수

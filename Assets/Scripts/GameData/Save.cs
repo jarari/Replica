@@ -41,7 +41,7 @@ public static class Save
 
         List<SlotData> tempSlots = new List<SlotData>();
         foreach(InventorySlot inven in player.GetInventory().GetList()) {
-            tempSlots.Add(new SlotData(inven.item.GetName(), inven.count));
+            tempSlots.Add(new SlotData(inven.item.GetClassName(), inven.count));
         }
         data.slots = tempSlots.ToArray();
 

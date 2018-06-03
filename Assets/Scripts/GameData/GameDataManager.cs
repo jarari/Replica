@@ -41,7 +41,6 @@ public class GameDataManager : MonoBehaviour {
         else if (instance != this) {
             Destroy(gameObject);
         }
-        Cursor.visible = false;
         DontDestroyOnLoad(this);
         if(LoadingScreen.instance != null)
             LoadingScreen.instance.Close();
@@ -57,7 +56,7 @@ public class GameDataManager : MonoBehaviour {
         ParseJSONData("weapons/bulletdata");
         ParseJSONData("weapons/projectiledata");
         if (!debug)
-            GlobalUIManager.instance.LoadScene(1);
+            GlobalUIManager.instance.LoadScene("1");
     }
 
     private void ParseComboData(Dictionary<string, object> data) {

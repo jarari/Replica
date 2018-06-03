@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Item {
     protected string className;
+    protected string name;
     protected ItemTypes type;
     protected bool stackable;
     protected Sprite image;
@@ -17,6 +18,7 @@ public class Item {
     }
     public Item(string classname) {
         className = classname;
+        name = (string)GameDataManager.instance.GetData("Data", classname, "Name");
         type = (ItemTypes)Convert.ToSingle(GameDataManager.instance.GetData("Data", classname, "Type"));
         stackable = Convert.ToBoolean(GameDataManager.instance.GetData("Data", classname, "Stackable"));
         image = Helper.GetSprite((string)GameDataManager.instance.GetData("Data", classname, "SpritePath"), (string)GameDataManager.instance.GetData("Data", classname, "SpriteName"));
@@ -36,6 +38,10 @@ public class Item {
     }
 
     public string GetName() {
+        return name;
+    }
+
+    public string GetClassName() {
         return className;
     }
 

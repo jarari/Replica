@@ -16,7 +16,7 @@ public class DOT {
         tickDelay = tickdelay;
         attacker = _attacker;
         victim = _victim;
-        nextDamage = Time.realtimeSinceStartup;
+        nextDamage = Time.time;
     }
 
     public DOT(float duration, float tickdamage, float tickdelay) {
@@ -39,7 +39,7 @@ public class DOT {
 
     public void DoDamage() {
         timeLeft -= tickDelay;
-        nextDamage = Time.realtimeSinceStartup + tickDelay;
+        nextDamage = Time.time + tickDelay;
         if (victim == null) {
             timeLeft = 0;
             return;
@@ -48,7 +48,7 @@ public class DOT {
     }
 
     public bool ShouldDoDamage() {
-        return nextDamage <= Time.realtimeSinceStartup && !PlayerPauseUI.IsPaused();
+        return nextDamage <= Time.time && !MenuManager.instance.IsPaused();
     }
 
     public float GetDuration() {

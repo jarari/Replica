@@ -1,6 +1,7 @@
 {
 	"item_bullet":
 	{
+		"Name":"HG Bullet",
 		"Type":1,
 		"Stackable":true,
 		"SpritePath":"Sprites/ui/item/item_mg4",
@@ -8,6 +9,7 @@
 	},
 	"item_grenade":
 	{
+		"Name":"Explosive Grenade",
 		"Type":2,
 		"Stackable":true,
 		"SpritePath":"Sprites/ui/item/item_dangdangpo",

@@ -104,7 +104,7 @@ public class CamController : MonoBehaviour {
 
         Vector3 temptarget = camPos;
 		//temptarget.x = ClampCamX(temptarget.x);
-		if(shaking && !PlayerPauseUI.IsPaused())
+		if(shaking && !MenuManager.instance.IsPaused())
             temptarget += shakeCamVec;
         Vector3 roundedPos = new Vector3(0, 0, -10) {
             x = (Mathf.Round(temptarget.x * Helper.PixelsPerUnit) / Helper.PixelsPerUnit),

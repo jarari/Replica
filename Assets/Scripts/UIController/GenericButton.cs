@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GenericButton : MonoBehaviour {
     public string Command;
-    public int Argument;
+    public string Argument;
 
     void Awake() {
         GetComponent<Button>().onClick.AddListener(ExecuteCommand);
@@ -17,9 +17,9 @@ public class GenericButton : MonoBehaviour {
                 GlobalUIManager.instance.LoadScene(Argument);
                 break;
             case "ShowMenu":
-                PlayerPauseUI.ShowMenu(Argument);
+                MenuManager.instance.ShowMenu(Argument);
                 break;
-            case "item_showmenu":
+            case "UseItem":
                 CharacterManager.instance.GetPlayer().GetInventory().UseItem(Argument, 1);
                 break;
             case "default":

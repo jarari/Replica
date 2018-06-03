@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ public static class PlayerHUD {
     private static Character player;
     private static GlobalUIManager uimanager;
     private static float healthRatio = 0;
+    private static int trajLineCount = 50;
+    private static float trajLineWidth = 10;
 
     public static void Initialize() {
         uimanager = GlobalUIManager.instance;
@@ -17,14 +20,86 @@ public static class PlayerHUD {
         if (!uimanager)
             return;
         healthRatio = player.GetCurrentStat(CharacterStats.Health) / player.GetMaxStat(CharacterStats.Health);
-        uimanager.CreateImage("hp_frame", Helper.GetSprite("Sprites/ui/HPbarFrame", "HPbarFrame"), new Vector2(250, 1000));
+        uimanager.CreateImage("hp_frame", Helper.GetSprite("Sprites/ui", "HPbarFrame"), new Vector2(250, 1000));
         uimanager.RescaleUI("hp_frame", 2, 2);
-        uimanager.CreateImage("hp_bar", Helper.GetSprite("Sprites/ui/HpBar", "HpBar"), new Vector2(250, 1000));
+        uimanager.CreateImage("hp_bar", Helper.GetSprite("Sprites/ui", "HpBar"), new Vector2(250, 1000));
         uimanager.SetImageTypeFilled("hp_bar", Image.FillMethod.Horizontal, 0, healthRatio);
-        uimanager.CreateImage("ammo_gb", Helper.GetSprite("Sprites/ui/bulletngrenade", "bulletngrenade"), new Vector2(135, 925));
+        uimanager.CreateImage("ammo_gb", Helper.GetSprite("Sprites/ui", "bulletngrenade"), new Vector2(135, 925));
         uimanager.RescaleUI("ammo_gb", 2, 2);
         uimanager.CreateText("ammo_b", new Vector2(127, 926), "0", 50, 50);
         uimanager.CreateText("ammo_g", new Vector2(205, 926), "0", 50, 50);
+    }
+
+    public static void DrawGrenadeTrajectory(string pose, float chargeAmount) {
+        if (!uimanager)
+            return;
+        Vector3 throwpos = player.transform.position + new Vector3((float)GameDataManager.instance.GetData("Data", pose, "MuzzlePos", "X") * player.GetFacingDirection()
+                                        , (float)GameDataManager.instance.GetData("Data", pose, "MuzzlePos", "Y"));
+        float throwang = Convert.ToSingle(GameDataManager.instance.GetData("Data", pose, "ThrowAngle"));
+        throwang = 90 - (90 - throwang) * player.GetFacingDirection();
+        List<Vector3> traj = Helper.GetTrajectoryPath(throwpos, throwang, player.GetCurrentStat(CharacterStats.GrenadeThrowPower) * chargeAmount, player, trajLineCount);
+
+        Vector2 pos = player.transform.position;
+        pos.x = Mathf.Round(pos.x * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
+        pos.y = Mathf.Round(pos.y * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
+        uimanager.grenadeUImf.transform.position = pos;
+
+        List<Vector3> vertices = new List<Vector3>();
+        Vector3 up = new Vector3();
+        for (int i = 0; i < traj.Count - 1; i++) {
+            Vector3 dtraj = traj[i + 1] - traj[i];
+            up = Quaternion.AngleAxis(90, Vector3.forward) * dtraj.normalized;
+            vertices.Add(traj[i] + up * trajLineWidth / 2f - player.transform.position);
+            vertices.Add(traj[i] - up * trajLineWidth / 2f - player.transform.position);
+        }
+        vertices.Add(traj[traj.Count - 1] + up * trajLineWidth / 2f - player.transform.position);
+        vertices.Add(traj[traj.Count - 1] - up * trajLineWidth / 2f - player.transform.position);
+
+        Mesh mesh = uimanager.grenadeUImesh;
+        mesh.Clear();
+        mesh.vertices = vertices.ToArray();
+
+        List<int> triangles = new List<int>();
+        for(int i = 0; i < traj.Count - 1; i++) {
+            triangles.Add(2 * i + 2);
+            triangles.Add(2 * i + 1);
+            triangles.Add(2 * i);
+
+            triangles.Add(2 * i + 1);
+            triangles.Add(2 * i + 2);
+            triangles.Add(2 * i + 3);
+        }
+        mesh.triangles = triangles.ToArray();
+
+        Vector3[] normals = new Vector3[vertices.Count];
+        for(int i = 0; i < vertices.Count; i++) {
+            normals[i] = -Vector3.forward;
+        }
+        mesh.normals = normals;
+        
+        List<Vector2> uvs = new List<Vector2>();
+        uvs.Add(new Vector2(0, 1));
+        uvs.Add(new Vector2(0, 0));
+        for (int i = 1; i < traj.Count; i++) {
+            uvs.Add(new Vector2(i / (traj.Count - 1), 1));
+            uvs.Add(new Vector2(i / (traj.Count - 1), 0));
+        }
+        mesh.uv = uvs.ToArray();
+
+        List<Color> colors = new List<Color>();
+        float segSize = trajLineCount / 4f;
+        float segMid = segSize / 2f;
+        colors.Add(new Color(1, 1, 1, 1));
+        colors.Add(new Color(1, 1, 1, 1));
+        for (int i = 1; i < traj.Count; i++) {
+            float segNum = Mathf.Floor(i / segSize);
+            float alpha = 1 - segNum * 0.25f;
+            if (Mathf.Abs(i - segNum * segSize - segMid) > segMid - segNum * segMid / 6f)
+                alpha = 0;
+            colors.Add(new Color(1, 1, 1, alpha));
+            colors.Add(new Color(1, 1, 1, alpha));
+        }
+        mesh.colors = colors.ToArray();
     }
 
     public static void UpdateHealth() {
@@ -38,5 +113,13 @@ public static class PlayerHUD {
             uimanager.ChangeText("ammo_b", count.ToString());
         else if(type == ItemTypes.Grenade)
             uimanager.ChangeText("ammo_g", count.ToString());
+    }
+
+    public static void ShowHUD() {
+        uimanager.gameObject.SetActive(true);
+    }
+
+    public static void HideHUD() {
+        uimanager.gameObject.SetActive(false);
     }
 }
