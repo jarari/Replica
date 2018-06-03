@@ -129,7 +129,7 @@ public class ObjectBase : MonoBehaviour {
             if(nofriction != null) {
                 nofriction.offset = new Vector2((float)GameDataManager.instance.GetData("Data", className, "Collider", "Offset_X")
                                             , box.offset.y + 0.5f);
-                nofriction.size = new Vector2((float)GameDataManager.instance.GetData("Data", className, "Collider", "Size_X") + 3f
+                nofriction.size = new Vector2((float)GameDataManager.instance.GetData("Data", className, "Collider", "Size_X")
                                                 , originalheight * mult - 1);
             }
             height = mult;
