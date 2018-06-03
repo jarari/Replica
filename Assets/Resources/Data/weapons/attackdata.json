@@ -551,26 +551,26 @@
     }
   },
   "attack_fist_finish": {
-    "DamageMultiplier": 3,
+    "DamageMultiplier": 4,
     "SADestruction": 0,
     "Stagger": 0,
 	"Unstoppable":1,
-	"ChargeDelay":5,
+	"ChargeDelay":6,
     "ChargeAmount": 400,
 	"KnockBack": {
-        "X": 500,
-        "Y": -300
+        "X": 100,
+        "Y": 250
     },
     "HitBox": {
       "0":{
-        "Time": 0,
+        "Time": 7,
         "Pos": {
-          "X": 0,
-          "Y": 0
+          "X": 72,
+          "Y": -6
         },
         "Area":{
-          "X": 0,
-          "Y": 0
+          "X": 90,
+          "Y": 86
         }
       }
     },
@@ -585,22 +585,22 @@
     "SADestruction": 0,
     "Stagger": 0,
 	"Unstoppable":1,
-	"ChargeDelay":6,
-    "ChargeAmount": 650,
+	"ChargeDelay":5,
+    "ChargeAmount": 900,
 	"KnockBack": {
-        "X": 650,
-        "Y": 100
+        "X": 100,
+        "Y": 400
     },
     "HitBox": {
       "0":{
-        "Time": 0,
+        "Time": 8,
         "Pos": {
-          "X": 0,
-          "Y": 0
+          "X": 36,
+          "Y": -4
         },
         "Area":{
-          "X": 0,
-          "Y": 0
+          "X": 530,
+          "Y": 82
         }
       }
     },
@@ -620,18 +620,18 @@
 	"Unstoppable":1,
 	"KnockBack": {
         "X": 100,
-        "Y": 500
+        "Y": 900
     },
     "HitBox": {
       "0":{
-        "Time": 0,
+        "Time": 2,
         "Pos": {
-          "X": 0,
-          "Y": 0
+          "X": 64,
+          "Y": 19
         },
         "Area":{
-          "X": 0,
-          "Y": 0
+          "X": 142,
+          "Y": 166
         }
       }
     },
