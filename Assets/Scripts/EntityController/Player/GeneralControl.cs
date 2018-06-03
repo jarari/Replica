@@ -30,11 +30,12 @@ public class GeneralControl : BasicCharacterMovement {
     private void EvaluateCombo(List<KeyCombo> kc) {
         if (nextAttack >= Time.time || character.GetState() == CharacterStates.Shift)
             return;
-        Debug.Log("Eval");
         if (character.GetState() != CharacterStates.Attack || currentCombo == null) {
             foreach(KeyValuePair<string, ComboData> kvp in GameDataManager.instance.GetBasicComboData()) {
                 if ((character.IsOnGround() && !kvp.Value.isJumpAttack)
                     || (!character.IsOnGround() && kvp.Value.isJumpAttack)) {
+                    if (kc.Count - kvp.Value.keyCombos.Count >= 2)
+                        continue;
                     int i = 0;
                     while (kvp.Value.keyCombos[0] != kc[i] && i < kc.Count - 1) {
                         i++;
@@ -60,6 +61,8 @@ public class GeneralControl : BasicCharacterMovement {
                 ComboData next = GameDataManager.instance.GetContinuousComboData()[nextCombo];
                 if ((character.IsOnGround() && !next.isJumpAttack)
                     || (!character.IsOnGround() && next.isJumpAttack)) {
+                    if (kc.Count - next.keyCombos.Count >= 2)
+                        continue;
                     int i = 0;
                     while (next.keyCombos[0] != kc[i] && i < kc.Count - 1) {
                         i++;
@@ -73,7 +76,6 @@ public class GeneralControl : BasicCharacterMovement {
                         i++;
                     }
                     if (match) {
-                        Debug.Log(nextCombo);
                         currentCombo = next;
                         character.GetAnimator().Play(nextCombo);
                         nextAttack = Time.time + 0.25f;
@@ -121,6 +123,7 @@ public class GeneralControl : BasicCharacterMovement {
                     attackPostComboTimer = Mathf.Clamp(attackPostComboTimer + Time.deltaTime, 0, attackPostComboTime);
                 }
                 else {
+                    Debug.Log("cancel");
                     character.GetAnimator().SetTrigger("CancelAttack");
                 }
             }

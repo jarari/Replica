@@ -156,8 +156,7 @@
 		},
 		"PossibleCombos":{
 			"0":"attack_fist_02",
-			"1":"attack_fist_upper",
-			"2":"attack_sword_01"
+			"1":"attack_sword_01"
 		},
 		"IsBasic":1
 	}
@@ -243,7 +242,8 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_fist_upper"
+			"0":"attack_fist_finish",
+			"1":"attack_fist_upper"
 		}
 	}
   },
@@ -272,9 +272,9 @@
     },
 	"Combo":{
 		"Keys":{
-			"0":"Down",
-			"1":"RightDown",
-			"2":"Right",
+			"0":"Right",
+			"1":"RightUp",
+			"2":"Up",
 			"3":"X"
 		}
 	}
@@ -333,7 +333,8 @@
 		},
 		"PossibleCombos":{
 			"0":"attack_sword_03",
-			"1":"attack_fist_01"
+			"1":"attack_fist_01",
+			"2":"attack_sword_qd"
 		}
 	}
   },
@@ -360,7 +361,8 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_sword_04"
+			"0":"attack_sword_04",
+			"1":"attack_sword_qd"
 		}
 	}
   },
@@ -388,7 +390,8 @@
 			"0":"X"
 		},
 		"PossibleCombos":{
-			"0":"attack_sword_finish"
+			"0":"attack_sword_finish",
+			"1":"attack_sword_qd"
 		}
 	}
   },
@@ -543,5 +546,67 @@
         }
       }
     }
+  },
+  "attack_fist_finish": {
+    "DamageMultiplier": 3,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"Unstoppable":1,
+	"ChargeDelay":5,
+    "ChargeAmount": 400,
+	"KnockBack": {
+        "X": 500,
+        "Y": -300
+    },
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"X"
+		}
+	}
+  },
+  "attack_sword_qd": {
+    "DamageMultiplier": 1.25,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"ChargeDelay":6,
+    "ChargeAmount": 650,
+	"KnockBack": {
+        "X": 650,
+        "Y": 100
+    },
+    "HitBox": {
+      "0":{
+        "Time": 0,
+        "Pos": {
+          "X": 0,
+          "Y": 0
+        },
+        "Area":{
+          "X": 0,
+          "Y": 0
+        }
+      }
+    },
+	"Combo":{
+		"Keys":{
+			"0":"Down",
+			"1":"RightDown",
+			"2":"Right",
+			"3":"X"
+		}
+	}
   }
 }

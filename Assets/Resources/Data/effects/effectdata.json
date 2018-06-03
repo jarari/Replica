@@ -988,5 +988,62 @@
 			"X":0.0,
 			"Y":0.0
 		}
+	},
+	"effect_attack_fist_finish":
+	{
+		"Loop":0,
+		"Rotation":0.0,
+		"Sprites":
+		{
+			"controller":"effect_attack_fist_finish"
+		},
+		"Scale":
+		{
+			"X":1.0,
+			"Y":1.0
+		},
+		"Position":
+		{
+			"X":0.0,
+			"Y":0.0
+		}
+	},
+	"effect_attack_sword_qd_ready":
+	{
+		"Loop":0,
+		"Rotation":0.0,
+		"Sprites":
+		{
+			"controller":"effect_attack_sword_qd_ready"
+		},
+		"Scale":
+		{
+			"X":1.0,
+			"Y":1.0
+		},
+		"Position":
+		{
+			"X":0.0,
+			"Y":0.0
+		}
+	},
+	"effect_attack_sword_qd_sweep":
+	{
+		"Loop":0,
+		"Rotation":0.0,
+		"Sprites":
+		{
+			"controller":"effect_attack_sword_qd_sweep"
+		},
+		"Scale":
+		{
+			"X":1.0,
+			"Y":1.0
+		},
+		"Position":
+		{
+			"X":0.0,
+			"Y":0.0
+		}
 	}
 }
