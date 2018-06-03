@@ -35,10 +35,9 @@ public class ObjectBase : MonoBehaviour {
                                                 , (float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_Y"));
                 if(nofriction != null) {
                     nofriction.offset = new Vector2((float)GameDataManager.instance.GetData("Data", classname, "Collider", "Offset_X")
-                                                , (float)GameDataManager.instance.GetData("Data", classname, "Collider", "Offset_Y") + 2f);
-                    nofriction.size = new Vector2((float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_X") - 2f
-                                                    , (float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_Y") - 1f);
-					nofriction.edgeRadius = 2f;
+                                                , (float)GameDataManager.instance.GetData("Data", classname, "Collider", "Offset_Y") + 0.5f);
+                    nofriction.size = new Vector2((float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_X")
+                                                    , (float)GameDataManager.instance.GetData("Data", classname, "Collider", "Size_Y") - 1);
                 }
             }
         }
