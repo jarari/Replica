@@ -90,9 +90,17 @@ public class Weapon : ObjectBase {
             Convert.ToInt32(GameDataManager.instance.GetData("Data", eventname, "Unstoppable")) == 1) {
             owner.SetFlag(CharacterFlags.UnstoppableAttack);
         }
-        if(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount") != null) {
-            owner.GetController().ForceMove(0);
-            owner.AddForce(Vector2.right * Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount")) * owner.GetFacingDirection());
+        if (GameDataManager.instance.GetData("Data", eventname, "ChargeDelay") != null) {
+            AnimationClip clip = owner.GetAnimator().GetCurrentAnimatorClipInfo(0)[0].clip;
+            float time = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeDelay"));
+            float numOfFrames = Mathf.Round(clip.frameRate * clip.length);
+            StartCoroutine(DelayedCharge(time / numOfFrames, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount"))));
+        }
+        else {
+            if (GameDataManager.instance.GetData("Data", eventname, "ChargeAmount") != null) {
+                owner.GetController().ForceMove(0);
+                owner.AddForce(Vector2.right * Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ChargeAmount")) * owner.GetFacingDirection());
+            }
         }
         Dictionary<WeaponStats, float> dmgMult = new Dictionary<WeaponStats, float>();
         dmgMult.Add(WeaponStats.Damage, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "DamageMultiplier")));
@@ -149,6 +157,14 @@ public class Weapon : ObjectBase {
             if (GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null)
                 EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), avgHitPos, owner.GetFacingDirection());
         }
+    }
+
+    IEnumerator DelayedCharge(float normalizedtime, float chargeAmount) {
+        yield return new WaitWhile(() => owner.GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime < normalizedtime);
+        if (owner.GetState() != CharacterStates.Attack)
+            yield break;
+        owner.GetController().ForceMove(0);
+        owner.AddForce(Vector2.right * chargeAmount * owner.GetFacingDirection());
     }
 
     public virtual void OnWeaponHit(Character victim, Vector2 hitPos, string eventname) {
