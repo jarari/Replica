@@ -25,7 +25,7 @@ public class Throwable : Projectile {
         transform.eulerAngles = proang;
     }
 
-    protected override void ExplosionEffect() {
+    protected override void HitEffect() {
         if (anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
             EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), collisionPos, 0);
         }

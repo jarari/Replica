@@ -31,6 +31,7 @@ public class CharacterManager : MonoBehaviour {
         character_obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = sortorder;
         Characters.Add(character);
         InventoryManager.CreateInventory(character_obj);
+        EventManager.Event_CharacterCreated(character, pos);
         return character;
     }
 
@@ -70,6 +71,7 @@ public class CharacterManager : MonoBehaviour {
 
     public void OnCharacterDead(Character c) {
         Characters.Remove(c);
+        EventManager.Event_CharacterDeath(c);
     }
 
     public Character GetPlayer() {

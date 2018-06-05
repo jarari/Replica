@@ -9,22 +9,22 @@ using UnityEngine;
  * 캐릭터에게 데미지
  * 무적 상태의 캐릭터는 통과함 */
 public class Bullet : MonoBehaviour {
-    private Character attacker;
-    private Weapon weapon;
-    private float speed;
-    private float range;
-    private Animator anim;
-    private Rigidbody2D rb;
-    private Vector3 collisionPos;
-    private Vector3 collisionNorm;
-    private Vector3 startPos;
-    private string className;
-    private bool collided = false;
-    private bool init = false;
+    protected Character attacker;
+    protected Weapon weapon;
+    protected float speed;
+    protected float range;
+    protected Animator anim;
+    protected Rigidbody2D rb;
+    protected Vector3 collisionPos;
+    protected Vector3 collisionNorm;
+    protected Vector3 startPos;
+    protected string className;
+    protected bool collided = false;
+    protected bool init = false;
     private bool ignoreGround = false;
-    private Dictionary<WeaponStats, float> data;
+    protected Dictionary<WeaponStats, float> data;
 
-    private void Awake() {
+    protected void Awake() {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         collided = false;
@@ -57,21 +57,21 @@ public class Bullet : MonoBehaviour {
         }
     }*/
 
-    private void FixedUpdate() {
+    protected virtual void FixedUpdate() {
         if (!init) return;
         rb.velocity = transform.right * speed;
         if (Vector3.Distance(transform.position, startPos) >= range)
             DestroyObject(gameObject);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
+    protected virtual void OnCollisionEnter2D(Collision2D collision) {
         if (!init) return;
         collisionPos = collision.contacts[0].point;
         collisionNorm = collision.contacts[0].normal;
         HandleCollision(collision);
     }
 
-    private void HandleCollision(Collision2D collision) {
+    protected virtual void HandleCollision(Collision2D collision) {
         Character colliding = null;
         if(collision.gameObject == null) return;
         if (collision.gameObject.tag.Equals("Character")) {
@@ -129,14 +129,18 @@ public class Bullet : MonoBehaviour {
         
     }
 
-    private void OnDestroy() {
-        if (!collided) return;
+    protected virtual void ShakeCam() {
         if (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null) {
             if (Vector2.Distance(CharacterManager.instance.GetPlayer().transform.position, transform.position) < Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Radius"))) {
                 CamController.instance.ShakeCam(Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Magnitude"))
                 , Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Duration")));
             }
         }
+    }
+
+    protected virtual void OnDestroy() {
+        if (!collided) return;
+        ShakeCam();
         BulletManager.instance.OnBulletHit(this);
         if(anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
             Vector3 temp = collisionNorm;

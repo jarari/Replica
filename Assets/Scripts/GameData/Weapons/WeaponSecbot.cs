@@ -15,6 +15,7 @@ public class WeaponSecbot : Weapon {
     }
 
     public override void OnWeaponEvent(string eventname) {
+        base.OnWeaponEvent(eventname);
         if (eventname == "attack_secbot_fire") {
             FireBullet("bullet_secbot", 90);
         }

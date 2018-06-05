@@ -14,6 +14,7 @@ public class WeaponFist : Weapon {
     }
 
     public override void OnWeaponEvent(string eventname) {
+        base.OnWeaponEvent(eventname);
         if (eventname == "attack_fist_upper_jump") {
             owner.AddForce(Vector3.up * owner.GetCurrentStat(CharacterStats.JumpPower) * 1.2f);
         }

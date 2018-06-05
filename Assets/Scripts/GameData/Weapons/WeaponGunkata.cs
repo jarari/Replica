@@ -15,6 +15,7 @@ public class WeaponGunkata : Weapon {
     }
 
     public override void OnWeaponEvent(string eventname) {
+        base.OnWeaponEvent(eventname);
         if (eventname == "hg_forward" || eventname == "hg_down" || eventname == "hg_up") {
             SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "X")
                                         , (float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "Y")));

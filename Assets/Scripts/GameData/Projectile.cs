@@ -3,29 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour {
-    protected Character attacker;
-    protected Weapon weapon;
-    protected float speed;
-    protected float range;
+public class Projectile : Bullet {
     protected float falloff50;
     protected float falloff25;
-    protected Animator anim;
-    protected Rigidbody2D rb;
-    protected Vector3 collisionPos;
-    protected Vector3 collisionNorm;
-    protected Vector3 startPos;
     protected Vector3 velVector;
-    protected string className;
-    protected bool collided = false;
-    protected bool init = false;
-    protected Dictionary<WeaponStats, float> data;
-
-    private void Awake() {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-        collided = false;
-    }
+    
     public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         className = classname;
         attacker = user;
@@ -82,7 +64,7 @@ public class Projectile : MonoBehaviour {
 
     }
 
-    protected virtual void FixedUpdate() {
+    protected override void FixedUpdate() {
         if (!init) return;
         rb.velocity += new Vector2(0, Physics2D.gravity.y * Time.fixedDeltaTime);
         velVector = rb.velocity.normalized;
@@ -105,13 +87,7 @@ public class Projectile : MonoBehaviour {
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
-        collisionPos = collision.contacts[0].point;
-        collisionNorm = collision.contacts[0].normal;
-        HandleCollision(collision);
-    }
-
-    protected virtual void HandleCollision(Collision2D collision) {
+    protected override void HandleCollision(Collision2D collision) {
         if (collision.gameObject == null) return;
         if (collision.gameObject.tag.Equals("Character")) {
             if(collision.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
@@ -134,7 +110,7 @@ public class Projectile : MonoBehaviour {
         }
     }
 
-    protected virtual void ExplosionEffect() {
+    protected virtual void HitEffect() {
         if (anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
             Vector3 temp = collisionNorm;
             temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
@@ -167,15 +143,10 @@ public class Projectile : MonoBehaviour {
         }
     }
 
-    protected void OnDestroy() {
-        if (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null) {
-            if(Vector2.Distance(CharacterManager.instance.GetPlayer().transform.position, transform.position) < Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Radius"))){
-                CamController.instance.ShakeCam(Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Magnitude"))
-                , Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Duration")));
-            }
-        }
+    protected override void OnDestroy() {
+        ShakeCam();
         Explode();
-        ExplosionEffect();
+        HitEffect();
         BulletManager.instance.OnProjectileHit(this);
     }
 }

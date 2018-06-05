@@ -507,10 +507,12 @@ public abstract class Character : ObjectBase {
         lscale.x = gun_obj.transform.localScale.x * Mathf.Sign(transform.localScale.x);
         gun_obj.transform.localScale = lscale;
         gun_obj.transform.SetParent(transform);
+        EventManager.Event_WeaponEquipped(this, wep);
     }
 
     public void RemoveWeapon(WeaponTypes type) {
         if (weapons.ContainsKey(type)) {
+            EventManager.Event_WeaponUnequipped(this, weapons[type]);
             Destroy(weapons[type].gameObject);
             weapons.Remove(type);
         }
@@ -530,26 +532,30 @@ public abstract class Character : ObjectBase {
             ((AIBaseController)basecontroller).OnTakeDamage(attacker);
         if (stagger > 0) {
             OnStagger(stagger);
+            EventManager.Event_CharacterStagger(this, attacker, stagger);
         }
         ModStat(CharacterStats.Health, -damage);
-        if (GetCurrentStat(CharacterStats.Health) == 0)
+        EventManager.Event_CharacterHit(this, attacker, damage, stagger);
+        if (GetCurrentStat(CharacterStats.Health) == 0) {
             OnDeath();
+            EventManager.Event_CharacterKilled(this, attacker);
+        }
     }
 
     public void Kill() {
         DoDamage(this, GetCurrentStat(CharacterStats.Health), 0);
     }
 
-    public virtual void OnStagger(float stagger) {
+    protected virtual void OnStagger(float stagger) {
         if (HasFlag(CharacterFlags.StaggerImmunity))
             return;
         AddUncontrollableTime(stagger);
     }
 
-    public virtual void OnHealthChanged(float delta) {
+    protected virtual void OnHealthChanged(float delta) {
     }
 
-    public virtual void OnDeath() {
+    protected virtual void OnDeath() {
         if (transform == null)
             return;
         if (IsAI()) {
@@ -568,7 +574,7 @@ public abstract class Character : ObjectBase {
         Destroy(gameObject);
     }
 
-    private void OnDestroy() {
+    protected virtual void OnDestroy() {
         CharacterManager.instance.OnCharacterDead(this);
     }    
 }

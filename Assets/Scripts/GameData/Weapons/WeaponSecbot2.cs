@@ -11,5 +11,6 @@ public class WeaponSecbot2 : Weapon {
     }
 
     public override void OnWeaponEvent(string eventname) {
+        base.OnWeaponEvent(eventname);
     }
 }

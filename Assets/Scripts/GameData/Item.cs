@@ -77,6 +77,8 @@ public enum ItemTypes {
     Weapon,
     Ammo,
     Grenade,
+    Attachment_Base,
+    Attachment_Bullet,
     Consumable,
     InfiniteUse
 }

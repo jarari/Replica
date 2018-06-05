@@ -10,6 +10,6 @@ public class WeaponSword : Weapon {
     }
 
     public override void OnWeaponEvent(string eventname) {
-
+        base.OnWeaponEvent(eventname);
     }
 }

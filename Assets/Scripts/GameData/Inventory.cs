@@ -11,7 +11,7 @@ public class InventorySlot {
         item = i;
         count = c;
     }
-    public void SetCount(int c) {
+    public void SlotSetCount(int c) {
         count = c;
     }
 }
@@ -67,7 +67,7 @@ public class Inventory : MonoBehaviour {
         else if(status == SpaceStatus.Stackable) {
             int i = GetItemIndex(itemname);
             OnContentChange(inventory[i].item, i, inventory[i].count, inventory[i].count + count);
-            inventory[i].SetCount(inventory[i].count + count);
+            inventory[i].SlotSetCount(inventory[i].count + count);
         }
     }
 
@@ -75,8 +75,9 @@ public class Inventory : MonoBehaviour {
         if (inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
             if (inventory[i].item.GetItemType() != ItemTypes.InfiniteUse
                 || inventory[i].item.GetItemType() != ItemTypes.Weapon)
-                inventory[i].SetCount(inventory[i].count - count);
+                inventory[i].SlotSetCount(inventory[i].count - count);
             inventory[i].item.Use();
+            EventManager.Event_ItemUse(owner, inventory[i].item, count);
         }
     }
 
@@ -90,7 +91,7 @@ public class Inventory : MonoBehaviour {
     public void SetCount(int i, int count) {
         if (inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
             OnContentChange(inventory[i].item, i, inventory[i].count, count);
-            inventory[i].SetCount(count);
+            inventory[i].SlotSetCount(count);
         }
     }
 
@@ -103,7 +104,7 @@ public class Inventory : MonoBehaviour {
     public void ModCount(int i, int count) {
         if (inventory.ElementAtOrDefault(i) != null && inventory[i].count > 0) {
             OnContentChange(inventory[i].item, i, inventory[i].count, inventory[i].count + count);
-            inventory[i].SetCount(inventory[i].count + count);
+            inventory[i].SlotSetCount(inventory[i].count + count);
         }
     }
 
@@ -145,6 +146,13 @@ public class Inventory : MonoBehaviour {
     }
 
     public void OnContentChange(Item changed, int slot, int oldcount, int newcount) {
+        int deltacount = newcount - oldcount;
+        if(deltacount > 0) {
+            EventManager.Event_ItemAdded(owner, this, changed, deltacount);
+        }
+        else if(deltacount < 0) {
+            EventManager.Event_ItemRemoved(owner, this, changed, deltacount);
+        }
         if (owner.tag.Equals("Character")) {
             Character c = owner.GetComponent<Character>();
             if(c != null) {
