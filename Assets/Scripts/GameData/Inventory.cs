@@ -77,7 +77,8 @@ public class Inventory : MonoBehaviour {
                 || inventory[i].item.GetItemType() != ItemTypes.Weapon)
                 inventory[i].SlotSetCount(inventory[i].count - count);
             inventory[i].item.Use();
-            EventManager.Event_ItemUse(owner, inventory[i].item, count);
+            if (EventManager.Event_ItemUse != null)
+                EventManager.Event_ItemUse(owner, inventory[i].item, count);
         }
     }
 
@@ -148,10 +149,12 @@ public class Inventory : MonoBehaviour {
     public void OnContentChange(Item changed, int slot, int oldcount, int newcount) {
         int deltacount = newcount - oldcount;
         if(deltacount > 0) {
-            EventManager.Event_ItemAdded(owner, this, changed, deltacount);
+            if (EventManager.Event_ItemAdded != null)
+                EventManager.Event_ItemAdded(owner, this, changed, deltacount);
         }
         else if(deltacount < 0) {
-            EventManager.Event_ItemRemoved(owner, this, changed, deltacount);
+            if (EventManager.Event_ItemRemoved != null)
+                EventManager.Event_ItemRemoved(owner, this, changed, deltacount);
         }
         if (owner.tag.Equals("Character")) {
             Character c = owner.GetComponent<Character>();

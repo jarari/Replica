@@ -75,7 +75,8 @@ public class Weapon : ObjectBase {
 
     public void FireBullet(string bulletclass, float ang) {
         Bullet b = BulletManager.instance.CreateBullet(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
-        EventManager.Event_WeaponFire(owner, this, b);
+        if (EventManager.Event_WeaponFire != null)
+            EventManager.Event_WeaponFire(owner, this, b);
     }
 
     public void CreateEffect(string effectname) {
@@ -128,7 +129,8 @@ public class Weapon : ObjectBase {
                 StartCoroutine(HitCheck(time / numOfFrames, pos, area, eventname));
             }
         }
-        EventManager.Event_WeaponAttack(owner, this, eventname);
+        if (EventManager.Event_WeaponAttack != null)
+            EventManager.Event_WeaponAttack(owner, this, eventname);
         /*Dictionary<CharacterStats, float> moveSpeedDebuff = new Dictionary<CharacterStats, float>();
         moveSpeedDebuff.Add(CharacterStats.MoveSpeed, -99);
         owner.AddBuff("debuff_ms_attack", moveSpeedDebuff, false, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);*/
@@ -194,6 +196,7 @@ public class Weapon : ObjectBase {
     }
 
     public virtual void OnWeaponEvent(string eventname) {
-        EventManager.Event_WeaponEvent(owner, this, eventname);
+        if (EventManager.Event_WeaponEvent != null)
+            EventManager.Event_WeaponEvent(owner, this, eventname);
     }
 }
