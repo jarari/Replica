@@ -6,7 +6,7 @@ using UnityEngine;
 
 /* 이벤트 시스템
  * 호출 방법
- * EventManager.RegisterEvent(이벤트명, 타입, 함수)
+ * EventManager.RegisterEvent(이벤트명, delegate 함수)
  * EventManager.UnregisterEvent(이벤트명)
  * 필요없는 이벤트는 제때제때 지워줄 것 
  * 예: 캐릭터의 경우 OnDestroy에서 이벤트 제거 */
@@ -29,6 +29,9 @@ public static class EventManager {
 
     public delegate void OnCharacterKilled(Character victim, Character attacker);
     public static OnCharacterKilled Event_CharacterKilled;
+
+    public delegate void OnCharacterHealthChanged(Character c, float changed);
+    public static OnCharacterHealthChanged Event_CharacterHealthChanged;
 
     public delegate void OnCharacterHit(Character victim, Character attacker, float damage, float stagger);
     public static OnCharacterHit Event_CharacterHit;
@@ -68,8 +71,9 @@ public static class EventManager {
 
     private static Dictionary<string, EventFunc> eventFunctions = new Dictionary<string, EventFunc>();
 
-    public static void RegisterEvent(string id, Type t, Delegate func) {
+    public static void RegisterEvent(string id, Delegate func) {
         if (eventFunctions.ContainsKey(id)) return;
+        Type t = func.GetType();
         eventFunctions.Add(id, new EventFunc(func, t));
         if (t.Equals(typeof(OnCharacterCreated))) {
             Event_CharacterCreated += (OnCharacterCreated)func;
@@ -79,6 +83,9 @@ public static class EventManager {
         }
         else if (t.Equals(typeof(OnCharacterKilled))) {
             Event_CharacterKilled += (OnCharacterKilled)func;
+        }
+        else if (t.Equals(typeof(OnCharacterHealthChanged))) {
+            Event_CharacterHealthChanged += (OnCharacterHealthChanged)func;
         }
         else if (t.Equals(typeof(OnCharacterHit))) {
             Event_CharacterHit += (OnCharacterHit)func;
@@ -130,6 +137,9 @@ public static class EventManager {
         }
         else if (t.Equals(typeof(OnCharacterKilled))) {
             Event_CharacterKilled -= (OnCharacterKilled)func;
+        }
+        else if (t.Equals(typeof(OnCharacterHealthChanged))) {
+            Event_CharacterHealthChanged -= (OnCharacterHealthChanged)func;
         }
         else if (t.Equals(typeof(OnCharacterHit))) {
             Event_CharacterHit -= (OnCharacterHit)func;

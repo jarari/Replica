@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 /* 플레이어 캐릭터 클래스 */
 public class PlayerCharacter : Character {
     protected override void OnHealthChanged(float delta) {
-        PlayerHUD.UpdateHealth();
+        base.OnHealthChanged(delta);
         if(delta < 0) {
             if (GetState() != CharacterStates.Uncontrollable) {
                 if (delta >= GetMaxStat(CharacterStats.Health) * 0.5f)

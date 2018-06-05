@@ -28,6 +28,7 @@ public static class PlayerHUD {
         uimanager.RescaleUI("ammo_gb", 2, 2);
         uimanager.CreateText("ammo_b", new Vector2(127, 926), "0", 50, 50);
         uimanager.CreateText("ammo_g", new Vector2(205, 926), "0", 50, 50);
+        EventManager.RegisterEvent("HUD_UpdateHealth", new EventManager.OnCharacterHealthChanged(UpdateHealth));
     }
 
     public static void DrawGrenadeTrajectory(string pose, float chargeAmount) {
@@ -102,7 +103,9 @@ public static class PlayerHUD {
         mesh.colors = colors.ToArray();
     }
 
-    public static void UpdateHealth() {
+    public static void UpdateHealth(Character c, float changed) {
+        if (c != player)
+            return;
         float ratio = player.GetCurrentStat(CharacterStats.Health) / player.GetMaxStat(CharacterStats.Health);
         uimanager.LerpFill("hp_bar", healthRatio, ratio, 0.3f);
         healthRatio = ratio;
