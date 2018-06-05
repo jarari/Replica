@@ -4,6 +4,13 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+/* 이벤트 시스템
+ * 호출 방법
+ * EventManager.RegisterEvent(이벤트명, 타입, 함수)
+ * EventManager.UnregisterEvent(이벤트명)
+ * 필요없는 이벤트는 제때제때 지워줄 것 
+ * 예: 캐릭터의 경우 OnDestroy에서 이벤트 제거 */
+
 public class EventFunc {
     public Delegate func;
     public Type type;
