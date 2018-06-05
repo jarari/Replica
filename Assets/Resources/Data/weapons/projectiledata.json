@@ -9,7 +9,7 @@
 		"FallOff25":0.75,
 		"Sprites":
 		{
-			"controller":"throwable_grenade_controller",
+			"controller":"throwable_grenade/throwable_grenade_controller",
 			"hit":"effect_grenade_explosion"
 		},
 		"ShakeCam":

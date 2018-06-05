@@ -286,7 +286,7 @@ public class GameDataManager : MonoBehaviour {
         else {
             controllername = (string)GetData("Data", classname, "Sprites", "controller");
         }
-        var controller = Resources.Load("AnimatorController/" + classname + "/" + controllername);
+        var controller = Resources.Load("AnimatorController/" + controllername);
         if (controller == null)
             return null;
         if (controller.GetType().Equals(typeof(AnimatorOverrideController)))

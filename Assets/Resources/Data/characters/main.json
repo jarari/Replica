@@ -15,7 +15,7 @@
 		},
 		"Sprites":
 		{
-			"controller":"character_echo_controller",
+			"controller":"character_echo/character_echo_controller",
 			"hasSub":0
 		},
 		"Collider":
@@ -46,7 +46,7 @@
 		},
 		"Sprites":
 		{
-			"controller":"character_echo_controller",
+			"controller":"character_echo/character_echo_controller",
 			"hasSub":0
 		},
 		"Collider":
@@ -77,7 +77,7 @@
 		},
 		"Sprites":
 		{
-			"controller":"character_secbot_controller",
+			"controller":"character_secbot/character_secbot_controller",
 			"hasSub":0
 		},
 		"Collider":
@@ -123,7 +123,7 @@
 		},
 		"Sprites":
 		{
-			"controller":"character_secbot2_controller",
+			"controller":"character_secbot2/character_secbot2_controller",
 			"hasSub":0
 		},
 		"Collider":

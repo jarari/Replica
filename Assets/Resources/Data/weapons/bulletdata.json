@@ -4,7 +4,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"bullet_hg_controller",
+			"controller":"bullet_hg/bullet_hg_controller",
 			"hit":"effect_bullet_hg_hit"
 		}
 	},
@@ -17,7 +17,7 @@
 		},
 		"Sprites":
 		{
-			"controller":"bullet_gunkata_finish_controller",
+			"controller":"bullet_gunkata_finish/bullet_gunkata_finish_controller",
 			"hit":"effect_bullet_gunkata_finish_hit"
 		}
 	},
@@ -26,7 +26,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"bullet_secbot_controller",
+			"controller":"bullet_secbot/bullet_secbot_controller",
 			"hit":"effect_bullet_secbot_hit"
 		}
 	}

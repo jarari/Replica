@@ -28,7 +28,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_basic_finish_controller"
+			"controller":"effect_attack_basic_finish/effect_attack_basic_finish_controller"
 		},
 		"Scale":
 		{
@@ -47,7 +47,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_fist_01_controller"
+			"controller":"effect_attack_fist_01/effect_attack_fist_01_controller"
 		},
 		"Scale":
 		{
@@ -66,7 +66,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_fist_02_controller"
+			"controller":"effect_attack_fist_02/effect_attack_fist_02_controller"
 		},
 		"Scale":
 		{
@@ -85,7 +85,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_fist_03_controller"
+			"controller":"effect_attack_fist_03/effect_attack_fist_03_controller"
 		},
 		"Scale":
 		{
@@ -104,7 +104,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_fist_04_controller"
+			"controller":"effect_attack_fist_04/effect_attack_fist_04_controller"
 		},
 		"Scale":
 		{
@@ -123,7 +123,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_fist_upper_controller"
+			"controller":"effect_attack_fist_upper/effect_attack_fist_upper_controller"
 		},
 		"Scale":
 		{
@@ -142,7 +142,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_sword_01_controller"
+			"controller":"effect_attack_sword_01/effect_attack_sword_01_controller"
 		},
 		"Scale":
 		{
@@ -161,7 +161,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_sword_02_controller"
+			"controller":"effect_attack_sword_02/effect_attack_sword_02_controller"
 		},
 		"Scale":
 		{
@@ -180,7 +180,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_sword_03_controller"
+			"controller":"effect_attack_sword_03/effect_attack_sword_03_controller"
 		},
 		"Scale":
 		{
@@ -199,7 +199,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_sword_04_controller"
+			"controller":"effect_attack_sword_04/effect_attack_sword_04_controller"
 		},
 		"Scale":
 		{
@@ -218,7 +218,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_sword_finish_controller"
+			"controller":"effect_attack_sword_finish/effect_attack_sword_finish_controller"
 		},
 		"Scale":
 		{
@@ -238,7 +238,7 @@
 		"ShouldDisplayBeneathGround":1,
 		"Sprites":
 		{
-			"controller":"effect_tumble_back_controller"
+			"controller":"effect_tumble_back/effect_tumble_back_controller"
 		},
 		"Scale":
 		{
@@ -258,7 +258,7 @@
 		"ShouldDisplayBeneathGround":1,
 		"Sprites":
 		{
-			"controller":"effect_tumble_front_controller"
+			"controller":"effect_tumble_front/effect_tumble_front_controller"
 		},
 		"Scale":
 		{
@@ -279,10 +279,10 @@
 		{
 			"controller":
 			{
-				"0":"effect_bullet_hg_hit_01",
-				"1":"effect_bullet_hg_hit_02",
-				"2":"effect_bullet_hg_hit_03",
-				"3":"effect_bullet_hg_hit_04"
+				"0":"effect_bullet_hg_hit/effect_bullet_hg_hit_01",
+				"1":"effect_bullet_hg_hit/effect_bullet_hg_hit_02",
+				"2":"effect_bullet_hg_hit/effect_bullet_hg_hit_03",
+				"3":"effect_bullet_hg_hit/effect_bullet_hg_hit_04"
 			}
 		},
 		"Scale":
@@ -303,7 +303,7 @@
 		"ShouldDisplayBeneathGround":0,
 		"Sprites":
 		{
-			"controller":"effect_grenade_explosion_controller"
+			"controller":"effect_grenade_explosion/effect_grenade_explosion_controller"
 		},
 		"Scale":
 		{
@@ -323,7 +323,7 @@
 		"ShouldDisplayBeneathGround":0,
 		"Sprites":
 		{
-			"controller":"effect_hg_down_controller"
+			"controller":"effect_hg_down/effect_hg_down_controller"
 		},
 		"Scale":
 		{
@@ -343,7 +343,7 @@
 		"ShouldDisplayBeneathGround":0,
 		"Sprites":
 		{
-			"controller":"effect_hg_forward_controller"
+			"controller":"effect_hg_forward/effect_hg_forward_controller"
 		},
 		"Scale":
 		{
@@ -363,7 +363,7 @@
 		"ShouldDisplayBeneathGround":0,
 		"Sprites":
 		{
-			"controller":"effect_hg_up_controller"
+			"controller":"effect_hg_up/effect_hg_up_controller"
 		},
 		"Scale":
 		{
@@ -381,7 +381,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_miss"
+			"controller":"effect_indicator_miss/effect_indicator_miss"
 		},
 		"Scale":
 		{
@@ -394,7 +394,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_crit"
+			"controller":"effect_indicator_crit/effect_indicator_crit"
 		},
 		"Scale":
 		{
@@ -407,7 +407,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_block"
+			"controller":"effect_indicator_block/effect_indicator_block"
 		},
 		"Scale":
 		{
@@ -420,7 +420,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_question"
+			"controller":"effect_indicator_question/effect_indicator_question"
 		},
 		"Scale":
 		{
@@ -433,7 +433,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_exclamation"
+			"controller":"effect_indicator_exclamation/effect_indicator_exclamation"
 		},
 		"Scale":
 		{
@@ -446,7 +446,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_anger"
+			"controller":"effect_indicator_anger/effect_indicator_anger"
 		},
 		"Scale":
 		{
@@ -459,7 +459,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_nodap"
+			"controller":"effect_indicator_nodap/effect_indicator_nodap"
 		},
 		"Scale":
 		{
@@ -472,7 +472,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_armorpen"
+			"controller":"effect_indicator_armorpen/effect_indicator_armorpen"
 		},
 		"Scale":
 		{
@@ -485,7 +485,7 @@
 		"Loop":0,
 		"Sprites":
 		{
-			"controller":"effect_indicator_wtf"
+			"controller":"effect_indicator_wtf/effect_indicator_wtf"
 		},
 		"Scale":
 		{
@@ -499,7 +499,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_bullet_gunkata_finish_hit_controller"
+			"controller":"effect_bullet_gunkata_finish_hit/effect_bullet_gunkata_finish_hit_controller"
 		},
 		"Scale":
 		{
@@ -518,7 +518,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_jump_basic_controller"
+			"controller":"effect_attack_jump_basic/effect_attack_jump_basic_controller"
 		},
 		"Scale":
 		{
@@ -540,10 +540,10 @@
 		{
 			"controller":
 			{
-				"0":"effect_attack_basic_hit_01",
-				"1":"effect_attack_basic_hit_02",
-				"2":"effect_attack_basic_hit_03",
-				"3":"effect_attack_basic_hit_04"
+				"0":"effect_attack_basic_hit/effect_attack_basic_hit_01",
+				"1":"effect_attack_basic_hit/effect_attack_basic_hit_02",
+				"2":"effect_attack_basic_hit/effect_attack_basic_hit_03",
+				"3":"effect_attack_basic_hit/effect_attack_basic_hit_04"
 			}
 		},
 		"Scale":
@@ -566,10 +566,10 @@
 		{
 			"controller":
 			{
-				"0":"effect_attack_fist_hit_01",
-				"1":"effect_attack_fist_hit_02",
-				"2":"effect_attack_fist_hit_03",
-				"3":"effect_attack_fist_hit_04"
+				"0":"effect_attack_fist_hit/effect_attack_fist_hit_01",
+				"1":"effect_attack_fist_hit/effect_attack_fist_hit_02",
+				"2":"effect_attack_fist_hit/effect_attack_fist_hit_03",
+				"3":"effect_attack_fist_hit/effect_attack_fist_hit_04"
 			}
 		},
 		"Scale":
@@ -592,10 +592,10 @@
 		{
 			"controller":
 			{
-				"0":"effect_attack_sword_hit_01",
-				"1":"effect_attack_sword_hit_02",
-				"2":"effect_attack_sword_hit_03",
-				"3":"effect_attack_sword_hit_04"
+				"0":"effect_attack_sword_hit/effect_attack_sword_hit_01",
+				"1":"effect_attack_sword_hit/effect_attack_sword_hit_02",
+				"2":"effect_attack_sword_hit/effect_attack_sword_hit_03",
+				"3":"effect_attack_sword_hit/effect_attack_sword_hit_04"
 			}
 		},
 		"Scale":
@@ -615,7 +615,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_basic_01_controller"
+			"controller":"effect_attack_basic_01/effect_attack_basic_01_controller"
 		},
 		"Scale":
 		{
@@ -634,7 +634,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_basic_02_controller"
+			"controller":"effect_attack_basic_02/effect_attack_basic_02_controller"
 		},
 		"Scale":
 		{
@@ -653,7 +653,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_basic_03_controller"
+			"controller":"effect_attack_basic_03/effect_attack_basic_03_controller"
 		},
 		"Scale":
 		{
@@ -672,7 +672,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_basic_04_controller"
+			"controller":"effect_attack_basic_04/effect_attack_basic_04_controller"
 		},
 		"Scale":
 		{
@@ -691,7 +691,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_character_secbot_attack_controller"
+			"controller":"effect_character_secbot_attack/effect_character_secbot_attack_controller"
 		},
 		"Scale":
 		{
@@ -710,7 +710,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_character_secbot_death_controller"
+			"controller":"effect_character_secbot_death/effect_character_secbot_death_controller"
 		},
 		"Scale":
 		{
@@ -729,7 +729,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_character_secbot_explosion_controller"
+			"controller":"effect_character_secbot_explosion/effect_character_secbot_explosion_controller"
 		},
 		"Scale":
 		{
@@ -748,7 +748,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_bullet_secbot_hit_controller"
+			"controller":"effect_bullet_secbot_hit/effect_bullet_secbot_hit_controller"
 		},
 		"Scale":
 		{
@@ -767,7 +767,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_character_secbot2_attack_controller"
+			"controller":"effect_character_secbot2_attack/effect_character_secbot2_attack_controller"
 		},
 		"Scale":
 		{
@@ -786,7 +786,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_character_secbot2_explosion_controller"
+			"controller":"effect_character_secbot2_explosion/effect_character_secbot2_explosion_controller"
 		},
 		"Scale":
 		{
@@ -805,7 +805,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_character_secbot2_jump_controller"
+			"controller":"effect_character_secbot2_jump/effect_character_secbot2_jump_controller"
 		},
 		"Scale":
 		{
@@ -824,7 +824,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_bullet_particle"
+			"controller":"effect_loot_bullet_particle/effect_loot_bullet_particle"
 		},
 		"Scale":
 		{
@@ -843,7 +843,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_bullet_dust"
+			"controller":"effect_loot_bullet_dust/effect_loot_bullet_dust"
 		},
 		"Scale":
 		{
@@ -862,7 +862,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_bullet_pickup"
+			"controller":"effect_loot_bullet_pickup/effect_loot_bullet_pickup"
 		},
 		"Scale":
 		{
@@ -881,7 +881,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_grenade_particle"
+			"controller":"effect_loot_grenade_particle/effect_loot_grenade_particle"
 		},
 		"Scale":
 		{
@@ -900,7 +900,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_grenade_dust"
+			"controller":"effect_loot_grenade_dust/effect_loot_grenade_dust"
 		},
 		"Scale":
 		{
@@ -919,7 +919,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_grenade_pickup"
+			"controller":"effect_loot_grenade_pickup/effect_loot_grenade_pickup"
 		},
 		"Scale":
 		{
@@ -938,7 +938,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_hp_particle"
+			"controller":"effect_loot_hp_particle/effect_loot_hp_particle"
 		},
 		"Scale":
 		{
@@ -957,7 +957,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_hp_dust"
+			"controller":"effect_loot_hp_dust/effect_loot_hp_dust"
 		},
 		"Scale":
 		{
@@ -976,7 +976,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_loot_hp_pickup"
+			"controller":"effect_loot_hp_pickup/effect_loot_hp_pickup"
 		},
 		"Scale":
 		{
@@ -995,7 +995,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_fist_finish"
+			"controller":"effect_attack_fist_finish/effect_attack_fist_finish"
 		},
 		"Scale":
 		{
@@ -1014,7 +1014,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_sword_qd_ready"
+			"controller":"effect_attack_sword_qd_ready/effect_attack_sword_qd_ready"
 		},
 		"Scale":
 		{
@@ -1033,7 +1033,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_sword_qd_sweep"
+			"controller":"effect_attack_sword_qd_sweep/effect_attack_sword_qd_sweep"
 		},
 		"Scale":
 		{
@@ -1052,7 +1052,7 @@
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_attack_basic_upper"
+			"controller":"effect_attack_basic_upper/effect_attack_basic_upper"
 		},
 		"Scale":
 		{
