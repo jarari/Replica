@@ -105,9 +105,12 @@ public class Weapon : ObjectBase {
             }
         }
         Dictionary<WeaponStats, float> dmgMult = new Dictionary<WeaponStats, float>();
-        dmgMult.Add(WeaponStats.Damage, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "DamageMultiplier")));
-        WeaponBuff dmgMultBuff = new WeaponBuff(dmgMult, type);
-        owner.AddWeaponBuff("buff_damage_" + eventname, dmgMultBuff, false, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);
+        float mult = Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "DamageMultiplier")) - 1;
+        if(mult != 0) {
+            dmgMult.Add(WeaponStats.Damage, mult);
+            WeaponBuff dmgMultBuff = new WeaponBuff(dmgMult, type);
+            owner.AddWeaponBuff("buff_damage_" + eventname, dmgMultBuff, false, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);
+        }
 
         Dictionary<WeaponStats, float> ccAdd = new Dictionary<WeaponStats, float>();
         ccAdd.Add(WeaponStats.SADestruction, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "SADestruction")));

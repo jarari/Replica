@@ -91,7 +91,7 @@ public static class Helper {
             float armor = victim.GetCurrentStat(CharacterStats.MeleeArmor);
             if (isRanged)
                 armor = victim.GetCurrentStat(CharacterStats.RangeArmor);
-            damage -= -damage * (armor / (armor + 100f));
+            damage -= damage * (armor / (armor + 100f));
         }
         return new DamageData(attacker, victim, damage, stagger);
     }

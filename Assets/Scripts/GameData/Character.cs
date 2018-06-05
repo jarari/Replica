@@ -371,8 +371,9 @@ public abstract class Character : ObjectBase {
 
     public void ModStat(CharacterStats stat, float val) {
         stats[(int)stat] = Mathf.Clamp(GetUnbuffedStat(GetBuffedStat(stats[(int)stat], stat) + val, stat), 0, GetMaxStat(stat));
-        if (stat == CharacterStats.Health)
+        if (stat == CharacterStats.Health) {
             OnHealthChanged(val);
+        }
     }
 
     public void SetCurrentStat(CharacterStats stat, float val) {
@@ -558,6 +559,8 @@ public abstract class Character : ObjectBase {
     }
 
     protected virtual void OnHealthChanged(float delta) {
+        if (EventManager.Event_CharacterHealthChanged != null)
+            EventManager.Event_CharacterHealthChanged(this, delta);
     }
 
     protected virtual void OnDeath() {
