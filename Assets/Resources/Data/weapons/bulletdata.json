@@ -13,7 +13,7 @@
 		"Loop":0,
 		"KnockBack": {
 			"X": 600,
-			"Y": 50
+			"Y": 150
 		},
 		"Sprites":
 		{
@@ -28,6 +28,15 @@
 		{
 			"controller":"bullet_secbot/bullet_secbot_controller",
 			"hit":"effect_bullet_secbot_hit"
+		}
+	},
+	"bullet_hg_ap":
+	{
+		"Loop":0,
+		"Sprites":
+		{
+			"controller":"effect_hg_ap/bullet_con",
+			"hit":"effect_hg_ap_hit"
 		}
 	}
 }
