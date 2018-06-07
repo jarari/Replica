@@ -55,6 +55,7 @@ public class CharacterSpawner : MonoBehaviour {
                 PlayerHUD.Initialize();
                 CamController.instance.AttachCam(spawned.transform);
                 spawned.GetInventory().AddItem("item_grenade", 30);
+                spawned.GetInventory().AddItem("item_bullet", 100);
                 break;
             case CharacterTypes.AI:
                 spawned.GiveWeapon(weaponClass);
