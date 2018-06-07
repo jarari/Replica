@@ -48,6 +48,7 @@ public class GameDataManager : MonoBehaviour {
         ParseJSONData("characters/main");
         ParseJSONData("weapons/weapondata");
         ParseJSONData("effects/effectdata");
+        ParseJSONData("effects/particledata");
         ParseJSONData("ai/aidata");
         ParseJSONData("items/itemdata");
         ParseJSONData("items/lootdata");
@@ -268,6 +269,8 @@ public class GameDataManager : MonoBehaviour {
                 return Convert.ToSingle(GetData("Data", classname, "Stats", "Range"));
             case WeaponStats.BulletSpeed:
                 return Convert.ToSingle(GetData("Data", classname, "Stats", "BulletSpeed"));
+            case WeaponStats.ExplosionRadius:
+                return Convert.ToSingle(GetData("Data", classname, "Stats", "ExplosionRadius"));
         }
         return -1;
     }

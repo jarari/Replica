@@ -13,6 +13,7 @@ public enum WeaponStats {
     ReloadTime,
     Range,
     BulletSpeed,
+    ExplosionRadius,
     EndOfEnums
 }
 
@@ -70,6 +71,7 @@ public class Weapon : ObjectBase {
         stats.Add(WeaponStats.Stagger, owner.GetCurrentStat(this, WeaponStats.Stagger));
         stats.Add(WeaponStats.BulletSpeed, owner.GetCurrentStat(this, WeaponStats.BulletSpeed));
         stats.Add(WeaponStats.Range, owner.GetCurrentStat(this, WeaponStats.Range));
+        stats.Add(WeaponStats.ExplosionRadius, owner.GetCurrentStat(this, WeaponStats.ExplosionRadius));
         return stats;
     }
 
@@ -115,6 +117,8 @@ public class Weapon : ObjectBase {
         Dictionary<WeaponStats, float> ccAdd = new Dictionary<WeaponStats, float>();
         ccAdd.Add(WeaponStats.SADestruction, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "SADestruction")));
         ccAdd.Add(WeaponStats.Stagger, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "Stagger")));
+        if (GameDataManager.instance.GetData("Data", eventname, "ExplosionRadius") != null)
+            ccAdd.Add(WeaponStats.ExplosionRadius, Convert.ToSingle(GameDataManager.instance.GetData("Data", eventname, "ExplosionRadius")));
         WeaponBuff ccAddBuff = new WeaponBuff(ccAdd, type);
         owner.AddWeaponBuff("buff_cc_" + eventname, ccAddBuff, true, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);
         
