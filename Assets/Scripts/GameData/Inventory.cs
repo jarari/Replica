@@ -160,8 +160,11 @@ public class Inventory : MonoBehaviour {
             Character c = owner.GetComponent<Character>();
             if(c != null) {
                 if(c.IsPlayer())
-                    if (changed.GetItemType() == ItemTypes.Ammo || changed.GetItemType() == ItemTypes.Grenade)
+                    if (changed.GetItemType() == ItemTypes.Ammo || changed.GetItemType() == ItemTypes.Grenade) {
                         PlayerHUD.UpdateAmmo(changed.GetItemType(), newcount);
+                        if (changed.GetItemType() == ItemTypes.Ammo)
+                            c.GetAnimator().SetInteger("Ammo", newcount);
+                    }
             }
         }
     }
