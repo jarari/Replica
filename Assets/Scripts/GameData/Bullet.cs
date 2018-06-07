@@ -111,13 +111,32 @@ public class Bullet : MonoBehaviour {
                     Physics2D.IgnoreCollision(GetComponents<Collider2D>()[1], collision.collider);
                 }
                 else {
-                    DamageData dmgdata = Helper.DamageCalc(attacker, data, colliding, true, false);
-                    colliding.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
-                    if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !colliding.HasFlag(CharacterFlags.KnockBackImmunity)) {
-                        Vector2 knockback = new Vector2();
+                    Vector2 knockback = new Vector2();
+                    if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null) {
                         knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "X"));
                         knockback.y = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "Y"));
-                        colliding.AddForce(new Vector2(transform.right.x * knockback.x, transform.right.y * knockback.y), true);
+                    }
+                    if (data[WeaponStats.ExplosionRadius] <= 0) {
+                        DamageData dmgdata = Helper.DamageCalc(attacker, data, colliding, true, false);
+                        colliding.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
+                        if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !colliding.HasFlag(CharacterFlags.KnockBackImmunity)) {
+                            colliding.AddForce(new Vector2(knockback.x * Mathf.Sign(colliding.transform.position.x - transform.position.x), knockback.y), true);
+                        }
+                    }
+                    else {
+                        List<Character> closeEnemies = CharacterManager.instance.GetEnemies(attacker.GetTeam()).FindAll(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position) <= data[WeaponStats.ExplosionRadius]);
+                        foreach (Character c in closeEnemies) {
+                            if (c.HasFlag(CharacterFlags.Invincible))
+                                continue;
+                            Vector2 cBoxBorder = Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position);
+                            if (Helper.IsBlockedByMap(transform.position, c.transform.position))
+                                continue;
+                            DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true, true);
+                            c.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
+                            if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !c.HasFlag(CharacterFlags.KnockBackImmunity)) {
+                                c.AddForce(new Vector2(knockback.x * Mathf.Sign(colliding.transform.position.x - transform.position.x), knockback.y), true);
+                            }
+                        }
                     }
                     DestroyObject(gameObject);
                     //EffectManager.instance.CreateEffect("effect_hitback_bullet", colliding.transform.position + transform.right * 10f, Helper.Vector2ToAng(transform.right));

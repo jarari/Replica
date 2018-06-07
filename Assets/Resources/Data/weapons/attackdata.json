@@ -123,7 +123,8 @@
   "attack_basic_finish": {
     "DamageMultiplier": 3,
     "SADestruction": 0,
-    "Stagger": 0,
+    "Stagger": 1,
+	"ExplosionRadius": 150,
 	"Unstoppable":1,
     "ChargeAmount": 0,
     "HitBox": {

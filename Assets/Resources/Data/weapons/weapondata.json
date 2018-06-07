@@ -129,7 +129,7 @@
 			"Stagger":1,
 			"MagSize":0,
 			"ReloadTime":0,
-			"Range":250
+			"ExplosionRadius":250
 		},
 		"Sprites":
 		{
