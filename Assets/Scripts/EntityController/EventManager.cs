@@ -9,7 +9,9 @@ using UnityEngine;
  * EventManager.RegisterEvent(이벤트명, delegate 함수)
  * EventManager.UnregisterEvent(이벤트명)
  * 필요없는 이벤트는 제때제때 지워줄 것 
- * 예: 캐릭터의 경우 OnDestroy에서 이벤트 제거 */
+ * 예: 캐릭터의 경우 OnDestroy에서 이벤트 제거 
+ * 실제 사용 예시는 PlayerHUD 클래스 31번줄 참조
+ */
 
 public class EventFunc {
     public Delegate func;
@@ -176,6 +178,12 @@ public static class EventManager {
         }
         else if (t.Equals(typeof(OnAttachmentUnequipped))) {
             Event_AttachmentUnequipped -= (OnAttachmentUnequipped)func;
+        }
+    }
+
+    public static void UnregisterAll() {
+        foreach(string id in eventFunctions.Keys) {
+            UnregisterEvent(id);
         }
     }
 }
