@@ -25,8 +25,8 @@ public class AIBaseController : BasicCharacterMovement {
     //초기 데이터 설정
     public void Initialize(Character c, string aidata) {
         base.Initialize(c);
-        nextAttack = Time.realtimeSinceStartup;
-        nextSearch = Time.realtimeSinceStartup;
+        nextAttack = Time.time;
+        nextSearch = Time.time;
         AIData = aidata;
         recognitionRadius = (float)GameDataManager.instance.GetData("Data", aidata, "RecognitionRadius");
         minWanderDist = (float)GameDataManager.instance.GetData("Data", aidata, "MinWanderDistance");
@@ -95,8 +95,8 @@ public class AIBaseController : BasicCharacterMovement {
             lastX = transform.position.x;
             restTimer = restingTime;
         }
-        if (Time.realtimeSinceStartup >= nextSearch) {
-            nextSearch = Time.realtimeSinceStartup + 1f;
+        if (Time.time >= nextSearch) {
+            nextSearch = Time.time + 1f;
             Character closestPlayer = CharacterManager.instance.GetClosestEnemy(transform.position, character.GetTeam());
             if (closestPlayer != null) {
                 if ((Vector3.Distance(closestPlayer.transform.position, character.transform.position) < recognitionRadius
@@ -163,11 +163,11 @@ public class AIBaseController : BasicCharacterMovement {
     }
 
     protected virtual void Attack() {
-        if (Time.realtimeSinceStartup < nextAttack) {
+        if (Time.time < nextAttack) {
             character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
             return;
         }
-        nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
+        nextAttack = Time.time + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
         character.AddUncontrollableTime(Mathf.Min(1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed), 0.2f));
         character.GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
     }
@@ -175,7 +175,7 @@ public class AIBaseController : BasicCharacterMovement {
     /* 슈퍼아머가 없는 AI는 타격당하면 공격 타이머가 리셋됨. */
     protected override void OnHitEvent(int invincible) {
         base.OnHitEvent(invincible);
-        nextAttack = Time.realtimeSinceStartup + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
+        nextAttack = Time.time + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
     }
 
     /* AI가 공격당하면 주위의 아군에게도 어그로가 전달됨. */
