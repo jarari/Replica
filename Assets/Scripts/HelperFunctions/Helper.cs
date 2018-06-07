@@ -81,7 +81,7 @@ public static class Helper {
         float damage = stats[WeaponStats.Damage];
         float stagger = stats[WeaponStats.Stagger];
         if (!ignorearmor) {
-            if (victim.GetCurrentStat(CharacterStats.SuperArmor) >= 0) {
+            if (victim.GetCurrentStat(CharacterStats.SuperArmor) > 0) {
                 stagger = 0;
                 victim.ModStat(CharacterStats.SuperArmor, -stats[WeaponStats.SADestruction]);
                 if (victim.GetCurrentStat(CharacterStats.SuperArmor) == 0) {
