@@ -120,8 +120,8 @@ public class Projectile : Bullet {
     }
 
     protected virtual void Explode() {
-        List<Character> closeEnemies = CharacterManager.instance.GetAllCharacters().FindAll(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position) <= range);
-        foreach (Character c in closeEnemies) {
+        List<Character> closeCharacters = CharacterManager.instance.GetAllCharacters().FindAll(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position) <= range);
+        foreach (Character c in closeCharacters) {
             if (c.HasFlag(CharacterFlags.Invincible))
                 continue;
             Vector2 cBoxBorder = Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position);
