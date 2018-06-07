@@ -328,6 +328,7 @@ public class LevelManager : MonoBehaviour {
 
     public void DestroyMap() {
 		isMapActive = false;
+        EventManager.UnregisterAll();
         if(ScenarySimulation.instance != null)
             ScenarySimulation.instance.OnMapDestroy();
         if(createdObjs.Count > 0) {
