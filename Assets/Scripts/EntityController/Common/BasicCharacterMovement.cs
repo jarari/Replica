@@ -357,7 +357,7 @@ public class BasicCharacterMovement : MoveObject {
         Weapon grenade = character.GetWeapon(WeaponTypes.Throwable);
         BulletManager.instance.CreateThrowable("throwable_grenade", throwpos, character, grenade,
             character.GetCurrentStat(CharacterStats.GrenadeThrowPower) * grenadeChargeRatio,
-            character.GetCurrentStat(grenade, WeaponStats.Range), 90 - (90 - throwang) * character.GetFacingDirection(), 300,
+            character.GetCurrentStat(grenade, WeaponStats.ExplosionRadius), 90 - (90 - throwang) * character.GetFacingDirection(), 300,
             grenade.GetEssentialStats());
         character.RemoveWeapon(WeaponTypes.Throwable);
     }
