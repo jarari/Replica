@@ -1,41 +1,14 @@
 fileFormatVersion: 2
-guid: acf1f786e03fde14491e445e2f2922cf
-timeCreated: 1528603120
+guid: ae5a60dfb6fa6e147b4e36abd69b1c84
+timeCreated: 1528604929
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Tile_1stageTileset2_0
-    21300002: Tile_1stageTileset2_1
-    21300004: Tile_1stageTileset2_2
-    21300006: Tile_1stageTileset2_3
-    21300008: Tile_1stageTileset2_4
-    21300010: Tile_1stageTileset2_5
-    21300012: Tile_1stageTileset2_6
-    21300014: Tile_1stageTileset2_7
-    21300016: Tile_1stageTileset2_8
-    21300018: Tile_1stageTileset2_9
-    21300020: Tile_1stageTileset2_10
-    21300022: Tile_1stageTileset2_11
-    21300024: Tile_1stageTileset2_12
-    21300026: Tile_1stageTileset2_13
-    21300028: Tile_1stageTileset2_14
-    21300030: Tile_1stageTileset2_15
-    21300032: Tile_1stageTileset2_16
-    21300034: Tile_1stageTileset2_17
-    21300036: Tile_1stageTileset2_18
-    21300038: Tile_1stageTileset2_19
-    21300040: Tile_1stageTileset2_20
-    21300042: Tile_1stageTileset2_21
-    21300044: Tile_1stageTileset2_22
-    21300046: Tile_1stageTileset2_23
-    21300048: Tile_1stageTileset2_24
-    21300050: Tile_1stageTileset2_25
-    21300052: Tile_1stageTileset2_26
-    21300054: Tile_1stageTileset2_27
-    21300056: Tile_1stageTileset2_28
-    21300058: Tile_1stageTileset2_29
-    21300060: Tile_1stageTileset2_30
-    21300062: Tile_1stageTileset2_31
+    21300000: Tile_1stageTileset3_0
+    21300002: Tile_1stageTileset3_1
+    21300004: Tile_1stageTileset3_2
+    21300006: Tile_1stageTileset3_3
+    21300008: Tile_1stageTileset3_4
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -95,14 +68,14 @@ TextureImporter:
     textureFormat: -1
     textureCompression: 2
     compressionQuality: 50
-    crunchedCompression: 0
+    crunchedCompression: 1
     allowsAlphaSplitting: 0
     overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tile_1stageTileset2_0
+      name: Tile_1stageTileset3_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,7 +88,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Tile_1stageTileset2_1
+      name: Tile_1stageTileset3_1
       rect:
         serializedVersion: 2
         x: 32
@@ -128,20 +101,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Tile_1stageTileset2_2
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 64
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: Tile_1stageTileset2_3
+      name: Tile_1stageTileset3_2
       rect:
         serializedVersion: 2
         x: 0
@@ -154,7 +114,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Tile_1stageTileset2_4
+      name: Tile_1stageTileset3_3
       rect:
         serializedVersion: 2
         x: 32
@@ -167,49 +127,10 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Tile_1stageTileset2_5
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 32
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: Tile_1stageTileset2_6
+      name: Tile_1stageTileset3_4
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: Tile_1stageTileset2_7
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: Tile_1stageTileset2_8
-      rect:
-        serializedVersion: 2
-        x: 64
         y: 0
         width: 32
         height: 32
