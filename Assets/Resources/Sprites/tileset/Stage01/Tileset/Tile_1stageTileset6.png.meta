@@ -1,18 +1,18 @@
 fileFormatVersion: 2
-guid: ae5a60dfb6fa6e147b4e36abd69b1c84
-timeCreated: 1528708115
+guid: 7c4527a4efe07b246b2777e7eec8e71d
+timeCreated: 1528708132
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Tile_1stageTileset3_0
-    21300002: Tile_1stageTileset3_1
-    21300004: Tile_1stageTileset3_2
-    21300006: Tile_1stageTileset3_3
-    21300008: Tile_1stageTileset3_4
-    21300010: Tile_1stageTileset3_5
-    21300012: Tile_1stageTileset3_6
-    21300014: Tile_1stageTileset3_7
-    21300016: Tile_1stageTileset3_8
+    21300000: Tile_1stageTileset6_0
+    21300002: Tile_1stageTileset6_1
+    21300004: Tile_1stageTileset6_2
+    21300006: Tile_1stageTileset6_3
+    21300008: Tile_1stageTileset6_4
+    21300010: Tile_1stageTileset6_5
+    21300012: Tile_1stageTileset6_6
+    21300014: Tile_1stageTileset6_7
+    21300016: Tile_1stageTileset6_8
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -79,7 +79,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tile_1stageTileset3_0
+      name: Tile_1stageTileset6_0
       rect:
         serializedVersion: 2
         x: 0
@@ -92,7 +92,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Tile_1stageTileset3_1
+      name: Tile_1stageTileset6_1
       rect:
         serializedVersion: 2
         x: 32
@@ -105,7 +105,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Tile_1stageTileset3_3
+      name: Tile_1stageTileset6_3
       rect:
         serializedVersion: 2
         x: 0
@@ -118,11 +118,24 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Tile_1stageTileset3_4
+      name: Tile_1stageTileset6_4
       rect:
         serializedVersion: 2
         x: 32
         y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tile_1stageTileset6_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
         width: 32
         height: 32
       alignment: 0
