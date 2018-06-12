@@ -2,7 +2,7 @@
 	"particle_he_explosion":
 	{
 		"Prefab":"Sprites/Particles/Particle_HEG_Explosion",
-		"Duration":0.5
+		"Duration":5
 	},
 	"particle_ap_hit":
 	{
@@ -12,7 +12,7 @@
 	"particle_secbot_death":
 	{
 		"Prefab":"Sprites/Particles/Particle_Enemy_Death",
-		"Duration":0.5
+		"Duration":5
 	},
 	"particle_laser":
 	{
