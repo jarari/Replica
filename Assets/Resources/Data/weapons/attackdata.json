@@ -169,7 +169,7 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 200,
+    "ChargeAmount": 300,
     "HitBox": {
       "0":{
         "Time": 1,
@@ -198,7 +198,7 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 450,
     "HitBox": {
       "0":{
         "Time": 2,
@@ -226,37 +226,41 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-	"Unstoppable":1,
-    "ChargeAmount": 400,
+    "Unstoppable": 1,
+    "ChargeAmount": 550,
+    "KnockBack": {
+      "X": 400,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 4,
         "Pos": {
           "X": 78,
           "Y": -6
         },
-        "Area":{
+        "Area": {
           "X": 130,
           "Y": 62
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_fist_finish",
-			"1":"attack_fist_upper"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_fist_finish",
+        "1": "attack_fist_upper"
+      }
+    }
   },
   "attack_fist_upper": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
 	"Unstoppable":1,
-    "ChargeAmount": 400,
+    "ChargeAmount": 500,
 	"KnockBack": {
         "X": 150,
         "Y": 950
@@ -404,7 +408,7 @@
     "SADestruction": 0,
     "Stagger": 0,
 	"Unstoppable":1,
-    "ChargeAmount": 450,
+    "ChargeAmount": 600,
 	"KnockBack": {
         "X": 300,
         "Y": 800
@@ -471,7 +475,7 @@
     "DamageMultiplier": 2,
     "SADestruction": 0,
     "Stagger": 0,
-	"ChargeAmount": 100,
+	"ChargeAmount": 50,
 	"KnockBack": {
 		"X": 100,
 		"Y": -300
@@ -557,7 +561,7 @@
     "Stagger": 0,
 	"Unstoppable":1,
 	"ChargeDelay":6,
-    "ChargeAmount": 400,
+    "ChargeAmount": 450,
 	"KnockBack": {
         "X": 100,
         "Y": 250
@@ -618,31 +622,32 @@
     "DamageMultiplier": 1.5,
     "SADestruction": 0,
     "Stagger": 0,
-	"Unstoppable":1,
-	"KnockBack": {
-        "X": 100,
-        "Y": 900
+    "Unstoppable": 1,
+    "ChargeAmount": 200,
+    "KnockBack": {
+      "X": 100,
+      "Y": 900
     },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 2,
         "Pos": {
           "X": 64,
           "Y": 19
         },
-        "Area":{
+        "Area": {
           "X": 142,
           "Y": 166
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"Down",
-			"1":"RightDown",
-			"2":"Right",
-			"3":"X"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "Down",
+        "1": "RightDown",
+        "2": "Right",
+        "3": "X"
+      }
+    }
   }
 }

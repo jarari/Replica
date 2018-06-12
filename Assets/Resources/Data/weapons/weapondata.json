@@ -5,7 +5,7 @@
 		"Stats":
 		{
 			"WeaponType":0,
-			"Damage":10,
+			"Damage":20,
 			"SADestruction":0,
 			"AttackSpeed":3.3,
 			"Stagger":0.3,
@@ -36,7 +36,7 @@
 		"Stats":
 		{
 			"WeaponType":1,
-			"Damage":10,
+			"Damage":20,
 			"SADestruction":0,
 			"AttackSpeed":3,
 			"Stagger":0.3,
@@ -68,7 +68,7 @@
 		"Stats":
 		{
 			"WeaponType":2,
-			"Damage":10,
+			"Damage":30,
 			"SADestruction":0,
 			"AttackSpeed":2.8,
 			"Stagger":0.3,
@@ -150,7 +150,7 @@
 		"Stats":
 		{
 			"WeaponType":4,
-			"Damage":50,
+			"Damage":100,
 			"SADestruction":0,
 			"AttackSpeed":0.5,
 			"Stagger":0,
@@ -178,7 +178,7 @@
 		"Stats":
 		{
 			"WeaponType":4,
-			"Damage":50,
+			"Damage":100,
 			"SADestruction":0,
 			"AttackSpeed":0.6,
 			"Stagger":0,
