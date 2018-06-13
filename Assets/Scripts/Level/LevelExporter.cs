@@ -205,7 +205,7 @@ public class LevelExporter : MonoBehaviour {
         if(obj.GetComponent<Light>() != null) {
             Light light = obj.GetComponent<Light>();
             jsondata += "\"Light\":{"
-                + "\"Type\":" + light.type
+                + "\"Type\":" + (int)light.type
                 + ",\"Range\":" + light.range
                 + ",\"Color\":{"
                 + "\"R\":" + light.color.r + ","
@@ -218,7 +218,7 @@ public class LevelExporter : MonoBehaviour {
             if (light.flare != null)
                 jsondata += ",\"FlarePath\":\"" + GetPathToAsset(light.flare) + "\""
                     + ",\"FlareName\":\"" + light.flare.name + "\"";
-            jsondata += ",\"RenderMode\":" + light.renderMode
+            jsondata += ",\"RenderMode\":" + (int)light.renderMode
                 + ",\"CullingMask\":" + light.cullingMask
                 + "},";
         }
