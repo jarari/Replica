@@ -314,6 +314,7 @@ public class LevelManager : MonoBehaviour {
             light = obj.AddComponent<Light>();
         light.type = (LightType)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "Type"));
         light.range = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Range"));
+        light.intensity = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Intensity"));
         light.color = new Color(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "R"))
             , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "G"))
             , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "B")));

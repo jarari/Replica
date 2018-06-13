@@ -143,7 +143,7 @@ public class LevelExporter : MonoBehaviour {
             + "},";
         Debug.Log("Processing object " + obj.name
             + "\n\tTag: " + tag);
-        if (obj.transform.parent != null && obj.transform.parent.name != "LevelCreated") {
+        if (obj.transform.parent != null && obj.transform.parent.name != "LevelCreated" && obj.transform.parent.tag != "") {
             if (obj.transform.parent.CompareTag("MainCamera")) {
                 jsondata += "\"ParentIsCam\":1,";
             }
@@ -206,6 +206,7 @@ public class LevelExporter : MonoBehaviour {
             Light light = obj.GetComponent<Light>();
             jsondata += "\"Light\":{"
                 + "\"Type\":" + (int)light.type
+                + ",\"Intensity\":" + light.intensity
                 + ",\"Range\":" + light.range
                 + ",\"Color\":{"
                 + "\"R\":" + light.color.r + ","
