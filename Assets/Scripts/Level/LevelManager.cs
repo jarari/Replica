@@ -317,7 +317,6 @@ public class LevelManager : MonoBehaviour {
         light.color = new Color(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "R"))
             , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "G"))
             , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "B")));
-        light.lightmapBakeType = (LightmapBakeType)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "Mode"));
         light.cookie = Helper.GetTexture((string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookiePath")
             , (string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookieName"));
         light.flare = Helper.GetFlare((string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlarePath"),

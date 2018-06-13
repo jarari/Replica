@@ -211,8 +211,7 @@ public class LevelExporter : MonoBehaviour {
                 + "\"R\":" + light.color.r + ","
                 + "\"G\":" + light.color.g + ","
                 + "\"B\":" + light.color.b
-                + "},\"Mode\":" + light.lightmapBakeType
-                + ",\"CookiePath\":\"" + GetPathToAsset(light.cookie) + "\""
+                + "},\"CookiePath\":\"" + GetPathToAsset(light.cookie) + "\""
                 + ",\"CookieName\":\"" + light.cookie.name + "\""
                 + ",\"FlarePath\":\"" + GetPathToAsset(light.flare) + "\""
                 + ",\"FlareName\":\"" + light.flare.name + "\""
