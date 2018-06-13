@@ -317,10 +317,12 @@ public class LevelManager : MonoBehaviour {
         light.color = new Color(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "R"))
             , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "G"))
             , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "B")));
-        light.cookie = Helper.GetTexture((string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookiePath")
-            , (string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookieName"));
-        light.flare = Helper.GetFlare((string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlarePath"),
-            (string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlareName"));
+        if(GameDataManager.instance.GetData(mapdata, key, "Light", "CookiePath") != null)
+            light.cookie = Helper.GetTexture((string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookiePath")
+                , (string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookieName"));
+        if(GameDataManager.instance.GetData(mapdata, key, "Light", "FlarePath") != null)
+            light.flare = Helper.GetFlare((string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlarePath"),
+                (string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlareName"));
         light.renderMode = (LightRenderMode)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "RenderMode"));
         light.cullingMask = Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "CullingMask"));
     }

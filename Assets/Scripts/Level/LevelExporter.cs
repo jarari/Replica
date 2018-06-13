@@ -211,11 +211,14 @@ public class LevelExporter : MonoBehaviour {
                 + "\"R\":" + light.color.r + ","
                 + "\"G\":" + light.color.g + ","
                 + "\"B\":" + light.color.b
-                + "},\"CookiePath\":\"" + GetPathToAsset(light.cookie) + "\""
-                + ",\"CookieName\":\"" + light.cookie.name + "\""
-                + ",\"FlarePath\":\"" + GetPathToAsset(light.flare) + "\""
-                + ",\"FlareName\":\"" + light.flare.name + "\""
-                + ",\"RenderMode\":" + light.renderMode
+                + "}";
+            if (light.cookie != null)
+                jsondata += ",\"CookiePath\":\"" + GetPathToAsset(light.cookie) + "\""
+                    + ",\"CookieName\":\"" + light.cookie.name + "\"";
+            if (light.flare != null)
+                jsondata += ",\"FlarePath\":\"" + GetPathToAsset(light.flare) + "\""
+                    + ",\"FlareName\":\"" + light.flare.name + "\"";
+            jsondata += ",\"RenderMode\":" + light.renderMode
                 + ",\"CullingMask\":" + light.cullingMask
                 + "},";
         }
