@@ -161,6 +161,7 @@
     <Compile Include="Assets\editor\SpriteImportSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Resources\Materials\2D\Test.shader" />
     <None Include="Assets\Resources\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\Resources\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
     <None Include="Assets\Resources\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />
