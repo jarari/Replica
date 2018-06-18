@@ -1,7 +1,7 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 
-Shader "Custom/Overlay"
+Shader "Custom/ColorBurn"
 {
 	Properties
 	{
@@ -20,7 +20,7 @@ Shader "Custom/Overlay"
 		"PreviewType" = "Plane"
 		"CanUseSpriteAtlas" = "True"
 	}
-
+		LOD 100
 		Cull Off
 		Lighting Off
 		ZWrite Off
@@ -88,7 +88,7 @@ Shader "Custom/Overlay"
 
 		fixed4 finalGrabText = tex2D(_GrabTexture, grabTexcoord);
 
-		return Overlay(finalGrabText, color);
+		return ColorBurn(finalGrabText, color);
 	}
 
 		ENDCG

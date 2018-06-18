@@ -1,7 +1,7 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 
-Shader "Custom/Overlay"
+Shader "Custom/Multiply"
 {
 	Properties
 	{
@@ -88,7 +88,7 @@ Shader "Custom/Overlay"
 
 		fixed4 finalGrabText = tex2D(_GrabTexture, grabTexcoord);
 
-		return Overlay(finalGrabText, color);
+		return Multiply(finalGrabText, color);
 	}
 
 		ENDCG

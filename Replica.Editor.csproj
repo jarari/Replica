@@ -203,7 +203,11 @@
     <None Include="Assets\Resources\PostProcessing\Resources\Shaders\Uber.shader" />
     <None Include="Assets\Resources\PostProcessing\Resources\Shaders\UberSecondPass.cginc" />
     <None Include="Assets\Resources\PostProcessing\Utilities\CustomMotionTexture\Shaders\CustomMotionVectorTexture.shader" />
+    <None Include="Assets\Resources\Sprites\shader\BlendModes.cginc" />
+    <None Include="Assets\Resources\Sprites\shader\ColorBurn.shader" />
+    <None Include="Assets\Resources\Sprites\shader\Multiply.shader" />
     <None Include="Assets\Resources\Sprites\shader\Overlay.shader" />
+    <None Include="Assets\Resources\Sprites\shader\Screen.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
