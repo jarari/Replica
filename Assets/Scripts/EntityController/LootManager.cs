@@ -27,7 +27,7 @@ public class LootManager : MonoBehaviour {
     public GameObject CreateLoot(string classname, int count, Vector2 pos, float angle, Vector2 vel = new Vector2()) {
 		if(!LevelManager.instance.isMapActive) return null;
         GameObject loot_obj = (GameObject)Instantiate(Resources.Load("Prefab/Loot"), pos, new Quaternion());
-        string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
+        string script = (string)GameDataManager.instance.GetData(classname, "ScriptClass");
         if (script == null || script.Length == 0)
             script = "Loot";
         Loot loot = (Loot)loot_obj.AddComponent(Type.GetType(script));

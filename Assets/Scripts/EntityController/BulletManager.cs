@@ -37,7 +37,7 @@ public class BulletManager : MonoBehaviour {
     public Bullet CreateBullet(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data, bool ignoreGround = false) {
 		if(!LevelManager.instance.isMapActive) return null;
 		GameObject bullet_obj = (GameObject)Instantiate(Resources.Load("Prefab/Bullet"), pos, new Quaternion());
-        string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
+        string script = (string)GameDataManager.instance.GetData(classname, "ScriptClass");
         if (script == null || script.Length == 0)
             script = "Bullet";
         Bullet bullet = (Bullet)bullet_obj.AddComponent(Type.GetType(script));
@@ -56,7 +56,7 @@ public class BulletManager : MonoBehaviour {
     public Projectile CreateProjectile(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, Dictionary<WeaponStats, float> _data, bool candirecthit) {
 		if(!LevelManager.instance.isMapActive) return null;
 		GameObject projectile_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
-        string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
+        string script = (string)GameDataManager.instance.GetData(classname, "ScriptClass");
         if (script == null || script.Length == 0)
             script = "Projectile";
         Projectile projectile = (Projectile)projectile_obj.AddComponent(Type.GetType(script));
@@ -73,7 +73,7 @@ public class BulletManager : MonoBehaviour {
     public Throwable CreateThrowable(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, float torque, Dictionary<WeaponStats, float> _data, bool candirecthit = true) {
 		if(!LevelManager.instance.isMapActive) return null;
 		GameObject throwable_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
-        string script = (string)GameDataManager.instance.GetData("Data", classname, "ScriptClass");
+        string script = (string)GameDataManager.instance.GetData(classname, "ScriptClass");
         if (script == null || script.Length == 0)
             script = "Throwable";
         Throwable throwable = (Throwable)throwable_obj.AddComponent(Type.GetType(script));
@@ -85,5 +85,13 @@ public class BulletManager : MonoBehaviour {
         throwable.Initialize(classname, user, firedfrom, speed, range, torque, _data, candirecthit);
         projectiles.Add(throwable);
         return throwable;
+    }
+
+    public Laser CreateLaser(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data) {
+        if (!LevelManager.instance.isMapActive) return null;
+        GameObject laser_obj = (GameObject)Instantiate(Resources.Load("Prefab/Laser"), pos, new Quaternion());
+        Laser l = laser_obj.GetComponent<Laser>();
+        l.Initialize(classname, user, firedfrom, pos, angle, _data[WeaponStats.Range], Convert.ToSingle(GameDataManager.instance.GetData(classname, "LaserWidth")), _data);
+        return l;
     }
 }

@@ -1110,13 +1110,13 @@
 			"Y":0.0
 		}
 	},
-	"effect_hg_ap_light_front":
+	"effect_hg_ap_light_forward":
 	{
 		"Loop":0,
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_hg_ap_light/front_con"
+			"controller":"effect_hg_ap_light/forward_con"
 		},
 		"Scale":
 		{
@@ -1167,13 +1167,13 @@
 			"Y":0.0
 		}
 	},
-	"effect_hg_ap_muzzle_front":
+	"effect_hg_ap_muzzle_forward":
 	{
 		"Loop":0,
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_hg_ap_muzzle/front_con"
+			"controller":"effect_hg_ap_muzzle/forward_con"
 		},
 		"Scale":
 		{
@@ -1224,13 +1224,13 @@
 			"Y":0.0
 		}
 	},
-	"effect_hg_basic_light_front":
+	"effect_hg_basic_light_forward":
 	{
 		"Loop":0,
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_hg_basic_light/front_con"
+			"controller":"effect_hg_basic_light/forward_con"
 		},
 		"Scale":
 		{
@@ -1281,13 +1281,13 @@
 			"Y":0.0
 		}
 	},
-	"effect_hg_laser_light_front":
+	"effect_hg_laser_light_forward":
 	{
 		"Loop":0,
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_hg_laser_light/front_con"
+			"controller":"effect_hg_laser_light/forward_con"
 		},
 		"Scale":
 		{
@@ -1338,13 +1338,13 @@
 			"Y":0.0
 		}
 	},
-	"effect_hg_laser_muzzle_front":
+	"effect_hg_laser_muzzle_forward":
 	{
 		"Loop":0,
 		"Rotation":0.0,
 		"Sprites":
 		{
-			"controller":"effect_hg_laser_muzzle/front_con"
+			"controller":"effect_hg_laser_muzzle/forward_con"
 		},
 		"Scale":
 		{

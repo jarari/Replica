@@ -112,14 +112,14 @@ public class Bullet : MonoBehaviour {
                 }
                 else {
                     Vector2 knockback = new Vector2();
-                    if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null) {
-                        knockback.x = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "X"));
-                        knockback.y = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "KnockBack", "Y"));
+                    if (GameDataManager.instance.GetData(className, "KnockBack") != null) {
+                        knockback.x = Convert.ToSingle(GameDataManager.instance.GetData(className, "KnockBack", "X"));
+                        knockback.y = Convert.ToSingle(GameDataManager.instance.GetData(className, "KnockBack", "Y"));
                     }
                     if (data[WeaponStats.ExplosionRadius] <= 0) {
                         DamageData dmgdata = Helper.DamageCalc(attacker, data, colliding, true, false);
                         colliding.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
-                        if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !colliding.HasFlag(CharacterFlags.KnockBackImmunity)) {
+                        if (GameDataManager.instance.GetData(className, "KnockBack") != null && !colliding.HasFlag(CharacterFlags.KnockBackImmunity)) {
                             colliding.AddForce(new Vector2(knockback.x * Mathf.Sign(colliding.transform.position.x - transform.position.x), knockback.y), true);
                         }
                     }
@@ -133,7 +133,7 @@ public class Bullet : MonoBehaviour {
                                 continue;
                             DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true, true);
                             c.DoDamage(attacker, dmgdata.damage, dmgdata.stagger);
-                            if (GameDataManager.instance.GetData("Data", className, "KnockBack") != null && !c.HasFlag(CharacterFlags.KnockBackImmunity)) {
+                            if (GameDataManager.instance.GetData(className, "KnockBack") != null && !c.HasFlag(CharacterFlags.KnockBackImmunity)) {
                                 c.AddForce(new Vector2(knockback.x * Mathf.Sign(colliding.transform.position.x - transform.position.x), knockback.y), true);
                             }
                         }
@@ -149,10 +149,10 @@ public class Bullet : MonoBehaviour {
     }
 
     protected virtual void ShakeCam() {
-        if (GameDataManager.instance.GetData("Data", className, "ShakeCam") != null) {
-            if (Vector2.Distance(CharacterManager.instance.GetPlayer().transform.position, transform.position) < Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Radius"))) {
-                CamController.instance.ShakeCam(Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Magnitude"))
-                , Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "ShakeCam", "Duration")));
+        if (GameDataManager.instance.GetData(className, "ShakeCam") != null) {
+            if (Vector2.Distance(CharacterManager.instance.GetPlayer().transform.position, transform.position) < Convert.ToSingle(GameDataManager.instance.GetData(className, "ShakeCam", "Radius"))) {
+                CamController.instance.ShakeCam(Convert.ToSingle(GameDataManager.instance.GetData(className, "ShakeCam", "Magnitude"))
+                , Convert.ToSingle(GameDataManager.instance.GetData(className, "ShakeCam", "Duration")));
             }
         }
     }
@@ -161,11 +161,11 @@ public class Bullet : MonoBehaviour {
         if (!collided) return;
         ShakeCam();
         BulletManager.instance.OnBulletHit(this);
-        if(anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
+        if(anim != null && GameDataManager.instance.GetData(className, "Sprites", "hit") != null) {
             Vector3 temp = collisionNorm;
             temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
             float ang = Helper.Vector2ToAng(temp);
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), collisionPos, ang);
+            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), collisionPos, ang);
         }
     }
 }

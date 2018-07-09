@@ -43,7 +43,8 @@
 			"MagSize":0,
 			"ReloadTime":0,
 			"Range":1500,
-			"BulletSpeed":1800
+			"BulletSpeed":1800,
+			"DefaultBullet":"bullet_hg_laser"
 		},
 		"Sprites":
 		{
@@ -157,7 +158,8 @@
 			"MagSize":0,
 			"ReloadTime":0,
 			"Range":150,
-			"BulletSpeed":600
+			"BulletSpeed":600,
+			"DefaultBullet":"bullet_secbot"
 		},
 		"Sprites":
 		{

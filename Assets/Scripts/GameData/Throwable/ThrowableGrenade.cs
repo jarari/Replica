@@ -12,7 +12,7 @@ class ThrowableGrenade : Throwable{
     private bool flying = false;
     protected override void AdditionalData() {
         flying = true;
-        cookTime = Convert.ToSingle(GameDataManager.instance.GetData("Data", className, "CookTime"));
+        cookTime = Convert.ToSingle(GameDataManager.instance.GetData(className, "CookTime"));
     }
 
     protected override void FixedUpdate() {

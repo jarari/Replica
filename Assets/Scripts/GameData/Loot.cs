@@ -23,8 +23,8 @@ public class Loot : ObjectBase {
     protected int count = 0;
     public virtual void Initialize(string classname, int _count) {
         base.Initialize(classname);
-        if(GameDataManager.instance.GetData("Data", classname, "Item") != null)
-            item = (string)GameDataManager.instance.GetData("Data", classname, "Item");
+        if(GameDataManager.instance.GetData(classname, "Item") != null)
+            item = (string)GameDataManager.instance.GetData(classname, "Item");
         count = _count;
     }
     public void AllowPickup() {
@@ -42,8 +42,8 @@ public class Loot : ObjectBase {
     }
 
     protected void LandDust() {
-        if (GameDataManager.instance.GetData("Data", className, "Sprites", "dust") != null)
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "dust"),
+        if (GameDataManager.instance.GetData(className, "Sprites", "dust") != null)
+            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "dust"),
                 transform.position, 0);
     }
 
@@ -65,11 +65,11 @@ public class Loot : ObjectBase {
         if (item.Length != 0) {
             c.GetInventory().AddItem(item, count);
         }
-        if (GameDataManager.instance.GetData("Data", className, "Sprites", "pickup") != null)
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "pickup"),
+        if (GameDataManager.instance.GetData(className, "Sprites", "pickup") != null)
+            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "pickup"),
                 transform.position, 0);
-        if (GameDataManager.instance.GetData("Data", className, "Sprites", "particle") != null)
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "pickup"),
+        if (GameDataManager.instance.GetData(className, "Sprites", "particle") != null)
+            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "pickup"),
                 c.transform.position, 0, c.transform);
         DestroyObject(gameObject);
     }

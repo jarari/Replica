@@ -17,7 +17,7 @@ public class AIBossController : BasicCharacterMovement {
         base.Initialize(c);
         className = aidata;
         currentPhase = 0;
-        restingTime = (float)GameDataManager.instance.GetData("Data", aidata, "RestingTime");
+        restingTime = (float)GameDataManager.instance.GetData(aidata, "RestingTime");
         targetApproachRange = character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.5f;
         target = CharacterManager.instance.GetPlayer();
         nextActive = Time.realtimeSinceStartup;

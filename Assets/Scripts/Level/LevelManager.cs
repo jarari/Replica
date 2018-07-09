@@ -79,13 +79,13 @@ public class LevelManager : MonoBehaviour {
     }
 
     IEnumerator MapCreationSequence(string mapname) {
-        if (GameDataManager.instance.GetData("Data", mapname) != null) {
+        if (GameDataManager.instance.GetData(mapname) != null) {
             DestroyMap();
             Dictionary<int, string> mapList = new Dictionary<int, string>();
-            int totalNumOfRooms = (int)GameDataManager.instance.GetData("Data", mapname, "TotalNumberOfRooms");
-            List<object> Patterns = new List<object>(((Dictionary<string, object>)GameDataManager.instance.GetData("Data", mapname, "Patterns")).Values);
-            if (GameDataManager.instance.GetData("Data", mapname, "Reserved") != null) {
-                Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData("Data", mapname, "Reserved");
+            int totalNumOfRooms = (int)GameDataManager.instance.GetData(mapname, "TotalNumberOfRooms");
+            List<object> Patterns = new List<object>(((Dictionary<string, object>)GameDataManager.instance.GetData(mapname, "Patterns")).Values);
+            if (GameDataManager.instance.GetData(mapname, "Reserved") != null) {
+                Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(mapname, "Reserved");
                 foreach (KeyValuePair<string, object> kvp in dict) {
                     mapList.Add(Convert.ToInt32(kvp.Key), (string)kvp.Value);
                 }

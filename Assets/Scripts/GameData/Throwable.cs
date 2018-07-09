@@ -26,8 +26,8 @@ public class Throwable : Projectile {
     }
 
     protected override void HitEffect() {
-        if (anim != null && GameDataManager.instance.GetData("Data", className, "Sprites", "hit") != null) {
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData("Data", className, "Sprites", "hit"), collisionPos, 0);
+        if (anim != null && GameDataManager.instance.GetData(className, "Sprites", "hit") != null) {
+            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), collisionPos, 0);
         }
     }
 }

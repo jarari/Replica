@@ -18,10 +18,10 @@ public class Item {
     }
     public Item(string classname) {
         className = classname;
-        name = (string)GameDataManager.instance.GetData("Data", classname, "Name");
-        type = (ItemTypes)Convert.ToSingle(GameDataManager.instance.GetData("Data", classname, "Type"));
-        stackable = Convert.ToBoolean(GameDataManager.instance.GetData("Data", classname, "Stackable"));
-        image = Helper.GetSprite((string)GameDataManager.instance.GetData("Data", classname, "SpritePath"), (string)GameDataManager.instance.GetData("Data", classname, "SpriteName"));
+        name = (string)GameDataManager.instance.GetData(classname, "Name");
+        type = (ItemTypes)Convert.ToSingle(GameDataManager.instance.GetData(classname, "Type"));
+        stackable = Convert.ToBoolean(GameDataManager.instance.GetData(classname, "Stackable"));
+        image = Helper.GetSprite((string)GameDataManager.instance.GetData(classname, "SpritePath"), (string)GameDataManager.instance.GetData(classname, "SpriteName"));
     }
 
     public static Item Initialize(string classname) {
@@ -59,8 +59,8 @@ public static class CachedItem {
 
     public static Item GetItemClass(string className) {
         string classname = "Item";
-        if(GameDataManager.instance.GetData("Data", className, "ScriptClass") != null)
-            classname = (string)GameDataManager.instance.GetData("Data", className, "ScriptClass");
+        if(GameDataManager.instance.GetData(className, "ScriptClass") != null)
+            classname = (string)GameDataManager.instance.GetData(className, "ScriptClass");
         if (!InstanceCreateCache.ContainsKey(classname)) {
             Type type = Type.GetType(classname, false, true);
             MethodInfo mi = type.GetMethod("Initialize");
@@ -79,6 +79,8 @@ public enum ItemTypes {
     Grenade,
     Attachment_Base,
     Attachment_Bullet,
+    Attachment_Blade,
+    Attachment_Knuckle,
     Consumable,
     InfiniteUse
 }

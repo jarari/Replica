@@ -16,33 +16,33 @@ public class Effect : MonoBehaviour {
             anim.runtimeAnimatorController = GameDataManager.instance.GetAnimatorController(classname);
         else
             transform.localScale = new Vector3(0, 0, 0);
-        Loop = (int)GameDataManager.instance.GetData("Data", classname, "Loop");
+        Loop = (int)GameDataManager.instance.GetData(classname, "Loop");
         if (Loop == 0)
             StartCoroutine(DestroyEffect());
-        if (GameDataManager.instance.GetData("Data", classname, "Flip") != null)
-            Flip = (int)GameDataManager.instance.GetData("Data", classname, "Flip");
+        if (GameDataManager.instance.GetData(classname, "Flip") != null)
+            Flip = (int)GameDataManager.instance.GetData(classname, "Flip");
         Vector3 temp = transform.localScale;
-        if (GameDataManager.instance.GetData("Data", classname, "Scale") != null) {
-            temp.x *= (float)GameDataManager.instance.GetData("Data", classname, "Scale", "X");
-            temp.y *= (float)GameDataManager.instance.GetData("Data", classname, "Scale", "Y");
+        if (GameDataManager.instance.GetData(classname, "Scale") != null) {
+            temp.x *= (float)GameDataManager.instance.GetData(classname, "Scale", "X");
+            temp.y *= (float)GameDataManager.instance.GetData(classname, "Scale", "Y");
         }
         transform.localScale = temp;
         temp = transform.eulerAngles;
-        if(GameDataManager.instance.GetData("Data", classname, "Rotation") != null) {
-            temp.z += (float)GameDataManager.instance.GetData("Data", classname, "Rotation");
+        if(GameDataManager.instance.GetData(classname, "Rotation") != null) {
+            temp.z += (float)GameDataManager.instance.GetData(classname, "Rotation");
         }
         transform.eulerAngles = temp;
         temp = new Vector3(0, 0, 0);
-        if (GameDataManager.instance.GetData("Data", classname, "Position") != null) {
-            temp.x = (float)GameDataManager.instance.GetData("Data", classname, "Position", "X");
-            temp.y = (float)GameDataManager.instance.GetData("Data", classname, "Position", "Y");
+        if (GameDataManager.instance.GetData(classname, "Position") != null) {
+            temp.x = (float)GameDataManager.instance.GetData(classname, "Position", "X");
+            temp.y = (float)GameDataManager.instance.GetData(classname, "Position", "Y");
         }
-        if(GameDataManager.instance.GetData("Data", classname, "ShouldDisplayBeneathGround") != null
-            && (int)GameDataManager.instance.GetData("Data", classname, "ShouldDisplayBeneathGround") == 1) {
+        if(GameDataManager.instance.GetData(classname, "ShouldDisplayBeneathGround") != null
+            && (int)GameDataManager.instance.GetData(classname, "ShouldDisplayBeneathGround") == 1) {
             GetComponent<SpriteRenderer>().sortingLayerName = "DustEffect";
         }
-        if (GameDataManager.instance.GetData("Data", classname, "SortingOrder") != null) {
-            GetComponent<SpriteRenderer>().sortingOrder = Convert.ToInt32(GameDataManager.instance.GetData("Data", classname, "SortingOrder"));
+        if (GameDataManager.instance.GetData(classname, "SortingOrder") != null) {
+            GetComponent<SpriteRenderer>().sortingOrder = Convert.ToInt32(GameDataManager.instance.GetData(classname, "SortingOrder"));
         }
         transform.position = transform.TransformPoint(temp);
     }

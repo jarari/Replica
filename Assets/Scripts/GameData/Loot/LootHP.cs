@@ -7,7 +7,7 @@ class LootHP : Loot {
     protected float healAmount = 0;
     public override void Initialize(string classname, int _count) {
         base.Initialize(classname, _count);
-        healAmount = Convert.ToSingle(GameDataManager.instance.GetData("Data", classname, "HealAmount"));
+        healAmount = Convert.ToSingle(GameDataManager.instance.GetData(classname, "HealAmount"));
     }
     public override void Pickup(Character c) {
         if (c.GetCurrentStat(CharacterStats.Health) == c.GetMaxStat(CharacterStats.Health))

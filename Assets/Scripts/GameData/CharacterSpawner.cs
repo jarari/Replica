@@ -32,8 +32,8 @@ public class CharacterSpawner : MonoBehaviour {
         spawnerType = sptp;
         target = forcetarget;
         nextSpawn = Time.realtimeSinceStartup;
-        if(GameDataManager.instance.GetData("Data", c, "AIScript") != null)
-            aiScript = (string)GameDataManager.instance.GetData("Data", c, "AIScript");
+        if(GameDataManager.instance.GetData(c, "AIScript") != null)
+            aiScript = (string)GameDataManager.instance.GetData(c, "AIScript");
         init = true;
         if (spawnerType == CharacterSpawnerTypes.Once)
             Spawn();

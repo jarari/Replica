@@ -185,7 +185,7 @@ public class GameDataManager : MonoBehaviour {
     }
 
     public object GetData(params string[] Keys) {
-        Dictionary<string, object> tempDict = GameData;
+        Dictionary<string, object> tempDict = (Dictionary<string, object>)GameData["Data"];
         for(int i = 0; i < Keys.Length - 1; i++) {
             if (tempDict.ContainsKey(Keys[i])) {
                 tempDict = (Dictionary<string, object>)tempDict[Keys[i]];
@@ -228,22 +228,22 @@ public class GameDataManager : MonoBehaviour {
     public float GetCharacterStat(string classname, CharacterStats stat) {
         switch (stat) {
             case CharacterStats.Health:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "Health"));
+                return Convert.ToSingle(GetData(classname, "Stats", "Health"));
             case CharacterStats.MoveSpeed:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "MoveSpeed"));
+                return Convert.ToSingle(GetData(classname, "Stats", "MoveSpeed"));
             case CharacterStats.JumpPower:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "JumpPower"));
+                return Convert.ToSingle(GetData(classname, "Stats", "JumpPower"));
             case CharacterStats.MeleeArmor:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "MeleeArmor"));
+                return Convert.ToSingle(GetData(classname, "Stats", "MeleeArmor"));
             case CharacterStats.RangeArmor:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "RangeArmor"));
+                return Convert.ToSingle(GetData(classname, "Stats", "RangeArmor"));
             case CharacterStats.GrenadeFullCharge:
-                if(GetData("Data", classname, "Stats", "GrenadeFullCharge") != null)
-                    return Convert.ToSingle(GetData("Data", classname, "Stats", "GrenadeFullCharge"));
+                if(GetData(classname, "Stats", "GrenadeFullCharge") != null)
+                    return Convert.ToSingle(GetData(classname, "Stats", "GrenadeFullCharge"));
                 return 2f;
             case CharacterStats.GrenadeThrowPower:
-                if (GetData("Data", classname, "Stats", "GrenadeThrowPower") != null)
-                    return Convert.ToSingle(GetData("Data", classname, "Stats", "GrenadeThrowPower"));
+                if (GetData(classname, "Stats", "GrenadeThrowPower") != null)
+                    return Convert.ToSingle(GetData(classname, "Stats", "GrenadeThrowPower"));
                 return 600f;
         }
         return -1;
@@ -252,25 +252,25 @@ public class GameDataManager : MonoBehaviour {
     public float GetWeaponStat(string classname, WeaponStats stat) {
         switch (stat) {
             case WeaponStats.AttackSpeed:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "AttackSpeed"));
+                return Convert.ToSingle(GetData(classname, "Stats", "AttackSpeed"));
             case WeaponStats.Damage:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "Damage"));
+                return Convert.ToSingle(GetData(classname, "Stats", "Damage"));
             case WeaponStats.MagSize:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "MagSize"));
+                return Convert.ToSingle(GetData(classname, "Stats", "MagSize"));
             case WeaponStats.ReloadTime:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "ReloadTime"));
+                return Convert.ToSingle(GetData(classname, "Stats", "ReloadTime"));
             case WeaponStats.SADestruction:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "SADestruction"));
+                return Convert.ToSingle(GetData(classname, "Stats", "SADestruction"));
             case WeaponStats.Spread:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "Spread"));
+                return Convert.ToSingle(GetData(classname, "Stats", "Spread"));
             case WeaponStats.Stagger:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "Stagger"));
+                return Convert.ToSingle(GetData(classname, "Stats", "Stagger"));
             case WeaponStats.Range:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "Range"));
+                return Convert.ToSingle(GetData(classname, "Stats", "Range"));
             case WeaponStats.BulletSpeed:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "BulletSpeed"));
+                return Convert.ToSingle(GetData(classname, "Stats", "BulletSpeed"));
             case WeaponStats.ExplosionRadius:
-                return Convert.ToSingle(GetData("Data", classname, "Stats", "ExplosionRadius"));
+                return Convert.ToSingle(GetData(classname, "Stats", "ExplosionRadius"));
         }
         return -1;
     }
@@ -281,13 +281,13 @@ public class GameDataManager : MonoBehaviour {
      * 주로 총알 피격이펙트 랜덤 재생에 사용됨. */
     public RuntimeAnimatorController GetAnimatorController(string classname) {
         string controllername;
-        if (GetData("Data", classname, "Sprites", "controller").GetType().Equals(typeof(Dictionary<string, object>))) {
-            Dictionary<string, object> dict = (Dictionary<string, object>)GetData("Data", classname, "Sprites", "controller");
+        if (GetData(classname, "Sprites", "controller").GetType().Equals(typeof(Dictionary<string, object>))) {
+            Dictionary<string, object> dict = (Dictionary<string, object>)GetData(classname, "Sprites", "controller");
             int rand = UnityEngine.Random.Range(0, dict.Count);
             controllername = (string)dict[rand.ToString()];
         }
         else {
-            controllername = (string)GetData("Data", classname, "Sprites", "controller");
+            controllername = (string)GetData(classname, "Sprites", "controller");
         }
         var controller = Resources.Load("AnimatorController/" + controllername);
         if (controller == null)

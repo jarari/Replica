@@ -33,17 +33,17 @@ public class ParticleManager : MonoBehaviour {
 
     public GameObject CreateParticle(string classname, Vector3 pos, float angle, float duration = -1, Transform parent = null) {
         if (!LevelManager.instance.isMapActive) return null;
-        if (GameDataManager.instance.GetData("Data", classname, "Prefab") == null)
+        if (GameDataManager.instance.GetData(classname, "Prefab") == null)
             return null;
-        GameObject particle_obj = (GameObject)Instantiate(Resources.Load((string)GameDataManager.instance.GetData("Data", classname, "Prefab")), pos, new Quaternion());
+        GameObject particle_obj = (GameObject)Instantiate(Resources.Load((string)GameDataManager.instance.GetData(classname, "Prefab")), pos, new Quaternion());
         Vector3 ang = particle_obj.transform.eulerAngles;
         ang.z = angle;
         if (parent != null) {
             particle_obj.transform.SetParent(parent);
         }
         float dur = duration;
-        if (dur == -1 && GameDataManager.instance.GetData("Data", classname, "Duration") != null)
-            dur = Convert.ToSingle(GameDataManager.instance.GetData("Data", classname, "Duration"));
+        if (dur == -1 && GameDataManager.instance.GetData(classname, "Duration") != null)
+            dur = Convert.ToSingle(GameDataManager.instance.GetData(classname, "Duration"));
         else if (dur == -1)
             dur = 0.1f;
         StartCoroutine(RemoveParticle(particle_obj, dur));

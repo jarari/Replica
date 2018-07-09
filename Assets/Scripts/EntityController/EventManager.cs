@@ -50,7 +50,7 @@ public static class EventManager {
     public delegate void OnWeaponAttack(Character owner, Weapon w, string eventname);
     public static OnWeaponAttack Event_WeaponAttack;
 
-    public delegate void OnWeaponFire(Character owner, Weapon w, Bullet b);
+    public delegate void OnWeaponFire(Character owner, Weapon w, string bullet);
     public static OnWeaponFire Event_WeaponFire;
 
     public delegate void OnWeaponEvent(Character owner, Weapon w, string eventname);

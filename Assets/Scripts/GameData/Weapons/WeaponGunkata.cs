@@ -9,34 +9,39 @@ public class WeaponGunkata : Weapon {
     public override void OnAttack(string eventname) {
         base.OnAttack(eventname);
         if (eventname == "hg_forward" || eventname == "hg_down" || eventname == "hg_up") {
-            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "X")
-                                        , (float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "Y")));
+            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "X")
+                                        , (float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "Y")));
         }
     }
 
     public override void OnWeaponEvent(string eventname) {
         base.OnWeaponEvent(eventname);
         if (eventname == "hg_forward" || eventname == "hg_down" || eventname == "hg_up") {
-            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "X")
-                                        , (float)GameDataManager.instance.GetData("Data", eventname, "MuzzlePos", "Y")));
+            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "X")
+                                        , (float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "Y")));
             if(owner.GetInventory().GetCount("item_bullet") > 0) {
                 if (eventname == "hg_up") {
-                    FireBullet("bullet_hg", 45);
-                    CreateEffect("effect_hg_up");
+                    FireBullet(bullet, 45);
+                    CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "light", "up"));
+                    CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "muzzle", "up"));
                 }
                 else {
-                    if (eventname == "hg_down")
-                        CreateEffect("effect_hg_down");
-                    else if (eventname == "hg_forward")
-                        CreateEffect("effect_hg_forward");
-                    FireBullet("bullet_hg", 90);
+                    if (eventname == "hg_down") {
+                        CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "light", "down"));
+                        CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "muzzle", "down"));
+                    }
+                    else if (eventname == "hg_forward") {
+                        CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "light", "forward"));
+                        CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "muzzle", "forward"));
+                    }
+                    FireBullet(bullet, 90);
                 }
                 owner.GetInventory().ModCount("item_bullet", -1);
             }
         }
         else if(eventname == "attack_basic_finish_fire") {
-            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData("Data", "hg_forward", "MuzzlePos", "X")
-                                        , (float)GameDataManager.instance.GetData("Data", "hg_forward", "MuzzlePos", "Y")));
+            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData("hg_forward", "MuzzlePos", "X")
+                                        , (float)GameDataManager.instance.GetData("hg_forward", "MuzzlePos", "Y")));
             if (owner.GetInventory().GetCount("item_bullet") > 0) {
                 FireBullet("bullet_gunkata_finish", 90);
                 owner.GetInventory().ModCount("item_bullet", -1);
