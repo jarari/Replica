@@ -42,7 +42,7 @@
 			"Stagger":0.3,
 			"MagSize":0,
 			"ReloadTime":0,
-			"Range":1500,
+			"Range":1000,
 			"BulletSpeed":1800,
 			"DefaultBullet":"bullet_hg_laser"
 		},
