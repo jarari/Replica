@@ -23,6 +23,7 @@ public class CharacterSecbot2 : Character {
     private void DeathEffect() {
         EffectManager.instance.CreateEffect("effect_character_secbot2_explosion", transform.position, 0);
         ParticleManager.instance.CreateParticle("particle_secbot_death", transform.position, 0);
+        ParticleManager.instance.CreateParticle("particle_secbot_death2", transform.position, 0);
         base.OnDeath();
     }
 
