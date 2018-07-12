@@ -215,14 +215,23 @@ public class BasicCharacterMovement : MoveObject {
     /* 덤블링 높이는 점프력에 비례함 */
     protected void OnTumbleEvent() {
         if(character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("tumble_back"))
+        {
             EffectManager.instance.CreateEffect("effect_tumble_back", transform.position, (int)Mathf.Sign(transform.localScale.x));
+            EffectManager.instance.CreateEffect("effect_tumble_back2", transform.position, (int)Mathf.Sign(transform.localScale.x));
+            EffectManager.instance.CreateEffect("effect_tumble_backf", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+        }
         else if(character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("tumble_front"))
+        {
             EffectManager.instance.CreateEffect("effect_tumble_front", transform.position, (int)Mathf.Sign(transform.localScale.x));
+            EffectManager.instance.CreateEffect("effect_tumble_front2", transform.position, (int)Mathf.Sign(transform.localScale.x));
+            EffectManager.instance.CreateEffect("effect_tumble_frontf", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+        }
+
         lastDash = Time.time;
-        character.AddUncontrollableTime(0.5f);
+        character.AddUncontrollableTime(0.25f);
         ForceMove(dashDir);
-        AddForce(Vector3.up * character.GetCurrentStat(CharacterStats.JumpPower) * 0.6f
-            + Vector3.right * dashDir * character.GetCurrentStat(CharacterStats.JumpPower) * 0.2f);
+        AddForce(Vector3.up * character.GetCurrentStat(CharacterStats.JumpPower) * 0.15f
+            + Vector3.right * dashDir * character.GetCurrentStat(CharacterStats.JumpPower) * 0.7f);
         character.SetFlag(CharacterFlags.Invincible);
         character.gameObject.layer = LayerMask.NameToLayer("CharactersShifting");
         character.GetAnimator().SetBool("DiscardFromAnyState", true);

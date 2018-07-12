@@ -7,7 +7,7 @@
 	"particle_ap_hit":
 	{
 		"Prefab":"Sprites/Particles/Particle_APbullethit",
-		"Duration":0.25
+		"Duration":5
 	},
 	"particle_secbot_death":
 	{
@@ -17,6 +17,6 @@
 	"particle_laser":
 	{
 		"Prefab":"Sprites/Particles/Particle_Laser",
-		"Duration":0.25
+		"Duration":5
 	}
 }

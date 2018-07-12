@@ -1,1398 +1,1165 @@
 {
-	"effect_basetest":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":
-			{
-				"0":"",
-				"1":""
-			}
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_basic_finish":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_basic_finish/effect_attack_basic_finish_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_fist_01":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_fist_01/effect_attack_fist_01_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_fist_02":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_fist_02/effect_attack_fist_02_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_fist_03":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_fist_03/effect_attack_fist_03_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_fist_04":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_fist_04/effect_attack_fist_04_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_fist_upper":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_fist_upper/effect_attack_fist_upper_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_sword_01":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_sword_01/effect_attack_sword_01_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_sword_02":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_sword_02/effect_attack_sword_02_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_sword_03":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_sword_03/effect_attack_sword_03_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_sword_04":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_sword_04/effect_attack_sword_04_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_sword_finish":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_sword_finish/effect_attack_sword_finish_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_tumble_back":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"ShouldDisplayBeneathGround":1,
-		"Sprites":
-		{
-			"controller":"effect_tumble_back/effect_tumble_back_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_tumble_front":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"ShouldDisplayBeneathGround":1,
-		"Sprites":
-		{
-			"controller":"effect_tumble_front/effect_tumble_front_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_bullet_hg_hit":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":
-			{
-				"0":"effect_bullet_hg_hit/effect_bullet_hg_hit_01",
-				"1":"effect_bullet_hg_hit/effect_bullet_hg_hit_02",
-				"2":"effect_bullet_hg_hit/effect_bullet_hg_hit_03",
-				"3":"effect_bullet_hg_hit/effect_bullet_hg_hit_04"
-			}
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_grenade_explosion":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"ShouldDisplayBeneathGround":0,
-		"Sprites":
-		{
-			"controller":"effect_grenade_explosion/effect_grenade_explosion_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_down":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"ShouldDisplayBeneathGround":0,
-		"Sprites":
-		{
-			"controller":"effect_hg_down/effect_hg_down_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_forward":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"ShouldDisplayBeneathGround":0,
-		"Sprites":
-		{
-			"controller":"effect_hg_forward/effect_hg_forward_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_up":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"ShouldDisplayBeneathGround":0,
-		"Sprites":
-		{
-			"controller":"effect_hg_up/effect_hg_up_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_indicator_miss":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_miss/effect_indicator_miss"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_indicator_crit":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_crit/effect_indicator_crit"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_indicator_block":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_block/effect_indicator_block"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_indicator_question":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_question/effect_indicator_question"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_indicator_exclamation":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_exclamation/effect_indicator_exclamation"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_indicator_anger":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_anger/effect_indicator_anger"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_indicator_nodap":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_nodap/effect_indicator_nodap"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_indicator_armorpen":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_armorpen/effect_indicator_armorpen"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_indicator_wtf":
-	{
-		"Loop":0,
-		"Sprites":
-		{
-			"controller":"effect_indicator_wtf/effect_indicator_wtf"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		}
-	},
-	"effect_bullet_gunkata_finish_hit":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_bullet_gunkata_finish_hit/effect_bullet_gunkata_finish_hit_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_jump_basic":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_jump_basic/effect_attack_jump_basic_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_basic_hit":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"SortingOrder":3,
-		"Sprites":
-		{
-			"controller":
-			{
-				"0":"effect_attack_basic_hit/effect_attack_basic_hit_01",
-				"1":"effect_attack_basic_hit/effect_attack_basic_hit_02",
-				"2":"effect_attack_basic_hit/effect_attack_basic_hit_03",
-				"3":"effect_attack_basic_hit/effect_attack_basic_hit_04"
-			}
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_fist_hit":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"SortingOrder":3,
-		"Sprites":
-		{
-			"controller":
-			{
-				"0":"effect_attack_fist_hit/effect_attack_fist_hit_01",
-				"1":"effect_attack_fist_hit/effect_attack_fist_hit_02",
-				"2":"effect_attack_fist_hit/effect_attack_fist_hit_03",
-				"3":"effect_attack_fist_hit/effect_attack_fist_hit_04"
-			}
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_sword_hit":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"SortingOrder":3,
-		"Sprites":
-		{
-			"controller":
-			{
-				"0":"effect_attack_sword_hit/effect_attack_sword_hit_01",
-				"1":"effect_attack_sword_hit/effect_attack_sword_hit_02",
-				"2":"effect_attack_sword_hit/effect_attack_sword_hit_03",
-				"3":"effect_attack_sword_hit/effect_attack_sword_hit_04"
-			}
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_basic_01":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_basic_01/effect_attack_basic_01_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_basic_02":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_basic_02/effect_attack_basic_02_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_basic_03":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_basic_03/effect_attack_basic_03_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_basic_04":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_basic_04/effect_attack_basic_04_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_character_secbot_attack":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_character_secbot_attack/effect_character_secbot_attack_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_character_secbot_death":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_character_secbot_death/effect_character_secbot_death_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_character_secbot_explosion":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_character_secbot_explosion/effect_character_secbot_explosion_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_bullet_secbot_hit":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_bullet_secbot_hit/effect_bullet_secbot_hit_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_character_secbot2_attack":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_character_secbot2_attack/effect_character_secbot2_attack_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_character_secbot2_explosion":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_character_secbot2_explosion/effect_character_secbot2_explosion_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_character_secbot2_jump":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_character_secbot2_jump/effect_character_secbot2_jump_controller"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_bullet_particle":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_bullet_particle/effect_loot_bullet_particle"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_bullet_dust":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_bullet_dust/effect_loot_bullet_dust"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_bullet_pickup":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_bullet_pickup/effect_loot_bullet_pickup"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_grenade_particle":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_grenade_particle/effect_loot_grenade_particle"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_grenade_dust":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_grenade_dust/effect_loot_grenade_dust"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_grenade_pickup":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_grenade_pickup/effect_loot_grenade_pickup"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_hp_particle":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_hp_particle/effect_loot_hp_particle"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_hp_dust":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_hp_dust/effect_loot_hp_dust"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_loot_hp_pickup":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_loot_hp_pickup/effect_loot_hp_pickup"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_fist_finish":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_fist_finish/effect_attack_fist_finish"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_sword_qd_ready":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_sword_qd_ready/effect_attack_sword_qd_ready"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_sword_qd_sweep":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_sword_qd_sweep/effect_attack_sword_qd_sweep"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_attack_basic_upper":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_attack_basic_upper/effect_attack_basic_upper"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_ap_hit":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"SortingOrder":3,
-		"Sprites":
-		{
-			"controller":
-			{
-				"0":"effect_hg_ap/hit01_con",
-				"1":"effect_hg_ap/hit02_con",
-				"2":"effect_hg_ap/hit03_con",
-				"3":"effect_hg_ap/hit04_con"
-			}
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_ap_light_down":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_ap_light/down_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_ap_light_forward":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_ap_light/forward_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_ap_light_up":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_ap_light/up_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_ap_muzzle_down":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_ap_muzzle/down_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_ap_muzzle_forward":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_ap_muzzle/forward_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_ap_muzzle_up":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_ap_muzzle/up_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_basic_light_down":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_basic_light/down_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_basic_light_forward":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_basic_light/forward_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_basic_light_up":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_basic_light/up_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_laser_light_down":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_laser_light/down_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_laser_light_forward":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_laser_light/forward_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_laser_light_up":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_laser_light/up_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_laser_muzzle_down":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_laser_muzzle/down_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_laser_muzzle_forward":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_laser_muzzle/forward_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_laser_muzzle_up":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_laser_muzzle/up_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	},
-	"effect_hg_laser_hit":
-	{
-		"Loop":0,
-		"Rotation":0.0,
-		"Sprites":
-		{
-			"controller":"effect_hg_laser/hit_con"
-		},
-		"Scale":
-		{
-			"X":1.0,
-			"Y":1.0
-		},
-		"Position":
-		{
-			"X":0.0,
-			"Y":0.0
-		}
-	}
+  "effect_basetest": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": {
+        "0": "",
+        "1": ""
+      }
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_basic_finish": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_basic_finish/effect_attack_basic_finish_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_fist_01": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_fist_01/effect_attack_fist_01_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_fist_02": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_fist_02/effect_attack_fist_02_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_fist_03": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_fist_03/effect_attack_fist_03_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_fist_04": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_fist_04/effect_attack_fist_04_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_fist_upper": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_fist_upper/effect_attack_fist_upper_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_sword_01": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_sword_01/effect_attack_sword_01_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_sword_02": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_sword_02/effect_attack_sword_02_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_sword_03": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_sword_03/effect_attack_sword_03_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_sword_04": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_sword_04/effect_attack_sword_04_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_sword_finish": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_sword_finish/effect_attack_sword_finish_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_tumble_back": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "ShouldDisplayBeneathGround": 1,
+    "Sprites": {
+      "controller": "effect_tumble_back/effect_tumble_back_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_tumble_front": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "ShouldDisplayBeneathGround": 1,
+    "Sprites": {
+      "controller": "effect_tumble_front/effect_tumble_front_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_tumble_front2": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_tumble_front/effect_tumble_front2_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_tumble_back2": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_tumble_back/effect_tumble_back2_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_tumble_frontf": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_tumble_front/effect_tumble_frontf_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_tumble_backf": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_tumble_back/effect_tumble_backf_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_bullet_hg_hit": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": {
+        "0": "effect_bullet_hg_hit/effect_bullet_hg_hit_01",
+        "1": "effect_bullet_hg_hit/effect_bullet_hg_hit_02",
+        "2": "effect_bullet_hg_hit/effect_bullet_hg_hit_03",
+        "3": "effect_bullet_hg_hit/effect_bullet_hg_hit_04"
+      }
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_grenade_explosion": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "ShouldDisplayBeneathGround": 0,
+    "Sprites": {
+      "controller": "effect_grenade_explosion/effect_grenade_explosion_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_down": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "ShouldDisplayBeneathGround": 0,
+    "Sprites": {
+      "controller": "effect_hg_down/effect_hg_down_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_forward": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "ShouldDisplayBeneathGround": 0,
+    "Sprites": {
+      "controller": "effect_hg_forward/effect_hg_forward_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_up": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "ShouldDisplayBeneathGround": 0,
+    "Sprites": {
+      "controller": "effect_hg_up/effect_hg_up_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_indicator_miss": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_miss/effect_indicator_miss"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_indicator_crit": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_crit/effect_indicator_crit"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_indicator_block": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_block/effect_indicator_block"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_indicator_question": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_question/effect_indicator_question"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_indicator_exclamation": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_exclamation/effect_indicator_exclamation"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_indicator_anger": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_anger/effect_indicator_anger"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_indicator_nodap": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_nodap/effect_indicator_nodap"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_indicator_armorpen": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_armorpen/effect_indicator_armorpen"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_indicator_wtf": {
+    "Loop": 0,
+    "Sprites": {
+      "controller": "effect_indicator_wtf/effect_indicator_wtf"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    }
+  },
+  "effect_bullet_gunkata_finish_hit": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_bullet_gunkata_finish_hit/effect_bullet_gunkata_finish_hit_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_jump_basic": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_jump_basic/effect_attack_jump_basic_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_basic_hit": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "SortingOrder": 3,
+    "Sprites": {
+      "controller": {
+        "0": "effect_attack_basic_hit/effect_attack_basic_hit_01",
+        "1": "effect_attack_basic_hit/effect_attack_basic_hit_02",
+        "2": "effect_attack_basic_hit/effect_attack_basic_hit_03",
+        "3": "effect_attack_basic_hit/effect_attack_basic_hit_04"
+      }
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_fist_hit": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "SortingOrder": 3,
+    "Sprites": {
+      "controller": {
+        "0": "effect_attack_fist_hit/effect_attack_fist_hit_01",
+        "1": "effect_attack_fist_hit/effect_attack_fist_hit_02",
+        "2": "effect_attack_fist_hit/effect_attack_fist_hit_03",
+        "3": "effect_attack_fist_hit/effect_attack_fist_hit_04"
+      }
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_sword_hit": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "SortingOrder": 3,
+    "Sprites": {
+      "controller": {
+        "0": "effect_attack_sword_hit/effect_attack_sword_hit_01",
+        "1": "effect_attack_sword_hit/effect_attack_sword_hit_02",
+        "2": "effect_attack_sword_hit/effect_attack_sword_hit_03",
+        "3": "effect_attack_sword_hit/effect_attack_sword_hit_04"
+      }
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_basic_01": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_basic_01/effect_attack_basic_01_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_basic_02": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_basic_02/effect_attack_basic_02_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_basic_03": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_basic_03/effect_attack_basic_03_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_basic_04": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_basic_04/effect_attack_basic_04_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_character_secbot_attack": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secbot_attack/effect_character_secbot_attack_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_character_secbot_death": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secbot_death/effect_character_secbot_death_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_character_secbot_explosion": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secbot_explosion/effect_character_secbot_explosion_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_bullet_secbot_hit": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_bullet_secbot_hit/effect_bullet_secbot_hit_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_character_secbot2_attack": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secbot2_attack/effect_character_secbot2_attack_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_character_secbot2_explosion": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secbot2_explosion/effect_character_secbot2_explosion_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_character_secbot2_jump": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secbot2_jump/effect_character_secbot2_jump_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_bullet_particle": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_bullet_particle/effect_loot_bullet_particle"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_bullet_dust": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_bullet_dust/effect_loot_bullet_dust"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_bullet_pickup": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_bullet_pickup/effect_loot_bullet_pickup"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_grenade_particle": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_grenade_particle/effect_loot_grenade_particle"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_grenade_dust": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_grenade_dust/effect_loot_grenade_dust"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_grenade_pickup": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_grenade_pickup/effect_loot_grenade_pickup"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_hp_particle": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_hp_particle/effect_loot_hp_particle"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_hp_dust": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_hp_dust/effect_loot_hp_dust"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_loot_hp_pickup": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_loot_hp_pickup/effect_loot_hp_pickup"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_fist_finish": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_fist_finish/effect_attack_fist_finish"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_sword_qd_ready": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_sword_qd_ready/effect_attack_sword_qd_ready"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_sword_qd_sweep": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_sword_qd_sweep/effect_attack_sword_qd_sweep"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_attack_basic_upper": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_attack_basic_upper/effect_attack_basic_upper"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_ap_hit": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "SortingOrder": 3,
+    "Sprites": {
+      "controller": {
+        "0": "effect_hg_ap/hit01_con",
+        "1": "effect_hg_ap/hit02_con",
+        "2": "effect_hg_ap/hit03_con",
+        "3": "effect_hg_ap/hit04_con"
+      }
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_ap_light_down": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_ap_light/down_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_ap_light_forward": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_ap_light/forward_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_ap_light_up": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_ap_light/up_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_ap_muzzle_down": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_ap_muzzle/down_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_ap_muzzle_forward": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_ap_muzzle/forward_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_ap_muzzle_up": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_ap_muzzle/up_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_basic_light_down": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_basic_light/down_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_basic_light_forward": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_basic_light/forward_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_basic_light_up": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_basic_light/up_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_laser_light_down": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_laser_light/down_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_laser_light_forward": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_laser_light/forward_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_laser_light_up": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_laser_light/up_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_laser_muzzle_down": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_laser_muzzle/down_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_laser_muzzle_forward": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_laser_muzzle/forward_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_laser_muzzle_up": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_laser_muzzle/up_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_hg_laser_hit": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_hg_laser/hit_con"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  }
 }
