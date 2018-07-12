@@ -1,22 +1,22 @@
 {
-	"particle_he_explosion":
-	{
-		"Prefab":"Sprites/Particles/Particle_HEG_Explosion",
-		"Duration":5
-	},
-	"particle_ap_hit":
-	{
-		"Prefab":"Sprites/Particles/Particle_APbullethit",
-		"Duration":5
-	},
-	"particle_secbot_death":
-	{
-		"Prefab":"Sprites/Particles/Particle_Enemy_Death",
-		"Duration":5
-	},
-	"particle_laser":
-	{
-		"Prefab":"Sprites/Particles/Particle_Laser",
-		"Duration":5
-	}
+  "particle_he_explosion": {
+    "Prefab": "Sprites/Particles/Particle_HEG_Explosion",
+    "Duration": 5
+  },
+  "particle_ap_hit": {
+    "Prefab": "Sprites/Particles/Particle_APbullethit",
+    "Duration": 5
+  },
+  "particle_secbot_death": {
+    "Prefab": "Sprites/Particles/Particle_Enemy_Death",
+    "Duration": 5
+  },
+  "particle_laser": {
+    "Prefab": "Sprites/Particles/Particle_Laser",
+    "Duration": 5
+  },
+  "particle_tumb": {
+    "Prefab": "Sprites/Particles/Particle_Tumb",
+    "Duration": 5
+  }
 }

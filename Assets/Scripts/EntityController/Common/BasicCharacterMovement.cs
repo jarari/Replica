@@ -219,12 +219,14 @@ public class BasicCharacterMovement : MoveObject {
             EffectManager.instance.CreateEffect("effect_tumble_back", transform.position, (int)Mathf.Sign(transform.localScale.x));
             EffectManager.instance.CreateEffect("effect_tumble_back2", transform.position, (int)Mathf.Sign(transform.localScale.x));
             EffectManager.instance.CreateEffect("effect_tumble_backf", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            ParticleManager.instance.CreateParticle("particle_tumb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
         }
         else if(character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("tumble_front"))
         {
             EffectManager.instance.CreateEffect("effect_tumble_front", transform.position, (int)Mathf.Sign(transform.localScale.x));
             EffectManager.instance.CreateEffect("effect_tumble_front2", transform.position, (int)Mathf.Sign(transform.localScale.x));
             EffectManager.instance.CreateEffect("effect_tumble_frontf", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            ParticleManager.instance.CreateParticle("particle_tumb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
         }
 
         lastDash = Time.time;
