@@ -71,7 +71,7 @@
 	{
 		"Loop":0,
 		"Type":"laser",
-		"LaserWidth":10,
+		"LaserWidth":15,
 		"Sprites":
 		{
 			"controller":"effect_hg_laser/laser_con",

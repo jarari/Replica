@@ -3,96 +3,108 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 400,
+    "KnockBack": {
+      "X": 250,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 1,
         "Pos": {
           "X": 66,
           "Y": 0
         },
-        "Area":{
+        "Area": {
           "X": 114,
           "Y": 46
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_basic_02",
-			"1":"attack_fist_01",
-			"2":"attack_sword_01"
-		},
-		"IsBasic":1
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_basic_02",
+        "1": "attack_fist_01",
+        "2": "attack_sword_01"
+      },
+      "IsBasic": 1
+    }
   },
   "attack_basic_02": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 400,
+    "KnockBack": {
+      "X": 250,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 1,
         "Pos": {
           "X": 62,
           "Y": -10
         },
-        "Area":{
+        "Area": {
           "X": 154,
           "Y": 34
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_basic_03",
-			"1":"attack_fist_01",
-			"2":"attack_sword_01",
-			"3":"attack_basic_upper"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_basic_03",
+        "1": "attack_fist_01",
+        "2": "attack_sword_01",
+        "3": "attack_basic_upper"
+      }
+    }
   },
   "attack_basic_03": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 400,
+    "KnockBack": {
+      "X": 250,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 2,
         "Pos": {
           "X": 78,
           "Y": 6
         },
-        "Area":{
+        "Area": {
           "X": 138,
           "Y": 98
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_basic_04",
-			"1":"attack_basic_upper"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_basic_04",
+        "1": "attack_basic_upper"
+      }
+    }
   },
   "attack_basic_04": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
 	"Unstoppable":1,
-    "ChargeAmount": 300,
+    "ChargeAmount": 400,
     "KnockBack": {
         "X": 600,
         "Y": 200
@@ -139,97 +151,109 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 200,
+    "ChargeAmount": 350,
+    "KnockBack": {
+      "X": 200,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 3,
         "Pos": {
           "X": 72,
           "Y": 2
         },
-        "Area":{
+        "Area": {
           "X": 134,
           "Y": 50
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"Down",
-			"1":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_fist_02",
-			"1":"attack_sword_01"
-		},
-		"IsBasic":1
-	}
+    "Combo": {
+      "Keys": {
+        "0": "Down",
+        "1": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_fist_02",
+        "1": "attack_sword_01"
+      },
+      "IsBasic": 1
+    }
   },
   "attack_fist_02": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 450,
+    "KnockBack": {
+      "X": 200,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 1,
         "Pos": {
           "X": 72,
           "Y": 2
         },
-        "Area":{
+        "Area": {
           "X": 134,
           "Y": 50
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_fist_03",
-			"1":"attack_fist_upper",
-			"2":"attack_sword_01"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_fist_03",
+        "1": "attack_fist_upper",
+        "2": "attack_sword_01"
+      }
+    }
   },
   "attack_fist_03": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 450,
+    "ChargeAmount": 600,
+    "KnockBack": {
+      "X": 400,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 2,
         "Pos": {
           "X": 86,
           "Y": 2
         },
-        "Area":{
+        "Area": {
           "X": 130,
           "Y": 46
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_fist_04",
-			"1":"attack_fist_upper"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_fist_04",
+        "1": "attack_fist_upper"
+      }
+    }
   },
   "attack_fist_04": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
     "Unstoppable": 1,
-    "ChargeAmount": 550,
+    "ChargeAmount": 650,
     "KnockBack": {
-      "X": 400,
+      "X": 500,
       "Y": 50
     },
     "HitBox": {
@@ -260,7 +284,7 @@
     "SADestruction": 0,
     "Stagger": 0,
 	"Unstoppable":1,
-    "ChargeAmount": 500,
+    "ChargeAmount": 700,
 	"KnockBack": {
         "X": 150,
         "Y": 950
@@ -291,124 +315,140 @@
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 450,
+    "KnockBack": {
+      "X": 400,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 1,
         "Pos": {
           "X": 58,
           "Y": 12
         },
-        "Area":{
+        "Area": {
           "X": 102,
           "Y": 110
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"Up",
-			"1":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_sword_02",
-			"1":"attack_fist_01"
-		},
-		"IsBasic":1
-	}
+    "Combo": {
+      "Keys": {
+        "0": "Up",
+        "1": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_sword_02",
+        "1": "attack_fist_01"
+      },
+      "IsBasic": 1
+    }
   },
   "attack_sword_02": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 500,
+    "KnockBack": {
+      "X": 400,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 2,
         "Pos": {
           "X": 62,
           "Y": 14
         },
-        "Area":{
+        "Area": {
           "X": 130,
           "Y": 96
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_sword_03",
-			"1":"attack_fist_01",
-			"2":"attack_sword_qd"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_sword_03",
+        "1": "attack_fist_01",
+        "2": "attack_sword_qd"
+      }
+    }
   },
   "attack_sword_03": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-    "ChargeAmount": 300,
+    "ChargeAmount": 500,
+    "KnockBack": {
+      "X": 400,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 3,
         "Pos": {
           "X": 100,
           "Y": -2
         },
-        "Area":{
+        "Area": {
           "X": 146,
           "Y": 82
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_sword_04",
-			"1":"attack_sword_qd"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_sword_04",
+        "1": "attack_sword_qd"
+      }
+    }
   },
   "attack_sword_04": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
     "Stagger": 0,
-	"Unstoppable":1,
-    "ChargeAmount": 300,
+    "Unstoppable": 1,
+    "ChargeAmount": 500,
+    "KnockBack": {
+      "X": 400,
+      "Y": 50
+    },
     "HitBox": {
-      "0":{
+      "0": {
         "Time": 3,
         "Pos": {
           "X": 112,
           "Y": 6
         },
-        "Area":{
+        "Area": {
           "X": 194,
           "Y": 114
         }
       }
     },
-	"Combo":{
-		"Keys":{
-			"0":"X"
-		},
-		"PossibleCombos":{
-			"0":"attack_sword_finish",
-			"1":"attack_sword_qd"
-		}
-	}
+    "Combo": {
+      "Keys": {
+        "0": "X"
+      },
+      "PossibleCombos": {
+        "0": "attack_sword_finish",
+        "1": "attack_sword_qd"
+      }
+    }
   },
   "attack_sword_finish": {
     "DamageMultiplier": 3,
     "SADestruction": 0,
     "Stagger": 0,
 	"Unstoppable":1,
-    "ChargeAmount": 600,
+    "ChargeAmount": 750,
 	"KnockBack": {
         "X": 300,
         "Y": 800
@@ -556,15 +596,15 @@
     }
   },
   "attack_fist_finish": {
-    "DamageMultiplier": 4,
+    "DamageMultiplier": 2,
     "SADestruction": 0,
     "Stagger": 0,
 	"Unstoppable":1,
 	"ChargeDelay":6,
-    "ChargeAmount": 450,
+    "ChargeAmount": 600,
 	"KnockBack": {
         "X": 100,
-        "Y": 250
+        "Y": 450
     },
     "HitBox": {
       "0":{
@@ -574,7 +614,7 @@
           "Y": -6
         },
         "Area":{
-          "X": 90,
+          "X": 120,
           "Y": 86
         }
       }
@@ -591,7 +631,7 @@
     "Stagger": 0,
 	"Unstoppable":1,
 	"ChargeDelay":5,
-    "ChargeAmount": 900,
+    "ChargeAmount": 1200,
 	"KnockBack": {
         "X": 100,
         "Y": 400
@@ -623,7 +663,7 @@
     "SADestruction": 0,
     "Stagger": 0,
     "Unstoppable": 1,
-    "ChargeAmount": 200,
+    "ChargeAmount": 400,
     "KnockBack": {
       "X": 100,
       "Y": 900

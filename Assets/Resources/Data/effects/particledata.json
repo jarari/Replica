@@ -19,8 +19,16 @@
     "Prefab": "Sprites/Particles/Particle_Tumb",
     "Duration": 5
   },
-  "particle_secbot_death2": {
-    "Prefab": "Sprites/Particles/Particle_Enemy_Death2",
+  "particle_secbot_shard": {
+    "Prefab": "Sprites/Particles/Particle_Enemy_Shard",
+    "Duration": 5
+  },
+  "particle_secbot_shard1": {
+    "Prefab": "Sprites/Particles/Particle_Enemy_Shard1",
+    "Duration": 5
+  },
+  "particle_secbot_shard2": {
+    "Prefab": "Sprites/Particles/Particle_Enemy_Shard2",
     "Duration": 5
   }
 }
