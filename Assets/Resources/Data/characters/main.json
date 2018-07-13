@@ -92,21 +92,23 @@
 			"X":1.0,
 			"Y":1.0
 		},
-		"DropTable":
-		{
-			"loot_hp":
-			{
-				"Chance":1,
-				"NumMin":1,
-				"NumMax":1
-			},
-			"loot_bullet":
-			{
-				"Chance":1,
-				"NumMin":2,
-				"NumMax":4
-			}
-		}
+    "DropTable": {
+      "loot_hp": {
+        "Chance": 0.3,
+        "NumMin": 1,
+        "NumMax": 1
+      },
+      "loot_bullet": {
+        "Chance": 0.5,
+        "NumMin": 2,
+        "NumMax": 4
+      },
+      "loot_grenade": {
+        "Chance": 0.5,
+        "NumMin": 1,
+        "NumMax": 2
+      }
+    }
 	},
 	"character_secbot2":
 	{
@@ -138,20 +140,22 @@
 			"X":1.0,
 			"Y":1.0
 		},
-		"DropTable":
-		{
-			"loot_hp":
-			{
-				"Chance":1,
-				"NumMin":1,
-				"NumMax":1
-			},
-			"loot_grenade":
-			{
-				"Chance":1,
-				"NumMin":1,
-				"NumMax":2
-			}
-		}
+    "DropTable": {
+      "loot_hp": {
+        "Chance": 0.3,
+        "NumMin": 1,
+        "NumMax": 1
+      },
+      "loot_grenade": {
+        "Chance": 0.5,
+        "NumMin": 1,
+        "NumMax": 2
+      },
+      "loot_bullet": {
+        "Chance": 0.5,
+        "NumMin": 2,
+        "NumMax": 4
+      }
+    }
 	}
 }
