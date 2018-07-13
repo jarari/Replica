@@ -7,7 +7,7 @@
 		{
 			"Health":1000,
 			"MoveSpeed":550.0,
-			"JumpPower":800.0,
+			"JumpPower":825.0,
 			"MeleeArmor":10,
 			"RangeArmor":10,
 			"GrenadeFullCharge":2,
