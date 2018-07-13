@@ -6,8 +6,8 @@
 		"Stats":
 		{
 			"Health":1000,
-			"MoveSpeed":450.0,
-			"JumpPower":750.0,
+			"MoveSpeed":550.0,
+			"JumpPower":800.0,
 			"MeleeArmor":10,
 			"RangeArmor":10,
 			"GrenadeFullCharge":2,
