@@ -20,14 +20,14 @@ public static class PlayerHUD {
         if (!uimanager)
             return;
         healthRatio = player.GetCurrentStat(CharacterStats.Health) / player.GetMaxStat(CharacterStats.Health);
-        uimanager.CreateImage("hp_frame", Helper.GetSprite("Sprites/ui", "HPbarFrame"), new Vector2(250, 1000));
-        uimanager.RescaleUI("hp_frame", 2, 2);
-        uimanager.CreateImage("hp_bar", Helper.GetSprite("Sprites/ui", "HpBar"), new Vector2(250, 1000));
+        uimanager.CreateImage("hp_frame", Helper.GetSprite("Sprites/ui", "HPbarFrame"), new Vector2(326, 970));
+        uimanager.RescaleUI("hp_frame", 1, 1);
+        uimanager.CreateImage("hp_bar", Helper.GetSprite("Sprites/ui", "HpBar"), new Vector2(326, 970));
         uimanager.SetImageTypeFilled("hp_bar", Image.FillMethod.Horizontal, 0, healthRatio);
-        uimanager.CreateImage("ammo_gb", Helper.GetSprite("Sprites/ui", "bulletngrenade"), new Vector2(135, 925));
-        uimanager.RescaleUI("ammo_gb", 2, 2);
-        uimanager.CreateText("ammo_b", new Vector2(127, 926), "0", 50, 50);
-        uimanager.CreateText("ammo_g", new Vector2(205, 926), "0", 50, 50);
+        uimanager.CreateImage("ammo_gb", Helper.GetSprite("Sprites/ui", "bulletngrenade"), new Vector2(326, 970));
+        uimanager.RescaleUI("ammo_gb", 1, 1);
+        uimanager.CreateText("ammo_b", new Vector2(125, 940), "0", 50, 50);
+        uimanager.CreateText("ammo_g", new Vector2(232, 940), "0", 50, 50);
         EventManager.RegisterEvent("HUD_UpdateHealth", new EventManager.OnCharacterHealthChanged(UpdateHealth));
     }
 
