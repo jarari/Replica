@@ -69,7 +69,7 @@ public class Loot : ObjectBase {
             EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "pickup"),
                 transform.position, 0);
         if (GameDataManager.instance.GetData(className, "Sprites", "particle") != null)
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "pickup"),
+			EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "particle"),
                 c.transform.position, 0, c.transform);
         DestroyObject(gameObject);
     }
