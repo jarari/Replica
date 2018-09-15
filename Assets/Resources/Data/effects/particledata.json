@@ -38,5 +38,17 @@
   "particle_secbot_shard2": {
     "Prefab": "Sprites/Particles/Particle_Enemy_Shard2",
     "Duration": 5
+  },
+  "Particle_loot_bullet_pickup": {
+    "Prefab": "Sprites/Particles/Particle_loot_bullet_pickup",
+    "Duration": 5
+  },
+  "Particle_loot_hp_pickup": {
+    "Prefab": "Sprites/Particles/Particle_loot_hp_pickup",
+    "Duration": 5
+  },
+  "Particle_loot_grenade_pickup": {
+    "Prefab": "Sprites/Particles/Particle_loot_grenade_pickup",
+    "Duration": 5
   }
 }
