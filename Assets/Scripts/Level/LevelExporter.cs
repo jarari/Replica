@@ -19,6 +19,8 @@ public class LevelExporter : MonoBehaviour {
         string data = "{";
         foreach (GameObject obj in FindObjectsOfType<GameObject>()) {
             bool tagged = false;
+            Debug.Log("Processing object " + obj.name
+            + "\n\tTag: " + obj.tag);
             switch (obj.tag) {
                 case "Ground":
                     tagged = true;
@@ -51,12 +53,12 @@ public class LevelExporter : MonoBehaviour {
                         int index = 0;
                         SpriteRenderer sr = null;
                         while (sr == null) {
-                            index++;
                             sr = obj.transform.GetChild(index).GetComponent<SpriteRenderer>();
                             if (index == obj.transform.childCount && sr == null) {
                                 Debug.Log("No objects with SpriteRenderer was found for this background layer!");
                                 break;
                             }
+                            index++;
                         }
                         int layernum = sr.sortingOrder;
                         BGParents.Add(layernum, obj);
@@ -141,8 +143,6 @@ public class LevelExporter : MonoBehaviour {
                             + ",\"Y\":" + obj.transform.localScale.y.ToString()
                             + ",\"Z\":" + obj.transform.localScale.z.ToString()
             + "},";
-        Debug.Log("Processing object " + obj.name
-            + "\n\tTag: " + tag);
         if (obj.transform.parent != null && obj.transform.parent.name != "LevelCreated" && obj.transform.parent.tag != "") {
             if (obj.transform.parent.CompareTag("MainCamera")) {
                 jsondata += "\"ParentIsCam\":1,";
