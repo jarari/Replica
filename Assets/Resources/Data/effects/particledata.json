@@ -50,5 +50,9 @@
   "Particle_loot_grenade_pickup": {
     "Prefab": "Sprites/Particles/Particle_loot_grenade_pickup",
     "Duration": 5
+  },
+  "Particle_enemyhit": {
+    "Prefab": "Sprites/Particles/Particle_enemyhit",
+    "Duration": 5
   }
 }
