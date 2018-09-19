@@ -51,8 +51,28 @@
     "Prefab": "Sprites/Particles/Particle_loot_grenade_pickup",
     "Duration": 5
   },
-  "Particle_enemyhit": {
-    "Prefab": "Sprites/Particles/Particle_enemyhit",
+  "Particle_basicgunkatalight": {
+    "Prefab": "Sprites/Particles/Particle_Basicgunkatalight",
+    "Duration": 0.1
+  },
+  "Particle_basicfistlight": {
+    "Prefab": "Sprites/Particles/Particle_Basicfistlight",
+    "Duration": 1
+  },
+  "Particle_basicswordlight": {
+    "Prefab": "Sprites/Particles/Particle_Basicswordlight",
+    "Duration": 1
+  },
+  "Particle_gunkatahit": {
+    "Prefab": "Sprites/Particles/Particle_gunkatahit",
+    "Duration": 5
+  },
+  "Particle_fisthit": {
+    "Prefab": "Sprites/Particles/Particle_fisthit",
+    "Duration": 5
+  },
+  "Particle_swordhit": {
+    "Prefab": "Sprites/Particles/Particle_swordhit",
     "Duration": 5
   }
 }
