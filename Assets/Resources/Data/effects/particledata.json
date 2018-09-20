@@ -5,7 +5,7 @@
   },
   "particle_he_explosionlight": {
     "Prefab": "Sprites/Particles/Particle_HEG_Explosionlight",
-    "Duration": 0.15
+    "Duration": 5
   },
   "particle_ap_hit": {
     "Prefab": "Sprites/Particles/Particle_APbullethit",
