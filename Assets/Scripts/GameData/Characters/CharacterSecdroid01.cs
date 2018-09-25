@@ -18,7 +18,7 @@ public class CharacterSecdroid01 : Character {
         anim.SetTrigger("Death");
         SetUncontrollable(true);
         SetFlag(CharacterFlags.Invincible);
-        EffectManager.instance.CreateEffect("effect_character_secdroid01_death", transform.position, GetFacingDirection());
+		ParticleManager.instance.CreateParticle("secdroiddeath", transform.position, GetFacingDirection());
         EffectManager.instance.CreateEffect("effect_character_secdroid01_explosion", transform.position, 0);
         base.OnDeath();
     }

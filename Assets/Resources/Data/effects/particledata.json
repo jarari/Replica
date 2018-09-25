@@ -83,4 +83,8 @@
     "Prefab": "Sprites/Particles/Particle_greenlaserlight",
     "Duration": 5
   },
+  "secdroiddeath": {
+    "Prefab": "Sprites/Particles/Secdroiddeath",
+    "Duration": 0.7
+  }
 }
