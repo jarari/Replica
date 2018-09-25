@@ -1161,5 +1161,50 @@
       "X": 0.0,
       "Y": 0.0
     }
+  },
+  "effect_character_secdroid01_death": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secdroid01_death/effect_character_secdroid01_death_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_character_secdroid01_attack": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secdroid01_attack/effect_character_secdroid01_attack_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "effect_character_secdroid01_explosion": {
+    "Loop": 0,
+    "Rotation": 0.0,
+    "Sprites": {
+      "controller": "effect_character_secdroid01_explosion/effect_character_secdroid01_explosion_controller"
+    },
+    "Scale": {
+      "X": 1.0,
+      "Y": 1.0
+    },
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0
+    }
   }
 }

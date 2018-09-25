@@ -14,5 +14,13 @@
 		"MinWanderDistance":60.0,
 		"MaxWanderDistance":200.0,
 		"RestingTime":3.0
+	},
+	"ai_secdroid":
+	{
+		"ScriptClass":"AISecdroid",
+		"RecognitionRadius":600.0,
+		"MinWanderDistance":60.0,
+		"MaxWanderDistance":200.0,
+		"RestingTime":3.0
 	}
 }

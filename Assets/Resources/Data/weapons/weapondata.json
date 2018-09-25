@@ -201,5 +201,33 @@
 		"Sounds":
 		{
 		}
+	},
+	"weapon_secdroid01":
+	{
+		"ScriptClass":"WeaponSecdroid01",
+		"Stats":
+		{
+			"WeaponType":4,
+			"Damage":100,
+			"SADestruction":0,
+			"AttackSpeed":0.6,
+			"Stagger":0,
+			"MagSize":0,
+			"ReloadTime":0,
+			"Range":150,
+			"BulletSpeed":600
+		},
+		"Sprites":
+		{
+			"controller":""
+		},
+		"MuzzlePos":
+		{
+			"X":0.0,
+			"Y":0.0
+		},
+		"Sounds":
+		{
+		}
 	}
 }

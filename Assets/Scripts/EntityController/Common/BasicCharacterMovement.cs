@@ -167,9 +167,11 @@ public class BasicCharacterMovement : MoveObject {
     }
 
     protected void OnFallEvent() {
-        character.SetState(CharacterStates.Jump);
-        character.GetAnimator().SetInteger("State", (int)CharacterStates.Jump);
-        character.GetAnimator().SetBool("DiscardFromAnyState", true);
+        if(character.GetState() != CharacterStates.Jump) {
+            character.SetState(CharacterStates.Jump);
+            character.GetAnimator().SetInteger("State", (int)CharacterStates.Jump);
+            character.GetAnimator().SetBool("DiscardFromAnyState", true);
+        }
     }
 
     protected void OnLandEvent() {

@@ -93,22 +93,22 @@
 			"Y":1.0
 		},
     "DropTable": {
-      "loot_hp": {
-        "Chance": 0.3,
-        "NumMin": 1,
-        "NumMax": 1
-      },
-      "loot_bullet": {
-        "Chance": 0.5,
-        "NumMin": 2,
-        "NumMax": 4
-      },
-      "loot_grenade": {
-        "Chance": 0.5,
-        "NumMin": 1,
-        "NumMax": 2
-      }
-    }
+		  "loot_hp": {
+			"Chance": 0.3,
+			"NumMin": 1,
+			"NumMax": 1
+		  },
+		  "loot_bullet": {
+			"Chance": 0.5,
+			"NumMin": 2,
+			"NumMax": 4
+		  },
+		  "loot_grenade": {
+			"Chance": 0.5,
+			"NumMin": 1,
+			"NumMax": 2
+		  }
+		}
 	},
 	"character_secbot2":
 	{
@@ -141,21 +141,69 @@
 			"Y":1.0
 		},
     "DropTable": {
-      "loot_hp": {
-        "Chance": 0.3,
-        "NumMin": 1,
-        "NumMax": 1
-      },
-      "loot_grenade": {
-        "Chance": 0.5,
-        "NumMin": 1,
-        "NumMax": 2
-      },
-      "loot_bullet": {
-        "Chance": 0.5,
-        "NumMin": 2,
-        "NumMax": 4
-      }
-    }
+		  "loot_hp": {
+			"Chance": 0.3,
+			"NumMin": 1,
+			"NumMax": 1
+		  },
+		  "loot_grenade": {
+			"Chance": 0.5,
+			"NumMin": 1,
+			"NumMax": 2
+		  },
+		  "loot_bullet": {
+			"Chance": 0.5,
+			"NumMin": 2,
+			"NumMax": 4
+		  }
+		}
+	},
+	"character_secdroid01":
+	{
+		"Name":"Security Droid",
+		"AIScript":"ai_secdroid",
+		"ScriptClass":"CharacterSecdroid01",
+		"Stats":
+		{
+			"Health":1000,
+			"MoveSpeed":250.0,
+			"JumpPower":450.0,
+			"MeleeArmor":10,
+			"RangeArmor":10
+		},
+		"Sprites":
+		{
+			"controller":"character_secdroid01/character_secdroid01_controller",
+			"hasSub":0
+		},
+		"Collider":
+		{
+			"Offset_X":-5.0,
+			"Offset_Y":7.0,
+			"Size_X":50.0,
+			"Size_Y":133.0
+		},
+		"Scale":
+		{
+			"X":1.0,
+			"Y":1.0
+		},
+    "DropTable": {
+		  "loot_hp": {
+			"Chance": 0.3,
+			"NumMin": 1,
+			"NumMax": 1
+		  },
+		  "loot_grenade": {
+			"Chance": 0.5,
+			"NumMin": 1,
+			"NumMax": 2
+		  },
+		  "loot_bullet": {
+			"Chance": 0.5,
+			"NumMin": 2,
+			"NumMax": 4
+		  }
+		}
 	}
 }

@@ -336,7 +336,7 @@ public class LevelManager : MonoBehaviour {
         if(createdObjs.Count > 0) {
             foreach(KeyValuePair<int, GameObject> kvp in createdObjs) {
 				if(kvp.Value != null) {
-					DestroyObject(kvp.Value);
+					Destroy(kvp.Value);
 				}
 			}
         }
@@ -350,13 +350,13 @@ public class LevelManager : MonoBehaviour {
 		if(EffectManager.instance != null) {
 			List<Effect> effects = EffectManager.instance.GetEffects();
 			for(int i = 0; i < effects.Count; i++) {
-				DestroyObject(effects[i].gameObject);
+				Destroy(effects[i].gameObject);
 			}
 		}
 		if(LootManager.instance != null) {
 			List<Loot> loots = LootManager.instance.GetLoots();
 			for(int i = 0; i < loots.Count; i++) {
-				DestroyObject(loots[i].gameObject);
+				Destroy(loots[i].gameObject);
 			}
 		}
     }

@@ -689,5 +689,45 @@
         "3": "X"
       }
     }
+  },
+  "attack_secdroid01_1": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+    "HitBox": {
+		"0":{
+        "Time": 11,
+        "Pos": {
+          "X": 150,
+          "Y": 0
+        },
+        "Area":{
+          "X": 60,
+          "Y": 40
+        }
+      }
+    }
+  },
+  "attack_secdroid01_2": {
+    "DamageMultiplier": 1,
+    "SADestruction": 0,
+    "Stagger": 0,
+	"KnockBack": {
+        "X": 200,
+        "Y": 150
+    },
+    "HitBox": {
+		"0":{
+        "Time": 12,
+        "Pos": {
+          "X": 25,
+          "Y": 30
+        },
+        "Area":{
+          "X": 180,
+          "Y": 175
+        }
+      }
+    }
   }
 }

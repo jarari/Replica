@@ -186,7 +186,7 @@ public abstract class Character : ObjectBase {
         for (int i = 0; i < (int)CharacterStats.EndOfEnums; i++)
             stats[i] = GetBaseStat((CharacterStats)i);
 
-        GetComponent<CircleCollider2D>().offset = new Vector2(0, -box.size.y / 2f + 0.05f);
+        GetComponent<CircleCollider2D>().offset = new Vector2(0, box.offset.y - box.size.y / 2f + 0.05f);
         GetComponent<CircleCollider2D>().radius = 0.6f;
 
         if (GameDataManager.instance.GetData(className, "Sprites", "hasSub") != null)
