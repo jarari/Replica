@@ -49,7 +49,9 @@ class ThrowableGrenade : Throwable{
     }
 
     protected override void HitEffect() {
-        base.HitEffect();
-        ParticleManager.instance.CreateParticle("particle_he_explosion", transform.position, 0);
+		base.HitEffect();{
+			ParticleManager.instance.CreateParticle ("particle_he_explosion", transform.position, 0);
+			ParticleManager.instance.CreateParticle ("particle_he_explosionlight", transform.position, 0);
+		}
     }
 }
