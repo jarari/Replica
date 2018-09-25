@@ -165,7 +165,7 @@
 		"ScriptClass":"CharacterSecdroid01",
 		"Stats":
 		{
-			"Health":1000,
+			"Health":500,
 			"MoveSpeed":250.0,
 			"JumpPower":450.0,
 			"MeleeArmor":10,
