@@ -38,6 +38,7 @@ public class ParticleManager : MonoBehaviour {
         GameObject particle_obj = (GameObject)Instantiate(Resources.Load((string)GameDataManager.instance.GetData(classname, "Prefab")), pos, new Quaternion());
         Vector3 ang = particle_obj.transform.eulerAngles;
         ang.z = angle;
+        particle_obj.transform.eulerAngles = ang;
         if (parent != null) {
             particle_obj.transform.SetParent(parent);
         }
