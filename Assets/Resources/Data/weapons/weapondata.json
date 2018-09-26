@@ -208,7 +208,7 @@
 		"Stats":
 		{
 			"WeaponType":4,
-			"Damage":100,
+			"Damage":300,
 			"SADestruction":0,
 			"AttackSpeed":0.6,
 			"Stagger":0,

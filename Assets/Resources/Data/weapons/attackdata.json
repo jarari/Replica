@@ -693,17 +693,21 @@
   "attack_secdroid01_1": {
     "DamageMultiplier": 1,
     "SADestruction": 0,
-    "Stagger": 0,
+    "Stagger": 0,	
+	"KnockBack": {
+        "X": 400,
+        "Y": 100
+    },
     "HitBox": {
 		"0":{
         "Time": 11,
         "Pos": {
-          "X": 150,
-          "Y": 0
+          "X": 108,
+          "Y": 9
         },
         "Area":{
-          "X": 60,
-          "Y": 40
+          "X": 166,
+          "Y": 82
         }
       }
     }
@@ -713,19 +717,19 @@
     "SADestruction": 0,
     "Stagger": 0,
 	"KnockBack": {
-        "X": 200,
-        "Y": 150
+        "X": 50,
+        "Y": 600
     },
     "HitBox": {
 		"0":{
         "Time": 12,
         "Pos": {
-          "X": 25,
+          "X": 80,
           "Y": 30
         },
         "Area":{
-          "X": 180,
-          "Y": 175
+          "X": 175,
+          "Y": 190
         }
       }
     }
