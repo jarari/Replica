@@ -101,7 +101,7 @@ public class Weapon : ObjectBase {
     }
 
     public void CreateEffect(string effectname) {
-        EffectManager.instance.CreateEffect(effectname, transform.position, owner.GetFacingDirection());
+        EffectManager.instance.CreateEffect(effectname, transform.position, 0, null, !owner.IsFacingRight());
     }
 
     public virtual void OnAttack(string eventname) {
@@ -185,12 +185,12 @@ public class Weapon : ObjectBase {
         }
         if(actualEnemiesHit.Count > 0) {
             if (GameDataManager.instance.GetData(className, "Sprites", "hit") != null)
-                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), avgHitPos, 0, null, !IsFacingRight());
+                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), avgHitPos, 0, null, !owner.IsFacingRight());
             if(GameDataManager.instance.GetData(className, "Sprites", "hitparticles") != null) {
                 Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(className, "Sprites", "hitparticles");
                 for(int i = 0; i < dict.Count; i++) {
                     string particleName = (string)dict[i.ToString()];
-                    ParticleManager.instance.CreateParticle(particleName, avgHitPos, 0, !IsFacingRight());
+                    ParticleManager.instance.CreateParticle(particleName, avgHitPos, 0, !owner.IsFacingRight());
                 }
             }
         }
