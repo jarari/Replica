@@ -64,6 +64,28 @@ public class ParticleManager : MonoBehaviour {
         return CreateParticle(classname, pos, angle, -1, null);
     }
 
+    public GameObject CreateParticle(string classname, Vector3 pos, int dir, float duration = -1, Transform parent = null) {
+        GameObject particle_obj = CreateParticle(classname, pos, 0, duration, parent);
+        if (dir != 0) {
+            Vector3 lscale = particle_obj.transform.localScale;
+            lscale.x = lscale.x * dir;
+            particle_obj.transform.localScale = lscale;
+        }
+        return particle_obj;
+    }
+
+    public GameObject CreateParticle(string classname, Vector3 pos, int dir, Transform parent = null) {
+        return CreateParticle(classname, pos, dir, -1, parent);
+    }
+
+    public GameObject CreateParticle(string classname, Vector3 pos, int dir, float duration = -1) {
+        return CreateParticle(classname, pos, dir, duration, null);
+    }
+
+    public GameObject CreateParticle(string classname, Vector3 pos, int dir) {
+        return CreateParticle(classname, pos, dir, -1, null);
+    }
+
     IEnumerator RemoveParticle(GameObject obj, float dur) {
         yield return new WaitForSeconds(dur);
         DestroyObject(obj);
