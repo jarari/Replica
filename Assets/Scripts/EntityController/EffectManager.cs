@@ -25,31 +25,17 @@ public class EffectManager : MonoBehaviour {
 		effects.Remove(effect);
 	}
 
-    public Effect CreateEffect(string classname, Vector3 pos, int dir, Transform parent = null) {
-		if(!LevelManager.instance.isMapActive) return null;
-		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect"), pos, new Quaternion());
-		Effect effect = effect_obj.GetComponent<Effect>();
-
-        if(dir != 0) {
-            Vector3 lscale = effect_obj.transform.localScale;
-            lscale.x = lscale.x * dir;
-            effect_obj.transform.localScale = lscale;
-        }
-        effect_obj.GetComponent<Effect>().Initialize(classname);
-        if(parent != null) {
-            effect_obj.transform.SetParent(parent);
-        }
-
-		effects.Add(effect);
-		return effect;
-    }
-
-    public void CreateEffect(string classname, Vector3 pos, float angle, Transform parent = null) {
+    public void CreateEffect(string classname, Vector3 pos, float angle, Transform parent = null, bool flip = false) {
 		if(!LevelManager.instance.isMapActive) return;
 		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect"), pos, new Quaternion());
         Vector3 ang = effect_obj.transform.eulerAngles;
         ang.z = angle;
         effect_obj.transform.eulerAngles = ang;
+        if (flip) {
+            Vector3 lscale = effect_obj.transform.localScale;
+            lscale.x = lscale.x * -1;
+            effect_obj.transform.localScale = lscale;
+        }
         effect_obj.GetComponent<Effect>().Initialize(classname);
         if (parent != null) {
             effect_obj.transform.SetParent(parent);

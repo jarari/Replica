@@ -31,7 +31,7 @@ public class ParticleManager : MonoBehaviour {
             particles.Remove(obj);
     }
 
-    public GameObject CreateParticle(string classname, Vector3 pos, float angle, float duration = -1, Transform parent = null) {
+    public GameObject CreateParticle(string classname, Vector3 pos, float angle, float duration = -1, Transform parent = null, bool flip = false) {
         if (!LevelManager.instance.isMapActive) return null;
         if (GameDataManager.instance.GetData(classname, "Prefab") == null)
             return null;
@@ -47,43 +47,26 @@ public class ParticleManager : MonoBehaviour {
             dur = Convert.ToSingle(GameDataManager.instance.GetData(classname, "Duration"));
         else if (dur == -1)
             dur = 0.1f;
+        if (flip) {
+            Vector3 lscale = particle_obj.transform.localScale;
+            lscale.x = lscale.x * -1;
+            particle_obj.transform.localScale = lscale;
+        }
         StartCoroutine(RemoveParticle(particle_obj, dur));
         AddParticles(particle_obj);
         return particle_obj;
     }
 
-    public GameObject CreateParticle(string classname, Vector3 pos, float angle, Transform parent = null) {
-        return CreateParticle(classname, pos, angle, -1, parent);
+    public GameObject CreateParticle(string classname, Vector3 pos, float angle, Transform parent = null, bool flip = false) {
+        return CreateParticle(classname, pos, angle, -1, parent, flip);
     }
 
-    public GameObject CreateParticle(string classname, Vector3 pos, float angle, float duration = -1) {
-        return CreateParticle(classname, pos, angle, duration, null);
+    public GameObject CreateParticle(string classname, Vector3 pos, float angle, float duration = -1, bool flip = false) {
+        return CreateParticle(classname, pos, angle, duration, null, flip);
     }
 
-    public GameObject CreateParticle(string classname, Vector3 pos, float angle) {
-        return CreateParticle(classname, pos, angle, -1, null);
-    }
-
-    public GameObject CreateParticle(string classname, Vector3 pos, int dir, float duration = -1, Transform parent = null) {
-        GameObject particle_obj = CreateParticle(classname, pos, 0f, duration, parent);
-        if (dir != 0) {
-            Vector3 lscale = particle_obj.transform.localScale;
-            lscale.x = lscale.x * dir;
-            particle_obj.transform.localScale = lscale;
-        }
-        return particle_obj;
-    }
-
-    public GameObject CreateParticle(string classname, Vector3 pos, int dir, Transform parent = null) {
-        return CreateParticle(classname, pos, dir, -1, parent);
-    }
-
-    public GameObject CreateParticle(string classname, Vector3 pos, int dir, float duration = -1) {
-        return CreateParticle(classname, pos, dir, duration, null);
-    }
-
-    public GameObject CreateParticle(string classname, Vector3 pos, int dir) {
-        return CreateParticle(classname, pos, dir, -1, null);
+    public GameObject CreateParticle(string classname, Vector3 pos, float angle, bool flip = false) {
+        return CreateParticle(classname, pos, angle, -1, null, flip);
     }
 
     IEnumerator RemoveParticle(GameObject obj, float dur) {

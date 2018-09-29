@@ -13,12 +13,12 @@ public class CharacterSecbot : Character {
     }
 
     protected override void OnDeath() {
-        EffectManager.instance.CreateEffect("effect_character_secbot_death", transform.position, GetFacingDirection());
-        EffectManager.instance.CreateEffect("effect_character_secbot_explosion", transform.position, GetFacingDirection());
-        ParticleManager.instance.CreateParticle("particle_secbot_death", transform.position, 0);
-        ParticleManager.instance.CreateParticle("particle_secbot_shard", transform.position, 0);
-        ParticleManager.instance.CreateParticle("particle_secbot_shard1", transform.position, 0);
-        ParticleManager.instance.CreateParticle("particle_secbot_shard2", transform.position, 0);
+        EffectManager.instance.CreateEffect("effect_character_secbot_death", transform.position, 0, null, !IsFacingRight());
+        EffectManager.instance.CreateEffect("effect_character_secbot_explosion", transform.position, 0, null, !IsFacingRight());
+        ParticleManager.instance.CreateParticle("particle_secbot_death", transform.position, 0, !IsFacingRight());
+        ParticleManager.instance.CreateParticle("particle_secbot_shard", transform.position, 0, !IsFacingRight());
+        ParticleManager.instance.CreateParticle("particle_secbot_shard1", transform.position, 0, !IsFacingRight());
+        ParticleManager.instance.CreateParticle("particle_secbot_shard2", transform.position, 0, !IsFacingRight());
         base.OnDeath();
     }
 

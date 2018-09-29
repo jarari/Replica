@@ -218,17 +218,17 @@ public class BasicCharacterMovement : MoveObject {
     protected void OnTumbleEvent() {
         if(character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("tumble_back"))
         {
-            EffectManager.instance.CreateEffect("effect_tumble_back", transform.position, (int)Mathf.Sign(transform.localScale.x));
-            EffectManager.instance.CreateEffect("effect_tumble_back2", transform.position, (int)Mathf.Sign(transform.localScale.x));
-            EffectManager.instance.CreateEffect("effect_tumble_backf", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            EffectManager.instance.CreateEffect("effect_tumble_back", transform.position, 0, null, !character.IsFacingRight());
+            EffectManager.instance.CreateEffect("effect_tumble_back2", transform.position, 0, null, !character.IsFacingRight());
+            EffectManager.instance.CreateEffect("effect_tumble_backf", transform.position, 0, transform, !character.IsFacingRight());
             ParticleManager.instance.CreateParticle("particle_tumb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
             ParticleManager.instance.CreateParticle("particle_tumb1", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
         }
         else if(character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("tumble_front"))
         {
-            EffectManager.instance.CreateEffect("effect_tumble_front", transform.position, (int)Mathf.Sign(transform.localScale.x));
-            EffectManager.instance.CreateEffect("effect_tumble_front2", transform.position, (int)Mathf.Sign(transform.localScale.x));
-            EffectManager.instance.CreateEffect("effect_tumble_frontf", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            EffectManager.instance.CreateEffect("effect_tumble_front", transform.position, 0, null, !character.IsFacingRight());
+            EffectManager.instance.CreateEffect("effect_tumble_front2", transform.position, 0, null, !character.IsFacingRight());
+            EffectManager.instance.CreateEffect("effect_tumble_frontf", transform.position, 0, transform, !character.IsFacingRight());
             ParticleManager.instance.CreateParticle("particle_tumb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
             ParticleManager.instance.CreateParticle("particle_tumb2", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
         }
@@ -340,12 +340,12 @@ public class BasicCharacterMovement : MoveObject {
 
     /* 캐릭터에 부착된 이펙트 생성 (애니메이션 이벤트용) */
     protected void OnParentedEffectEvent(string effect) {
-        EffectManager.instance.CreateEffect(effect, transform.position, character.GetFacingDirection(), transform);
+        EffectManager.instance.CreateEffect(effect, transform.position, 0, transform, !character.IsFacingRight());
     }
 
     /* 캐릭터와 독립된 이펙트 생성 (애니메이션 이벤트용) */
     protected void OnEffectEvent(string effect) {
-        EffectManager.instance.CreateEffect(effect, transform.position, character.GetFacingDirection());
+        EffectManager.instance.CreateEffect(effect, transform.position, 0, null, !character.IsFacingRight());
     }
 
     protected void OnChargeGrenade() {

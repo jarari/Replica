@@ -19,8 +19,8 @@ public class CharacterSecdroid01 : Character {
         SetUncontrollable(true);
         SetFlag(CharacterFlags.Invincible);
         //ParticleManager.instance.CreateParticle("secdroiddeath", transform.position, Convert.ToSingle(!facingRight) * 180);
-        EffectManager.instance.CreateEffect("effect_character_secdroid01_death", transform.position, GetFacingDirection());
-        EffectManager.instance.CreateEffect("effect_character_secdroid01_explosion", transform.position, GetFacingDirection());
+        EffectManager.instance.CreateEffect("effect_character_secdroid01_death", transform.position, 0, null, !IsFacingRight());
+        EffectManager.instance.CreateEffect("effect_character_secdroid01_explosion", transform.position, 0, null, !IsFacingRight());
         base.OnDeath();
     }
 
