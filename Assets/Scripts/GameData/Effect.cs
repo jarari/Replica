@@ -44,6 +44,9 @@ public class Effect : MonoBehaviour {
         if (GameDataManager.instance.GetData(classname, "SortingOrder") != null) {
             GetComponent<SpriteRenderer>().sortingOrder = Convert.ToInt32(GameDataManager.instance.GetData(classname, "SortingOrder"));
         }
+        if (GameDataManager.instance.GetData(classname, "Material") != null) {
+            GetComponent<SpriteRenderer>().material = Helper.GetMaterial("Sprites/shader/", (string)GameDataManager.instance.GetData(classname, "Material"));
+        }
         transform.position = transform.TransformPoint(temp);
     }
 
