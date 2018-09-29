@@ -185,9 +185,14 @@ public class Weapon : ObjectBase {
         }
         if(actualEnemiesHit.Count > 0) {
             if (GameDataManager.instance.GetData(className, "Sprites", "hit") != null)
-                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), avgHitPos, owner.GetFacingDirection());
-				ParticleManager.instance.CreateParticle("particle_gunkatahit",  avgHitPos, owner.GetFacingDirection());
-				ParticleManager.instance.CreateParticle("particle_basicgunkatalight",  avgHitPos, -45); 
+                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), avgHitPos, 0, null, !IsFacingRight());
+            if(GameDataManager.instance.GetData(className, "Sprites", "hitparticles") != null) {
+                Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(className, "Sprites", "hitparticles");
+                for(int i = 0; i < dict.Count; i++) {
+                    string particleName = (string)dict[i.ToString()];
+                    ParticleManager.instance.CreateParticle(particleName, avgHitPos, 0, !IsFacingRight());
+                }
+            }
         }
     }
 
