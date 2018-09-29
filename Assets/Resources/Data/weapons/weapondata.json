@@ -16,7 +16,11 @@
 		"Sprites":
 		{
 			"controller":"",
-			"hit":"effect_attack_fist_hit"
+			"hit":"effect_attack_fist_hit",
+			"hitparticles": {
+				"0" : "particle_fisthit",
+				"1" : "particle_basicfistlight"
+			}
 		},
 		"MuzzlePos":
 		{
@@ -49,7 +53,11 @@
 		"Sprites":
 		{
 			"controller":"",
-			"hit":"effect_attack_basic_hit"
+			"hit":"effect_attack_basic_hit",
+			"hitparticles": {
+				"0" : "particle_gunkatahit",
+				"1" : "particle_basicgunkatalight"
+			}
 		},
 		"MuzzlePos":
 		{
@@ -80,7 +88,11 @@
 		"Sprites":
 		{
 			"controller":"",
-			"hit":"effect_attack_sword_hit"
+			"hit":"effect_attack_sword_hit",
+			"hitparticles": {
+				"0" : "particle_swordhit",
+				"1" : "particle_basicswordlight"
+			}
 		},
 		"MuzzlePos":
 		{
