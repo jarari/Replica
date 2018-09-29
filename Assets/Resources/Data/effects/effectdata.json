@@ -629,7 +629,8 @@
     "Position": {
       "X": 0.0,
       "Y": 0.0
-    }
+    },
+	"Material":"testmat"
   },
   "effect_character_secbot_explosion": {
     "Loop": 0,
@@ -1175,7 +1176,8 @@
     "Position": {
       "X": 0.0,
       "Y": 0.0
-    }
+    },
+	"Material":"testmat"
   },
   "effect_character_secdroid01_attack": {
     "Loop": 0,
