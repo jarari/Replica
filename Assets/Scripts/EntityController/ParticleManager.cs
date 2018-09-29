@@ -65,7 +65,7 @@ public class ParticleManager : MonoBehaviour {
     }
 
     public GameObject CreateParticle(string classname, Vector3 pos, int dir, float duration = -1, Transform parent = null) {
-        GameObject particle_obj = CreateParticle(classname, pos, 0, duration, parent);
+        GameObject particle_obj = CreateParticle(classname, pos, 0f, duration, parent);
         if (dir != 0) {
             Vector3 lscale = particle_obj.transform.localScale;
             lscale.x = lscale.x * dir;
