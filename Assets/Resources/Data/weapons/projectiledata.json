@@ -14,9 +14,9 @@
 		},
 		"ShakeCam":
 		{
-			"Radius":350,
-			"Magnitude":6.0,
-			"Duration":0.75
+			"Radius":800,
+			"Magnitude":10.0,
+			"Duration":0.5
 		},
 		"CookTime":3
 	}
