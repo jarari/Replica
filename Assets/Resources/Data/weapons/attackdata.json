@@ -111,7 +111,7 @@
     },
     "HitBox": {
       "0":{
-        "Time": 2,
+        "Time": 1,
         "Pos": {
           "X": 42,
           "Y": 40
@@ -455,7 +455,7 @@
     },
     "HitBox": {
       "0":{
-        "Time": 6,
+        "Time": 7,
         "Pos": {
           "X": 64,
           "Y": 52
@@ -695,7 +695,7 @@
     "SADestruction": 0,
     "Stagger": 0,	
 	"KnockBack": {
-        "X": 400,
+        "X": 700,
         "Y": 100
     },
     "HitBox": {
@@ -718,7 +718,7 @@
     "Stagger": 0,
 	"KnockBack": {
         "X": 50,
-        "Y": 600
+        "Y": 800
     },
     "HitBox": {
 		"0":{

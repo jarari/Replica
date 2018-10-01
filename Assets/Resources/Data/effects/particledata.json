@@ -23,11 +23,11 @@
     "Prefab": "Sprites/Particles/Particle_Tumb",
     "Duration": 5
   },
-  "particle_tumb1": {
+  "particle_tumbb": {
     "Prefab": "Sprites/Particles/Particle_Tumbback",
     "Duration": 5
   },
-  "particle_tumb2": {
+  "particle_tumbf": {
     "Prefab": "Sprites/Particles/Particle_Tumbfront",
     "Duration": 5
   },
@@ -61,27 +61,35 @@
   },
   "particle_basicfistlight": {
     "Prefab": "Sprites/Particles/Particle_Basicfistlight",
-    "Duration": 1
+    "Duration": 0.1
   },
   "particle_basicswordlight": {
     "Prefab": "Sprites/Particles/Particle_Basicswordlight",
-    "Duration": 1
+    "Duration": 0.1
   },
   "particle_gunkatahit": {
     "Prefab": "Sprites/Particles/Particle_gunkatahit",
-    "Duration": 5
+    "Duration": 1
   },
   "particle_fisthit": {
     "Prefab": "Sprites/Particles/Particle_fisthit",
-    "Duration": 5
+    "Duration": 1
   },
   "particle_swordhit": {
     "Prefab": "Sprites/Particles/Particle_swordhit",
-    "Duration": 5
+    "Duration": 1
+  },
+	"particle_secdroidatklight": {
+    "Prefab": "Sprites/Particles/Particle_secdroidatklight",
+    "Duration": 1
+  },
+	"particle_secdroidatkhit": {
+    "Prefab": "Sprites/Particles/Particle_secdroidatkhit",
+    "Duration": 1
   },
   "particle_greenlaserlight": {
     "Prefab": "Sprites/Particles/Particle_greenlaserlight",
-    "Duration": 5
+    "Duration": 1
   },
   "secdroiddeath": {
     "Prefab": "Sprites/Particles/Secdroiddeath",
