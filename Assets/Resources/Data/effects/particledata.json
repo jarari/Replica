@@ -21,15 +21,19 @@
   },
   "particle_tumb": {
     "Prefab": "Sprites/Particles/Particle_Tumb",
-    "Duration": 5
+    "Duration": 2
+  },
+  "particle_tumb2": {
+    "Prefab": "Sprites/Particles/Particle_Tumb2",
+    "Duration": 2
   },
   "particle_tumbb": {
     "Prefab": "Sprites/Particles/Particle_Tumbback",
-    "Duration": 5
+    "Duration": 2
   },
   "particle_tumbf": {
     "Prefab": "Sprites/Particles/Particle_Tumbfront",
-    "Duration": 5
+    "Duration": 2
   },
   "particle_secbot_shard": {
     "Prefab": "Sprites/Particles/Particle_Enemy_Shard",

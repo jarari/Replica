@@ -222,6 +222,7 @@ public class BasicCharacterMovement : MoveObject {
             EffectManager.instance.CreateEffect("effect_tumble_back2", transform.position, 0, null, !character.IsFacingRight());
             EffectManager.instance.CreateEffect("effect_tumble_backf", transform.position, 0, transform, !character.IsFacingRight());
             ParticleManager.instance.CreateParticle("particle_tumb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+			ParticleManager.instance.CreateParticle("particle_tumb2", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
 			ParticleManager.instance.CreateParticle("particle_tumbb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
 			ParticleManager.instance.CreateParticle("particle_tumbb", transform.position, (int)Mathf.Sign(transform.localScale.x), !character.IsFacingRight());
         }
@@ -231,6 +232,7 @@ public class BasicCharacterMovement : MoveObject {
             EffectManager.instance.CreateEffect("effect_tumble_front2", transform.position, 0, null, !character.IsFacingRight());
             EffectManager.instance.CreateEffect("effect_tumble_frontf", transform.position, 0, transform, !character.IsFacingRight());
             ParticleManager.instance.CreateParticle("particle_tumb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+			ParticleManager.instance.CreateParticle("particle_tumb2", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
 			ParticleManager.instance.CreateParticle("particle_tumbf", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
 			ParticleManager.instance.CreateParticle("particle_tumbf", transform.position, (int)Mathf.Sign(transform.localScale.x), !character.IsFacingRight());
         }
