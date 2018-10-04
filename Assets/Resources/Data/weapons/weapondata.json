@@ -48,7 +48,7 @@
 			"ReloadTime":0,
 			"Range":1000,
 			"BulletSpeed":1800,
-			"DefaultBullet":"bullet_hg_laser"
+			"DefaultBullet":"bullet_hg_ap"
 		},
 		"Sprites":
 		{
@@ -220,7 +220,7 @@
 		"Stats":
 		{
 			"WeaponType":4,
-			"Damage":300,
+			"Damage":200,
 			"SADestruction":0,
 			"AttackSpeed":0.6,
 			"Stagger":0,
@@ -231,7 +231,11 @@
 		},
 		"Sprites":
 		{
-			"controller":""
+			"controller":"",
+			"hitparticles": {
+				"0" : "particle_secdroidatkhit",
+				"1" : "particle_secdroidatklight"
+			}
 		},
 		"MuzzlePos":
 		{

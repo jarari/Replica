@@ -33,8 +33,6 @@ public class Laser : MonoBehaviour {
                 temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
                 float ang = Helper.Vector2ToAng(temp);
                 EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(classname, "Sprites", "hit"), endPos, ang);
-				ParticleManager.instance.CreateParticle("particle_laser", endPos, ang, false);
-				ParticleManager.instance.CreateParticle("particle_greenlaserlight", endPos, 145, false);
             }
         }
         Vector3 dtraj = endPos - startPos;
