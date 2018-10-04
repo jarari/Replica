@@ -186,34 +186,42 @@ public class GameDataManager : MonoBehaviour {
 
     public object GetData(params string[] Keys) {
         Dictionary<string, object> tempDict = (Dictionary<string, object>)GameData["Data"];
-        for(int i = 0; i < Keys.Length - 1; i++) {
-            if (tempDict.ContainsKey(Keys[i])) {
-                tempDict = (Dictionary<string, object>)tempDict[Keys[i]];
+        int i = 0;
+        while (tempDict != null && i < Keys.Length - 1) {
+            tempDict = (Dictionary<string, object>)tempDict[Keys[i]];
+            i++;
+        }
+        if (tempDict != null) {
+            object val;
+            try {
+                val = tempDict[Keys[i]];
             }
-            else {
-                //Debug.LogError("GameData : Invalid key - " + Keys[i]);
+            catch {
                 return null;
             }
+            return val;
         }
-        if(tempDict.ContainsKey(Keys[Keys.Length - 1]))
-            return tempDict[Keys[Keys.Length - 1]];
         return null;
     }
 
     /* 이 매니저가 관리하지 않는 데이터 (예: 맵데이터는 레벨 매니저가 관리) 를 읽어올 때 사용 */
     public object GetData(Dictionary<string, object> data, params string[] Keys) {
         Dictionary<string, object> tempDict = data;
-        for (int i = 0; i < Keys.Length - 1; i++) {
-            if (tempDict.ContainsKey(Keys[i])) {
-                tempDict = (Dictionary<string, object>)tempDict[Keys[i]];
+        int i = 0;
+        while (tempDict != null && i < Keys.Length - 1) {
+            tempDict = (Dictionary<string, object>)tempDict[Keys[i]];
+            i++;
+        }
+        if (tempDict != null) {
+            object val;
+            try {
+                val = tempDict[Keys[i]];
             }
-            else {
-                Debug.LogError("GameData : Invalid key - " + Keys[i]);
+            catch {
                 return null;
             }
+            return val;
         }
-        if (tempDict.ContainsKey(Keys[Keys.Length - 1]))
-            return tempDict[Keys[Keys.Length - 1]];
         return null;
     }
 
