@@ -72,6 +72,14 @@
 				"up":"effect_hg_ap_muzzle_up",
 				"forward":"effect_hg_ap_muzzle_forward",
 				"down":"effect_hg_ap_muzzle_down"
+			},
+			"hitparticles":
+			{
+				"0" : "particle_aphit"
+			},
+			"muzzleparticles":
+			{
+				"0" : "particle_aplight"
 			}
 		}
 	},
@@ -98,11 +106,11 @@
 			},
 			"hitparticles":
 			{
-				"0" : "particle_gunkatahit"
+				"0" : "particle_greenlaserlight"
 			},
 			"muzzleparticles":
 			{
-				"0" : "particle_swordhit"
+				"0" : "particle_laser"
 			}
 		}
 	}

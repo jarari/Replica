@@ -106,5 +106,13 @@
   "particle_basicbullethit": {
     "Prefab": "Sprites/Particles/Particle_basicbullethit",
     "Duration": 1
+  },
+  "particle_aplight": {
+    "Prefab": "Sprites/Particles/Particle_aplight",
+    "Duration": 0.7
+  },
+  "particle_aphit": {
+    "Prefab": "Sprites/Particles/Particle_aphit",
+    "Duration": 1
   }
 }
