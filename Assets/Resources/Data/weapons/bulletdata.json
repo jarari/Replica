@@ -106,11 +106,11 @@
 			},
 			"hitparticles":
 			{
-				"0" : "particle_greenlaserlight"
+				"0" : "particle_laser"
 			},
 			"muzzleparticles":
 			{
-				"0" : "particle_laser"
+				"0" : "particle_greenlaserlight"
 			}
 		}
 	}
