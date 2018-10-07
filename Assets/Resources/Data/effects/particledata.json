@@ -98,5 +98,13 @@
   "secdroiddeath": {
     "Prefab": "Sprites/Particles/Secdroiddeath",
     "Duration": 0.7
+  },
+  "particle_basicbulletlight": {
+    "Prefab": "Sprites/Particles/Particle_basicbulletlight",
+    "Duration": 0.7
+  },
+  "particle_basicbullethit": {
+    "Prefab": "Sprites/Particles/Particle_basicbullethit",
+    "Duration": 1
   }
 }

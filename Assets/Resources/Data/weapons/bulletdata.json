@@ -18,6 +18,14 @@
 				"up":"effect_hg_up",
 				"forward":"effect_hg_forward",
 				"down":"effect_hg_down"
+			},
+			"hitparticles":
+			{
+				"0" : "particle_basicbullethit"
+			},
+			"muzzleparticles":
+			{
+				"0" : "particle_basicbulletlight"
 			}
 		}
 	},
