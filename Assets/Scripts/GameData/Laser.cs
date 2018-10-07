@@ -28,11 +28,18 @@ public class Laser : MonoBehaviour {
         Vector3 endPos = startPos + dir * distance;
         if (rayhit.collider != null) {
             endPos = (Vector3)rayhit.point + dir * 5f;
+            Vector3 temp = rayhit.normal;
+            temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
+            float ang = Helper.Vector2ToAng(temp);
             if (GameDataManager.instance.GetData(classname, "Sprites", "hit") != null) {
-                Vector3 temp = rayhit.normal;
-                temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
-                float ang = Helper.Vector2ToAng(temp);
                 EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(classname, "Sprites", "hit"), endPos, ang);
+            }
+            if (GameDataManager.instance.GetData(classname, "Sprites", "hitparticles") != null) {
+                Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(classname, "Sprites", "hitparticles");
+                for (int i = 0; i < dict.Count; i++) {
+                    string particleName = (string)dict[i.ToString()];
+                    ParticleManager.instance.CreateParticle(particleName, endPos, ang, false);
+                }
             }
         }
         Vector3 dtraj = endPos - startPos;
@@ -51,12 +58,14 @@ public class Laser : MonoBehaviour {
         StartCoroutine(DestroyEffect());
         
         Collider2D[] colliders = Physics2D.OverlapBoxAll((startPos + endPos) / 2f, new Vector2(Mathf.Abs(dtraj.x), width), angle, Helper.characterLayer);
+        int hitCount = 0;
         foreach(Collider2D col in colliders) {
             Character c = col.GetComponent<Character>();
             if(c != null) {
                 if(c.GetTeam() != attacker.GetTeam()) {
                     DamageData dmgData = Helper.DamageCalc(attacker, data, c, true);
                     c.DoDamage(attacker, dmgData.damage, dmgData.stagger);
+                    hitCount++;
                 }
             }
         }

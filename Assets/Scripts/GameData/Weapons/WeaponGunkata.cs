@@ -37,6 +37,13 @@ public class WeaponGunkata : Weapon {
                     FireBullet(bullet, 90);
                 }
                 owner.GetInventory().ModCount("item_bullet", -1);
+                if (GameDataManager.instance.GetData(bullet, "Sprites", "muzzleparticles") != null) {
+                    Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(bullet, "Sprites", "muzzleparticles");
+                    for (int i = 0; i < dict.Count; i++) {
+                        string particleName = (string)dict[i.ToString()];
+                        ParticleManager.instance.CreateParticle(particleName, transform.position, 0, null, !owner.IsFacingRight());
+                    }
+                }
             }
         }
         else if(eventname == "attack_basic_finish_fire") {

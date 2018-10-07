@@ -161,11 +161,18 @@ public class Bullet : MonoBehaviour {
         if (!collided) return;
         ShakeCam();
         BulletManager.instance.OnBulletHit(this);
-        if(anim != null && GameDataManager.instance.GetData(className, "Sprites", "hit") != null) {
-            Vector3 temp = collisionNorm;
-            temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
-            float ang = Helper.Vector2ToAng(temp);
+        Vector3 temp = collisionNorm;
+        temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
+        float ang = Helper.Vector2ToAng(temp);
+        if (anim != null && GameDataManager.instance.GetData(className, "Sprites", "hit") != null) {
             EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), collisionPos, ang);
+        }
+        if (GameDataManager.instance.GetData(className, "Sprites", "hitparticles") != null) {
+            Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(className, "Sprites", "hitparticles");
+            for (int i = 0; i < dict.Count; i++) {
+                string particleName = (string)dict[i.ToString()];
+                ParticleManager.instance.CreateParticle(particleName, collisionPos, ang, false);
+            }
         }
     }
 }

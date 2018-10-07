@@ -87,6 +87,14 @@
 				"up":"effect_hg_laser_muzzle_up",
 				"forward":"effect_hg_laser_muzzle_forward",
 				"down":"effect_hg_laser_muzzle_down"
+			},
+			"hitparticles":
+			{
+				"0" : "particle_gunkatahit"
+			},
+			"muzzleparticles":
+			{
+				"0" : "particle_swordhit"
 			}
 		}
 	}
