@@ -48,7 +48,7 @@
 			"ReloadTime":0,
 			"Range":1000,
 			"BulletSpeed":2000,
-			"DefaultBullet":"bullet_hg"
+			"DefaultBullet":"bullet_hg_ap"
 		},
 		"Sprites":
 		{
