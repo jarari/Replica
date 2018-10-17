@@ -114,5 +114,13 @@
   "particle_aphit": {
     "Prefab": "Sprites/Particles/Particle_aphit",
     "Duration": 1
+  },
+  "particle_basicfinishhit": {
+    "Prefab": "Sprites/Particles/Particle_Basicfinishhit",
+    "Duration": 1.5
+  },
+  "particle_basicfinishshot": {
+    "Prefab": "Sprites/Particles/Particle_Basicfinishshot",
+    "Duration": 1.5	
   }
 }

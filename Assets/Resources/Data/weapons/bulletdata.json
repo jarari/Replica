@@ -40,7 +40,15 @@
 		"Sprites":
 		{
 			"controller":"bullet_gunkata_finish/bullet_gunkata_finish_controller",
-			"hit":"effect_bullet_gunkata_finish_hit"
+			"hit":"effect_bullet_gunkata_finish_hit",
+			"hitparticles":
+			{
+				"0" : "particle_basicfinishhit"
+			},
+			"muzzleparticles":
+			{
+				"0" : "particle_basicbulletlight"
+			}
 		}
 	},
 	"bullet_secbot":
