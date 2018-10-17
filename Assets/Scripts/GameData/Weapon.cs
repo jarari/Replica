@@ -34,15 +34,21 @@ public class Weapon : ObjectBase {
 
     public override void Initialize(string classname) {
         base.Initialize(classname);
-        type = (WeaponTypes)Convert.ToInt32(GameDataManager.instance.GetData(classname, "Stats", "WeaponType"));
+
+        type = (WeaponTypes) objectData["Stats"]["WeaponType"].Value<int>();
+
         if (owner) {
             for (int i = 0; i < (int)WeaponStats.EndOfEnums; i++) {
                 owner.SetBaseStat(this, (WeaponStats)i, owner.GetBaseStat(this, (WeaponStats)i));
             }
             GetComponent<SpriteRenderer>().sortingOrder = GetOwner().GetComponent<SpriteRenderer>().sortingOrder + 1;
         }
-        muzzlePos = new Vector2((float)GameDataManager.instance.GetData(classname, "MuzzlePos", "X")
-                                        , (float)GameDataManager.instance.GetData(classname, "MuzzlePos", "Y"));
+
+        muzzlePos = new Vector2(
+			objectData["MuzzlePos"]["X"].Value<float>(),
+			objectData["MuzzlePos"]["Y"].Value<float>()
+			);
+
         SetBullet();
     }
     public Vector2 GetMuzzlePos() {
@@ -62,9 +68,9 @@ public class Weapon : ObjectBase {
     }
 
     public void SetBullet(string b = null) {
-        if(b == null || b.Length == 0) {
-            if(GameDataManager.instance.GetData(className, "Stats", "DefaultBullet") != null) {
-                bullet = (string)GameDataManager.instance.GetData(className, "Stats", "DefaultBullet");
+        if(string.IsNullOrEmpty(b)) {
+            if(objectData["Stats"]["DefaultBullet"]) {
+                bullet = objectData["Stats"]["DefaultBullet"].Value<string>();
             }
             else {
                 bullet = "";
@@ -92,10 +98,14 @@ public class Weapon : ObjectBase {
     }
 
     public void FireBullet(string bulletclass, float ang) {
-        if ((string)GameDataManager.instance.GetData(bulletclass, "Type") == "bullet")
+		JDictionary bulletData = GameDataManager.instance.RootData[bulletclass];
+
+        if (bulletData["Type"].Value<string>() == "bullet")
             BulletManager.instance.CreateBullet(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
-        else if ((string)GameDataManager.instance.GetData(bulletclass, "Type") == "laser")
+
+        else if (bulletData["Type"].Value<string>() == "laser")
             BulletManager.instance.CreateLaser(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
+
         if (EventManager.Event_WeaponFire != null)
             EventManager.Event_WeaponFire(owner, this, bulletclass);
     }
@@ -109,24 +119,31 @@ public class Weapon : ObjectBase {
             if(owner.GetComponent<Rigidbody2D>().velocity.y < 300)
                 owner.GetController().SetVelY(300);
         }
-        if (GameDataManager.instance.GetData(eventname, "Unstoppable") != null &&
-            Convert.ToInt32(GameDataManager.instance.GetData(eventname, "Unstoppable")) == 1) {
+
+		JDictionary attackData = GameDataManager.instance.RootData[eventname];
+
+        if (attackData["Unstoppable"] && attackData["Unstoppable"].Value<int>() == 1) {
             owner.SetFlag(CharacterFlags.UnstoppableAttack);
         }
-        if (GameDataManager.instance.GetData(eventname, "ChargeDelay") != null) {
-            AnimationClip clip = owner.GetAnimator().GetCurrentAnimatorClipInfo(0)[0].clip;
-            float time = Convert.ToSingle(GameDataManager.instance.GetData(eventname, "ChargeDelay"));
-            float numOfFrames = Mathf.Round(clip.frameRate * clip.length);
-            StartCoroutine(DelayedCharge(time / numOfFrames, Convert.ToSingle(GameDataManager.instance.GetData(eventname, "ChargeAmount"))));
-        }
-        else {
-            if (GameDataManager.instance.GetData(eventname, "ChargeAmount") != null) {
-                owner.GetController().ForceMove(0);
-                owner.AddForce(Vector2.right * Convert.ToSingle(GameDataManager.instance.GetData(eventname, "ChargeAmount")) * owner.GetFacingDirection());
-            }
-        }
+
+		float chargeAmount;
+		if(attackData["ChargeAmount"]) {
+			chargeAmount = attackData["ChargeAmount"].Value<float>();
+
+			if(attackData["ChargeDelay"]) {
+				float time = attackData["ChargeDelay"].Value<float>();
+				AnimationClip clip = owner.GetAnimator().GetCurrentAnimatorClipInfo(0)[0].clip;
+				float numOfFrames = Mathf.Round(clip.frameRate * clip.length);
+				StartCoroutine(DelayedCharge(time / numOfFrames, chargeAmount));
+			}
+			else {
+				owner.GetController().ForceMove(0);
+				owner.AddForce(Vector2.right * chargeAmount * owner.GetFacingDirection());
+			}
+		}
+
         Dictionary<WeaponStats, float> dmgMult = new Dictionary<WeaponStats, float>();
-        float mult = Convert.ToSingle(GameDataManager.instance.GetData(eventname, "DamageMultiplier")) - 1;
+        float mult = attackData["DamageMultiplier"].Value<float>() - 1.0f;
         if(mult != 0) {
             dmgMult.Add(WeaponStats.Damage, mult);
             WeaponBuff dmgMultBuff = new WeaponBuff(dmgMult, type);
@@ -134,27 +151,45 @@ public class Weapon : ObjectBase {
         }
 
         Dictionary<WeaponStats, float> ccAdd = new Dictionary<WeaponStats, float>();
-        ccAdd.Add(WeaponStats.SADestruction, Convert.ToSingle(GameDataManager.instance.GetData(eventname, "SADestruction")));
-        ccAdd.Add(WeaponStats.Stagger, Convert.ToSingle(GameDataManager.instance.GetData(eventname, "Stagger")));
-        if (GameDataManager.instance.GetData(eventname, "ExplosionRadius") != null)
-            ccAdd.Add(WeaponStats.ExplosionRadius, Convert.ToSingle(GameDataManager.instance.GetData(eventname, "ExplosionRadius")));
+        ccAdd.Add(WeaponStats.SADestruction, attackData["SADestruction"].Value<float>());
+        ccAdd.Add(WeaponStats.Stagger, attackData["Stagger"].Value<float>());
+        if (attackData["ExplosionRadius"])
+            ccAdd.Add(WeaponStats.ExplosionRadius, attackData["ExplosionRadius"].Value<float>());
+
         WeaponBuff ccAddBuff = new WeaponBuff(ccAdd, type);
         owner.AddWeaponBuff("buff_cc_" + eventname, ccAddBuff, true, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);
         
-        if(GameDataManager.instance.GetData(eventname, "HitBox") != null
-            && GameDataManager.instance.GetData(eventname, "HitBox").GetType().Equals(typeof(Dictionary<string, object>))){
-            int hitboxnum = ((Dictionary<string, object>)GameDataManager.instance.GetData(eventname, "HitBox")).Count;
-            for(int i = 0; i < hitboxnum; i++) {
-                AnimationClip clip = owner.GetAnimator().GetCurrentAnimatorClipInfo(0)[0].clip;
-                float time = Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Time"));
-                float numOfFrames = Mathf.Round(clip.frameRate * clip.length);
-                Vector2 pos = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Pos", "X")) * owner.GetFacingDirection(),
-                    Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Pos", "Y")));
-                Vector2 area = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Area", "X")),
-                    Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Area", "Y")));
-                StartCoroutine(HitCheck(time / numOfFrames, pos, area, eventname));
-            }
-        }
+        if(attackData["HitBox"] && attackData["HitBox"].Count > 0) {
+			//int hitboxnum = ((Dictionary<string, object>)GameDataManager.instance.GetData(eventname, "HitBox")).Count;
+			foreach(JDictionary hitBox in attackData["HitBox"]) {
+				AnimationClip clip = owner.GetAnimator().GetCurrentAnimatorClipInfo(0)[0].clip;
+				float numOfFrames = Mathf.Round(clip.frameRate * clip.length);
+				float time = hitBox["Time"].Value<float>();
+				Vector2 pos = new Vector2(
+					hitBox["Pos"]["X"].Value<float>() * owner.GetFacingDirection(),
+					hitBox["Pos"]["Y"].Value<float>()
+					);
+				Vector2 area = new Vector2(
+					hitBox["Area"]["X"].Value<float>(),
+					hitBox["Area"]["Y"].Value<float>()
+					);
+				StartCoroutine(HitCheck(time / numOfFrames, pos, area, eventname));
+			}
+			//for(int i = 0; i < hitboxnum; i++) {
+			//	AnimationClip clip = owner.GetAnimator().GetCurrentAnimatorClipInfo(0)[0].clip;
+			//	float time = Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Time"));
+			//	float numOfFrames = Mathf.Round(clip.frameRate * clip.length);
+			//	Vector2 pos = new Vector2(
+			//		Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Pos", "X")) * owner.GetFacingDirection(),
+			//		Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Pos", "Y"))
+			//		);
+			//	Vector2 area = new Vector2(
+			//		Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Area", "X")),
+			//		Convert.ToSingle(GameDataManager.instance.GetData(eventname, "HitBox", i.ToString(), "Area", "Y"))
+			//		);
+			//	StartCoroutine(HitCheck(time / numOfFrames, pos, area, eventname));
+			//}
+		}
         if (EventManager.Event_WeaponAttack != null)
             EventManager.Event_WeaponAttack(owner, this, eventname);
         /*Dictionary<CharacterStats, float> moveSpeedDebuff = new Dictionary<CharacterStats, float>();
@@ -184,14 +219,24 @@ public class Weapon : ObjectBase {
             OnWeaponHit(c, hitpos, eventname);
         }
         if(actualEnemiesHit.Count > 0) {
-            if (GameDataManager.instance.GetData(className, "Sprites", "hit") != null)
-                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), avgHitPos, 0, null, !owner.IsFacingRight());
-            if(GameDataManager.instance.GetData(className, "Sprites", "hitparticles") != null) {
-                Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(className, "Sprites", "hitparticles");
-                for(int i = 0; i < dict.Count; i++) {
-                    string particleName = (string)dict[i.ToString()];
-                    ParticleManager.instance.CreateParticle(particleName, avgHitPos, 0, !owner.IsFacingRight());
-                }
+            if (objectData["Sprites"]["hit"])
+                EffectManager.instance.CreateEffect(
+					objectData["Sprites"]["hit"].Value<string>(), 
+					avgHitPos, 
+					0, 
+					null, 
+					!owner.IsFacingRight()
+					);
+
+            if(objectData["Sprites"]["hitparticles"]) {
+				foreach(JDictionary particle in objectData["Sprites"]["hitparticles"]) {
+					ParticleManager.instance.CreateParticle(particle.Value<string>(), avgHitPos, 0, !owner.IsFacingRight());
+				}
+                //Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(className, "Sprites", "hitparticles");
+                //for(int i = 0; i < dict.Count; i++) {
+                //    string particleName = (string)dict[i.ToString()];
+                //    ParticleManager.instance.CreateParticle(particleName, avgHitPos, 0, !owner.IsFacingRight());
+                //}
             }
         }
     }
@@ -206,22 +251,30 @@ public class Weapon : ObjectBase {
 
     public virtual void OnWeaponHit(Character victim, Vector2 hitPos, string eventname) {
         if(owner == CharacterManager.instance.GetPlayer() || victim == CharacterManager.instance.GetPlayer())
-            CamController.instance.ShakeCam(Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 20f, 0, 2),
-                Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 50f, 0, 0.5f));
+            CamController.instance.ShakeCam(
+				Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 20f, 0, 2),
+                Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 50f, 0, 0.5f)
+				);
+
         if (victim.HasFlag(CharacterFlags.Invincible))
             return;
+
         DamageData dmgData = Helper.DamageCalc(owner, GetEssentialStats(), victim);
         victim.DoDamage(owner, dmgData.damage, dmgData.stagger);
+
         if (!victim.HasFlag(CharacterFlags.KnockBackImmunity)) {
-            Vector2 knockback = new Vector2();
+			JDictionary attackData = GameDataManager.instance.RootData[eventname];
+
+			Vector2 knockback = new Vector2();
             bool knockout = false;
-            if (GameDataManager.instance.GetData(eventname, "KnockBack") != null) {
-                knockback.x = Convert.ToSingle(GameDataManager.instance.GetData(eventname, "KnockBack", "X")) * owner.GetFacingDirection();
-                knockback.y = Convert.ToSingle(GameDataManager.instance.GetData(eventname, "KnockBack", "Y"));
+
+            if (attackData["KnockBack"]) {
+                knockback.x = attackData["KnockBack"]["X"].Value<float>() * owner.GetFacingDirection();
+                knockback.y = attackData["KnockBack"]["Y"].Value<float>();
                 knockout = true;
             }
-            else if (GameDataManager.instance.GetData(eventname, "ChargeAmount") != null) {
-                knockback.x = Convert.ToSingle(GameDataManager.instance.GetData(eventname, "ChargeAmount")) * owner.GetFacingDirection();
+            else if (attackData["ChargeAmount"]) {
+                knockback.x = attackData["ChargeAmount"].Value<float>() * owner.GetFacingDirection();
                 knockout = true;
             }
             victim.AddForce(knockback, knockout);

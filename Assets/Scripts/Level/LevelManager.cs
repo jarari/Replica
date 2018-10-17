@@ -9,7 +9,10 @@ public class LevelManager : MonoBehaviour {
     private Dictionary<int, GameObject> createdObjs = new Dictionary<int, GameObject>();
     private Dictionary<int, int> inheritances = new Dictionary<int, int>();
     private List<GameObject> BGParents = new List<GameObject>();
-    private Dictionary<string, object> mapdata = null;
+
+	private Dictionary<string, object> mapdata = null;
+	private JDictionary stageData;
+
     private Vector2 mapMin;
     private Vector2 mapMax;
     private bool loadOnce = false;
@@ -55,7 +58,7 @@ public class LevelManager : MonoBehaviour {
                 sr.sprite = t;
             }
         }
-        DestroyObject(obj);
+        Destroy(obj);
         loadOnce = true;
     }
 
@@ -67,7 +70,7 @@ public class LevelManager : MonoBehaviour {
         foreach (Sprite t in sprites) {
             sr.sprite = t;
         }
-        DestroyObject(obj);
+        Destroy(obj);
     }
 
     private void PreloadAudios(string prefix, string classname) {
@@ -79,25 +82,34 @@ public class LevelManager : MonoBehaviour {
     }
 
     IEnumerator MapCreationSequence(string mapname) {
-        if (GameDataManager.instance.GetData(mapname) != null) {
+		JDictionary mapData = GameDataManager.instance.RootData[mapname];
+
+        if (mapData) {
             DestroyMap();
-            Dictionary<int, string> mapList = new Dictionary<int, string>();
-            int totalNumOfRooms = (int)GameDataManager.instance.GetData(mapname, "TotalNumberOfRooms");
-            List<object> Patterns = new List<object>(((Dictionary<string, object>)GameDataManager.instance.GetData(mapname, "Patterns")).Values);
-            if (GameDataManager.instance.GetData(mapname, "Reserved") != null) {
-                Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(mapname, "Reserved");
-                foreach (KeyValuePair<string, object> kvp in dict) {
-                    mapList.Add(Convert.ToInt32(kvp.Key), (string)kvp.Value);
-                }
-            }
-            for (int i = 0; i < totalNumOfRooms; i++) {
-                if (mapList.ContainsKey(i)) continue;
-                int rand = UnityEngine.Random.Range(0, Patterns.Count);
-                mapList.Add(i, (string)Patterns[rand]);
-                Patterns.RemoveAt(rand);
-            }
-            for (int i = 0; i < totalNumOfRooms; i++) {
-                string pattern = mapList[i];
+			int totalNumOfRooms = mapData["TotalNumberOfRooms"].Value<int>();
+
+			List<JDictionary> mapList = new List<JDictionary>();
+			List<JDictionary> patterns = new List<JDictionary>();
+
+			if(mapData["Patterns"])
+				foreach(JDictionary map in mapData["Patterns"])
+					patterns.Add(map);
+
+			if (mapData["Reserved"])
+				foreach(JDictionary map in mapData["Reserved"])
+					mapList.Add(map);
+
+			// mapList의 count가 totalNumOfRooms가 될 때까지 패턴들 중 임의로 하나 선택 후 mapList에 추가.
+			// 중복 선택 방지로 선택 후 patterns에서 지운다.
+			int mapListCount = mapList.Count;
+			for(int i = 0; i < totalNumOfRooms - mapListCount; i++) {
+				int randomKey = UnityEngine.Random.Range(0, patterns.Count);
+				mapList.Add(patterns[randomKey]);
+				patterns.RemoveAt(randomKey);
+			}
+
+			for(int i = 0; i < totalNumOfRooms; i++) {
+                string pattern = mapList[i].Value<string>();
                 if (createdObjs.Count > 0) {
                     float maxX = createdObjs.OrderBy(obj => obj.Value.transform.position.x).Reverse().ToArray()[0].Value.transform.position.x;
                     float minY = createdObjs.Where(obj => obj.Value.transform.position.x == maxX).OrderBy(obj => obj.Value.transform.position.y).ToArray()[0].Value.transform.position.y;
@@ -117,215 +129,291 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
-    public void CreateMap(string mapname, Vector3 basePos) {
-        mapdata = GameDataManager.instance.ParseMapData(mapname);
-        if (mapdata != null) {
-            int numOfLayers = Convert.ToInt32(GameDataManager.instance.GetData(mapdata, "NumOfLayers"));
-            List<string> BGParentKeys = new List<string>();
-            BGParents.Clear();
-            for(int i = 0; i < numOfLayers; i++) {
-                string key = (string)GameDataManager.instance.GetData(mapdata, "Layer" + i.ToString() + "ID");
-                BGParents.Add(CreateEmptyObject(key, basePos));
-                BGParentKeys.Add(key);
-                BGParents[i].tag = "BG";
-            }
-            
-            foreach (KeyValuePair<string, object> entity in mapdata) {
-                GameObject obj = null;
-                if (!entity.Value.GetType().Equals(typeof(Dictionary<string, object>))) continue;
-                switch((string)GameDataManager.instance.GetData(mapdata, entity.Key, "Tag")) {
-                    case "Ground":
-                        obj = CreatePrefab("Ground", entity.Key, basePos, true);
-                        ApplyComponents(obj, entity.Key);
-                        break;
-                    case "Ceiling":
-                        obj = CreatePrefab("Ceiling", entity.Key, basePos, true);
-                        ApplyComponents(obj, entity.Key);
-                        break;
-                    case "Spawner":
-                        obj = CreatePrefab("Spawner", entity.Key, basePos);
-                        ApplyComponents(obj, entity.Key);
-                        break;
-                    case "Light":
-                        obj = CreateEmptyObject(entity.Key, basePos);
-                        ApplyComponents(obj, entity.Key);
-                        break;
-                    case "BG_Object":
-                        obj = CreateEmptyObject(entity.Key, basePos);
-                        ApplyComponents(obj, entity.Key);
-                        break;
-                    case "BG_Layer":
-                        obj = CreateEmptyObject(entity.Key, basePos);
-                        ApplyComponents(obj, entity.Key);
-                        break;
-                    case "BG_Farthest":
-                        obj = CreateEmptyObject(entity.Key, basePos);
-                        obj.tag = "BG_Farthest";
-                        break;
-                    case "Trigger":
-                        obj = CreatePrefab("Trigger", entity.Key, basePos);
-                        ApplyComponents(obj, entity.Key);
-                        break;
-                }
-            }
+	public void CreateMap(string mapname, Vector3 basePos) {
+		// Stage data initialize
+		stageData = new JDictionary();
+		stageData.DeserializeJson("Data/maps/" + mapname);
 
-            foreach(KeyValuePair<int, GameObject> kvp in createdObjs) {
-                if (inheritances.ContainsKey(kvp.Key)) {
-                    if (createdObjs.ContainsKey(inheritances[kvp.Key])) {
-                        kvp.Value.transform.parent = createdObjs[inheritances[kvp.Key]].transform;
-                    }
-                }
-            }
-            inheritances.Clear();
+		if(stageData) {
+			int numOfLayers = stageData["NumOfLayers"].Value<int>();
 
-            if (!loadOnce)
-                PreloadEssentialSprites();
-        }
-        else {
-            Debug.LogError("No such data!");
-        }
-    }
+			// Backgrounds
+			this.BGParents.Clear();
+			List<string> BGParentKeys = new List<string>();
+			for(int i = 0; i < numOfLayers; i++) {
+				string key = stageData["Layer" + i.ToString() + "ID"].Value<string>();
 
+				BGParents.Add(CreateEmptyObject(key, basePos));
+				BGParentKeys.Add(key);
+				BGParents[i].tag = "BG";
+			}
+
+			foreach(JDictionary entity in stageData) {
+				GameObject obj = null;
+
+				if(entity.IsValue)
+					continue;
+
+				switch(entity["Tag"].Value<string>()) {
+					case "Ground":
+						obj = CreatePrefab("Ground", entity.Key, basePos, true);
+						ApplyComponents(obj, entity.Key);
+						break;
+					case "Ceiling":
+						obj = CreatePrefab("Ceiling", entity.Key, basePos, true);
+						ApplyComponents(obj, entity.Key);
+						break;
+					case "Spawner":
+						obj = CreatePrefab("Spawner", entity.Key, basePos);
+						ApplyComponents(obj, entity.Key);
+						break;
+					case "Light":
+						obj = CreateEmptyObject(entity.Key, basePos);
+						ApplyComponents(obj, entity.Key);
+						break;
+					case "BG_Object":
+						obj = CreateEmptyObject(entity.Key, basePos);
+						ApplyComponents(obj, entity.Key);
+						break;
+					case "BG_Layer":
+						obj = CreateEmptyObject(entity.Key, basePos);
+						ApplyComponents(obj, entity.Key);
+						break;
+					case "BG_Farthest":
+						obj = CreateEmptyObject(entity.Key, basePos);
+						obj.tag = "BG_Farthest";
+						break;
+					case "Trigger":
+						obj = CreatePrefab("Trigger", entity.Key, basePos);
+						ApplyComponents(obj, entity.Key);
+						break;
+				}
+			}
+
+			foreach(KeyValuePair<int, GameObject> kvp in createdObjs) {
+				if(inheritances.ContainsKey(kvp.Key)) {
+					if(createdObjs.ContainsKey(inheritances[kvp.Key])) {
+						kvp.Value.transform.parent = createdObjs[inheritances[kvp.Key]].transform;
+					}
+				}
+			}
+			inheritances.Clear();
+
+			if(!loadOnce)
+				PreloadEssentialSprites();
+		}
+		else {
+			Debug.LogError("No such data!");
+		}
+	}
+	
     private GameObject CreatePrefab(string name, string key, Vector3 basePos, bool snap = false) {
-        Vector3 pos = new Vector3(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "X")) + basePos.x
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "Y")) + basePos.y
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "Z")));
-        if (snap) {
-            pos.x = Mathf.Round(pos.x);
-            pos.y = Mathf.Round(pos.y);
-            pos.z = Mathf.Round(pos.z);
-        }
-        Vector3 ang = new Vector3(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "X"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "Y"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "Z")));
-        Vector3 scale = new Vector3(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Scale", "X"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Scale", "Y"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Scale", "Z")));
-        GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/" + name), pos, new Quaternion());
-        obj.transform.eulerAngles = ang;
-        obj.transform.localScale = scale;
-        createdObjs.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "ID")), obj);
+		GameObject obj = (GameObject) Instantiate(Resources.Load("Prefab/" + name));
+
+		if(snap) {
+			obj.transform.position = new Vector3(
+				Mathf.Round(this.stageData[key]["Position"]["X"].Value<float>() + basePos.x),
+				Mathf.Round(this.stageData[key]["Position"]["Y"].Value<float>() + basePos.y),
+				Mathf.Round(this.stageData[key]["Position"]["Z"].Value<float>())
+				);
+		}
+		else {
+			obj.transform.position = new Vector3(
+				this.stageData[key]["Position"]["X"].Value<float>() + basePos.x,
+				this.stageData[key]["Position"]["Y"].Value<float>() + basePos.y,
+				this.stageData[key]["Position"]["Z"].Value<float>()
+				);
+		}
+
+		obj.transform.eulerAngles = new Vector3(
+			this.stageData[key]["Rotation"]["X"].Value<float>(),
+			this.stageData[key]["Rotation"]["Y"].Value<float>(),
+			this.stageData[key]["Rotation"]["Z"].Value<float>()
+			);
+
+        obj.transform.localScale = new Vector3(
+			this.stageData[key]["Scale"]["X"].Value<float>(),
+			this.stageData[key]["Scale"]["Y"].Value<float>(),
+			this.stageData[key]["Scale"]["Z"].Value<float>()
+			);
+
+        createdObjs.Add(stageData[key]["ID"].Value<int>(), obj);
+
         return obj;
     }
 
     private GameObject CreateEmptyObject(string key, Vector3 basePos) {
-        Vector3 pos = new Vector3(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "X")) + basePos.x
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "Y")) + basePos.y
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Position", "Z")));
-        Vector3 ang = new Vector3(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "X"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "Y"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Rotation", "Z")));
-        Vector3 scale = new Vector3(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Scale", "X"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Scale", "Y"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Scale", "Z")));
-        GameObject obj = new GameObject();
-        obj.transform.position = pos;
-        obj.transform.eulerAngles = ang;
-        obj.transform.localScale = scale;
-        createdObjs.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "ID")), obj);
+		GameObject obj = new GameObject();
+        obj.transform.position = new Vector3(
+			this.stageData[key]["Position"]["X"].Value<float>() + basePos.x,
+			this.stageData[key]["Position"]["Y"].Value<float>() + basePos.y,
+			this.stageData[key]["Position"]["Z"].Value<float>()
+			);
+        obj.transform.eulerAngles = new Vector3(
+			this.stageData[key]["Rotation"]["X"].Value<float>(),
+			this.stageData[key]["Rotation"]["Y"].Value<float>(),
+			this.stageData[key]["Rotation"]["Z"].Value<float>()
+			);
+        obj.transform.localScale = new Vector3(
+			this.stageData[key]["Scale"]["X"].Value<float>(),
+			this.stageData[key]["Scale"]["Y"].Value<float>(),
+			this.stageData[key]["Scale"]["Z"].Value<float>()
+			);
+
+		this.createdObjs.Add(this.stageData[key]["ID"].Value<int>(), obj);
         return obj;
     }
 
     private void ApplyComponents(GameObject obj, string key) {
-        if (GameDataManager.instance.GetData(mapdata, key, "Sprite") != null)
-            ApplySpriteRenderer(obj, key);
-        if (GameDataManager.instance.GetData(mapdata, key, "Controller") != null)
-            ApplyAnimator(obj, key);
-        if (GameDataManager.instance.GetData(mapdata, key, "Spawner") != null)
-            ApplySpawner(obj, key);
-        if (GameDataManager.instance.GetData(mapdata, key, "Trigger") != null)
-            ApplyTrigger(obj, key);
-        if (GameDataManager.instance.GetData(mapdata, key, "BoxCollider") != null)
-            ApplyBoxCollider(obj, key);
-        if (GameDataManager.instance.GetData(mapdata, key, "Light") != null)
-            ApplyLight(obj, key);
-        if (GameDataManager.instance.GetData(mapdata, key, "Parent") != null) {
-            if(GameDataManager.instance.GetData(mapdata, key, "ParentIsCam") != null) {
-                inheritances.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "ID")),
-                Camera.main.GetInstanceID());
+        if (this.stageData[key]["Sprite"])
+			this.ApplySpriteRenderer(obj, key);
+
+        if (this.stageData[key]["Controller"])
+			this.ApplyAnimator(obj, key);
+
+        if (this.stageData[key]["Spawner"])
+			this.ApplySpawner(obj, key);
+
+        if (this.stageData[key]["Trigger"])
+			this.ApplyTrigger(obj, key);
+
+        if (this.stageData[key]["BoxCollider"])
+			this.ApplyBoxCollider(obj, key);
+
+        if (this.stageData[key]["Light"])
+			this.ApplyLight(obj, key);
+
+        if (this.stageData[key]["Parent"]) {
+            if(this.stageData[key]["ParentIsCam"]) {
+				this.inheritances.Add(
+					this.stageData[key]["ID"].Value<int>(),
+					Camera.main.GetInstanceID()
+					);
             }
             else {
-                inheritances.Add(Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "ID")),
-                Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Parent")));
+				this.inheritances.Add(
+					this.stageData[key]["ID"].Value<int>(),
+					this.stageData[key]["Parent"].Value<int>()
+					);
             }
         }
     }
 
     private void ApplySpriteRenderer(GameObject obj, string key) {
         SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
-        if (sr == null)
-            sr = obj.AddComponent<SpriteRenderer>();
-        sr.sprite = Helper.GetSprite((string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "SpritePath"),
-                                                                (string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "SpriteName"));
-        sr.flipX = Convert.ToBoolean(GameDataManager.instance.GetData(mapdata, key, "Sprite", "FlipX"));
-        sr.flipY = Convert.ToBoolean(GameDataManager.instance.GetData(mapdata, key, "Sprite", "FlipY"));
-        sr.material = Helper.GetMaterial((string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "MaterialPath"),
-            (string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "MaterialName"));
-        sr.sortingLayerName = (string)GameDataManager.instance.GetData(mapdata, key, "Sprite", "SortingLayer");
-        sr.sortingOrder = Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Sprite", "SortOrder"));
+        if (!sr)
+			sr = obj.AddComponent<SpriteRenderer>();
+
+		JDictionary spriteData = this.stageData[key]["Sprite"];
+
+		sr.sprite = Helper.GetSprite(
+			spriteData["SpritePath"].Value<string>(),
+			spriteData["SpriteName"].Value<string>()
+			);
+
+		sr.material = Helper.GetMaterial(
+			spriteData["MaterialPath"].Value<string>(),
+			spriteData["MaterialName"].Value<string>()
+			);
+
+		sr.flipX = spriteData["FlipX"].Value<bool>();
+        sr.flipY = spriteData["FlipY"].Value<bool>();
+
+        sr.sortingLayerName = spriteData["SortingLayer"].Value<string>();
+        sr.sortingOrder		= spriteData["SortOrder"].Value<int>();
     }
 
     private void ApplyAnimator(GameObject obj, string key) {
         Animator anim = obj.GetComponent<Animator>();
-        if (anim == null)
+        if (!anim)
             anim = obj.AddComponent<Animator>();
-        anim.runtimeAnimatorController = (RuntimeAnimatorController)Resources.Load((string)GameDataManager.instance.GetData(mapdata, key, "Controller"));
+
+		JDictionary animCtrlData = this.stageData[key]["Controller"];
+
+		anim.runtimeAnimatorController = (RuntimeAnimatorController) Resources.Load(animCtrlData.Value<string>());
     }
 
     private void ApplySpawner(GameObject obj, string key) {
         CharacterSpawner cs = obj.GetComponent<CharacterSpawner>();
-        if (cs == null)
+        if (!cs)
             cs = obj.AddComponent<CharacterSpawner>();
-        cs.delay = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Spawner", "Delay"));
-        cs.characterClass = (string)GameDataManager.instance.GetData(mapdata, key, "Spawner", "CharacterClass");
-        PreloadSprites("characters", cs.characterClass);
-        cs.team = (Teams)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Spawner", "Team"));
-        cs.weaponClass = (string)GameDataManager.instance.GetData(mapdata, key, "Spawner", "WeaponClass");
-        cs.characterType = (CharacterTypes)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Spawner", "CharacterType"));
-        cs.spawnerType = (CharacterSpawnerTypes)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Spawner", "SpawnerType"));
+
+		JDictionary spawnerData = this.stageData[key]["Spawner"];
+
+		cs.delay			= spawnerData["Delay"].Value<float>();
+        cs.characterClass	= spawnerData["CharacterClass"].Value<string>();
+		this.PreloadSprites("characters", cs.characterClass);
+		cs.team				= (Teams) spawnerData["Team"].Value<int>();
+        cs.weaponClass		= spawnerData["WeaponClass"].Value<string>();
+		cs.characterType	= (CharacterTypes) spawnerData["CharacterType"].Value<int>();
+		cs.spawnerType		= (CharacterSpawnerTypes) spawnerData["SpawnerType"].Value<int>();
     }
 
     private void ApplyTrigger(GameObject obj, string key) {
         Trigger tr = obj.GetComponent<Trigger>();
-        if (tr == null)
+        if (!tr)
             tr = obj.AddComponent<Trigger>();
-        tr.action = (string)GameDataManager.instance.GetData(mapdata, key, "Trigger", "TriggerAction");
+
+		JDictionary triggerData = this.stageData[key]["Trigger"];
+
+		tr.action = triggerData["TriggerAction"].Value<string>();
+
         List<string> args = new List<string>();
-        foreach (KeyValuePair<string, object> arg in (Dictionary<string, object>)GameDataManager.instance.GetData(mapdata, key, "Trigger", "TriggerArguments")) {
-            args.Add((string)arg.Value);
+        foreach (JDictionary arg in triggerData["TriggerArguments"]) {
+            args.Add(arg.Value<string>());
         }
         tr.arguments = args.ToArray();
-        tr.Initialize();
+
+		tr.Initialize();
     }
 
     private void ApplyBoxCollider(GameObject obj, string key) {
         BoxCollider2D box = obj.GetComponent<BoxCollider2D>();
-        if (box == null)
+        if (!box)
             box = obj.AddComponent<BoxCollider2D>();
-        box.offset = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxCollider", "BoxOffset", "X"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxCollider", "BoxOffset", "Y")));
-        box.size = new Vector2(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxCollider", "BoxSize", "X"))
-                                    , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "BoxCollider", "BoxSize", "Y")));
+
+		JDictionary colliderData = this.stageData[key]["BoxCollider"];
+
+		box.offset = new Vector2(
+			colliderData["BoxOffset"]["X"].Value<float>(), 
+			colliderData["BoxOffset"]["Y"].Value<float>()
+			);
+        box.size = new Vector2(
+			colliderData["BoxSize"]["X"].Value<float>(), 
+			colliderData["BoxSize"]["Y"].Value<float>()
+			);
     }
 
     private void ApplyLight(GameObject obj, string key) {
         Light light = obj.GetComponent<Light>();
-        if (light == null)
+        if (!light)
             light = obj.AddComponent<Light>();
-        light.type = (LightType)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "Type"));
-        light.range = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Range"));
-        light.intensity = Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Intensity"));
-        light.color = new Color(Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "R"))
-            , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "G"))
-            , Convert.ToSingle(GameDataManager.instance.GetData(mapdata, key, "Light", "Color", "B")));
-        if(GameDataManager.instance.GetData(mapdata, key, "Light", "CookiePath") != null)
-            light.cookie = Helper.GetTexture((string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookiePath")
-                , (string)GameDataManager.instance.GetData(mapdata, key, "Light", "CookieName"));
-        if(GameDataManager.instance.GetData(mapdata, key, "Light", "FlarePath") != null)
-            light.flare = Helper.GetFlare((string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlarePath"),
-                (string)GameDataManager.instance.GetData(mapdata, key, "Light", "FlareName"));
-        light.renderMode = (LightRenderMode)Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "RenderMode"));
-        light.cullingMask = Convert.ToInt32(GameDataManager.instance.GetData(mapdata, key, "Light", "CullingMask"));
+
+		JDictionary lightData = this.stageData[key]["Light"];
+
+		light.type		= (LightType) lightData["Type"].Value<int>();
+        light.range		= lightData["Range"].Value<float>();
+        light.intensity = lightData["Intensity"].Value<float>();
+        light.color		= new Color(
+			lightData["Color"]["R"].Value<float>(), 
+			lightData["Color"]["G"].Value<float>(), 
+			lightData["Color"]["B"].Value<float>()
+			);
+
+        if(lightData["CookiePath"])
+            light.cookie = Helper.GetTexture(
+				lightData["CookiePath"].Value<string>(), 
+				lightData["CookieName"].Value<string>()
+				);
+
+        if(lightData["FlarePath"])
+            light.flare = Helper.GetFlare(
+				lightData["FlarePath"].Value<string>(),
+                lightData["FlareName"].Value<string>()
+				);
+
+        light.renderMode = (LightRenderMode) lightData["RenderMode"].Value<int>();
+        light.cullingMask = lightData["CullingMask"].Value<int>();
     }
 
     public void DestroyMap() {

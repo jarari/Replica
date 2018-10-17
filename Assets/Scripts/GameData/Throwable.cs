@@ -10,7 +10,7 @@ public class Throwable : Projectile {
 
     protected override void FixedUpdate() {
         if (!init) return;
-        rb.velocity += new Vector2(0, -981f * Time.fixedDeltaTime);
+        rb.velocity += new Vector2(0, -981.0f * Time.fixedDeltaTime);
         Vector3 temp = transform.right;
         temp = Quaternion.AngleAxis(torque * Time.fixedDeltaTime, Vector3.forward) * temp;
         float ang = Helper.Vector2ToAng(temp);
@@ -26,8 +26,12 @@ public class Throwable : Projectile {
     }
 
     protected override void HitEffect() {
-        if (anim != null && GameDataManager.instance.GetData(className, "Sprites", "hit") != null) {
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), collisionPos, 0);
+        if (anim && bulletData["Sprites"]["hit"]) {
+            EffectManager.instance.CreateEffect(
+				bulletData["Sprites"]["hit"].Value<string>(), 
+				collisionPos, 
+				0
+				);
         }
     }
 }

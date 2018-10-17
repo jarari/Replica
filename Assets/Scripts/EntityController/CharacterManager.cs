@@ -23,9 +23,12 @@ public class CharacterManager : MonoBehaviour {
     }
 
     public Character CreateCharacter(string classname, Vector3 pos, Teams team, int sortorder = 0) {
-		if(!LevelManager.instance.isMapActive) return null;
+		if(!LevelManager.instance.isMapActive)
+			return null;
+
 		GameObject character_obj = (GameObject)Instantiate(Resources.Load("Prefab/Character"), pos, new Quaternion());
-        Character character = (Character)character_obj.AddComponent(Type.GetType((string)GameDataManager.instance.GetData(classname, "ScriptClass")));
+		string scriptClass = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
+		Character character = (Character)character_obj.AddComponent(Type.GetType(scriptClass));
         character.Initialize(classname);
         character.SetTeam(team);
         character_obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = sortorder;
@@ -33,14 +36,17 @@ public class CharacterManager : MonoBehaviour {
         InventoryManager.CreateInventory(character_obj);
         if(EventManager.Event_CharacterCreated != null)
             EventManager.Event_CharacterCreated(character, pos);
+
         return character;
     }
 
     public void InsertAI(Character ai, string aidata, bool isBoss) {
-        if (!isBoss) {
+        string scriptClass = GameDataManager.instance.RootData[aidata]["ScriptClass"].Value<string>();
+
+		if (!isBoss) {
             AIBaseController aicon;
-            if ((string)GameDataManager.instance.GetData(aidata, "ScriptClass") != "") {
-                aicon = (AIBaseController)ai.gameObject.AddComponent(Type.GetType((string)GameDataManager.instance.GetData(aidata, "ScriptClass")));
+            if (scriptClass != "") {
+				aicon = (AIBaseController) ai.gameObject.AddComponent(Type.GetType(scriptClass));
             }
             else {
                 aicon = ai.gameObject.AddComponent<AIBaseController>();
@@ -50,8 +56,8 @@ public class CharacterManager : MonoBehaviour {
         }
         else {
             AIBossController aicon;
-            if ((string)GameDataManager.instance.GetData(aidata, "ScriptClass") != "") {
-                aicon = (AIBossController)ai.gameObject.AddComponent(Type.GetType((string)GameDataManager.instance.GetData(aidata, "ScriptClass")));
+            if (scriptClass != "") {
+				aicon = (AIBossController) ai.gameObject.AddComponent(Type.GetType(scriptClass));
             }
             else {
                 aicon = ai.gameObject.AddComponent<AIBossController>();

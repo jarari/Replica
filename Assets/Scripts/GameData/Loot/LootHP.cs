@@ -5,10 +5,13 @@ using System.Text;
 
 class LootHP : Loot {
     protected float healAmount = 0;
-    public override void Initialize(string classname, int _count) {
+
+	public override void Initialize(string classname, int _count) {
         base.Initialize(classname, _count);
-        healAmount = Convert.ToSingle(GameDataManager.instance.GetData(classname, "HealAmount"));
+
+        healAmount = objectData["HealAmount"].Value<float>();
     }
+
     public override void Pickup(Character c) {
         if (c.GetCurrentStat(CharacterStats.Health) == c.GetMaxStat(CharacterStats.Health))
             return;
