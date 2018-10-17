@@ -98,5 +98,29 @@
   "secdroiddeath": {
     "Prefab": "Sprites/Particles/Secdroiddeath",
     "Duration": 0.7
+  },
+  "particle_basicbulletlight": {
+    "Prefab": "Sprites/Particles/Particle_basicbulletlight",
+    "Duration": 0.7
+  },
+  "particle_basicbullethit": {
+    "Prefab": "Sprites/Particles/Particle_basicbullethit",
+    "Duration": 1
+  },
+  "particle_aplight": {
+    "Prefab": "Sprites/Particles/Particle_aplight",
+    "Duration": 0.7
+  },
+  "particle_aphit": {
+    "Prefab": "Sprites/Particles/Particle_aphit",
+    "Duration": 1
+  },
+  "particle_basicfinishhit": {
+    "Prefab": "Sprites/Particles/Particle_Basicfinishhit",
+    "Duration": 1.5
+  },
+  "particle_basicfinishshot": {
+    "Prefab": "Sprites/Particles/Particle_Basicfinishshot",
+    "Duration": 1.5	
   }
 }

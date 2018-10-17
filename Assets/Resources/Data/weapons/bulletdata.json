@@ -18,6 +18,14 @@
 				"up":"effect_hg_up",
 				"forward":"effect_hg_forward",
 				"down":"effect_hg_down"
+			},
+			"hitparticles":
+			{
+				"0" : "particle_basicbullethit"
+			},
+			"muzzleparticles":
+			{
+				"0" : "particle_basicbulletlight"
 			}
 		}
 	},
@@ -32,7 +40,15 @@
 		"Sprites":
 		{
 			"controller":"bullet_gunkata_finish/bullet_gunkata_finish_controller",
-			"hit":"effect_bullet_gunkata_finish_hit"
+			"hit":"effect_bullet_gunkata_finish_hit",
+			"hitparticles":
+			{
+				"0" : "particle_basicfinishhit"
+			},
+			"muzzleparticles":
+			{
+				"0" : "particle_basicbulletlight"
+			}
 		}
 	},
 	"bullet_secbot":
@@ -64,6 +80,14 @@
 				"up":"effect_hg_ap_muzzle_up",
 				"forward":"effect_hg_ap_muzzle_forward",
 				"down":"effect_hg_ap_muzzle_down"
+			},
+			"hitparticles":
+			{
+				"0" : "particle_aphit"
+			},
+			"muzzleparticles":
+			{
+				"0" : "particle_aplight"
 			}
 		}
 	},
@@ -90,11 +114,11 @@
 			},
 			"hitparticles":
 			{
-				"0" : "particle_gunkatahit"
+				"0" : "particle_laser"
 			},
 			"muzzleparticles":
 			{
-				"0" : "particle_swordhit"
+				"0" : "particle_greenlaserlight"
 			}
 		}
 	}
