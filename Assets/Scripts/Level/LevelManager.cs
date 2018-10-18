@@ -135,7 +135,9 @@ public class LevelManager : MonoBehaviour {
 		stageData.DeserializeJson("Data/maps/" + mapname);
 
 		if(stageData) {
-			int numOfLayers = stageData["NumOfLayers"].Value<int>();
+			// integer
+			int numOfLayers;
+			int.TryParse(stageData["NumOfLayers"].Value<string>(), out numOfLayers);
 
 			// Backgrounds
 			this.BGParents.Clear();
@@ -143,7 +145,7 @@ public class LevelManager : MonoBehaviour {
 			for(int i = 0; i < numOfLayers; i++) {
 				string key = stageData["Layer" + i.ToString() + "ID"].Value<string>();
 
-				BGParents.Add(CreateEmptyObject(key, basePos));
+				BGParents.Add(this.CreateEmptyObject(key, basePos));
 				BGParentKeys.Add(key);
 				BGParents[i].tag = "BG";
 			}
@@ -316,8 +318,9 @@ public class LevelManager : MonoBehaviour {
 			spriteData["MaterialName"].Value<string>()
 			);
 
-		sr.flipX = spriteData["FlipX"].Value<bool>();
-        sr.flipY = spriteData["FlipY"].Value<bool>();
+		// bool
+		sr.flipX = (spriteData["FlipX"].Value<int>() == 1);
+        sr.flipY = (spriteData["FlipY"].Value<int>() == 1);
 
         sr.sortingLayerName = spriteData["SortingLayer"].Value<string>();
         sr.sortingOrder		= spriteData["SortOrder"].Value<int>();

@@ -290,6 +290,10 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 
 		// true 반환하면 반복문 실행, false 반환하면 반복문 종료
 		public bool MoveNext() {
+			// 원소가 없으면 실행 종료
+			if(this.sourceJDict.Count <= 0)
+				return false;
+
 			// 반복문 처음 실행시
 			if(!this.currentJDict) {
 				this.currentJDict = this.sourceJDict.first;
