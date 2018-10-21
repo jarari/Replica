@@ -47,7 +47,7 @@
 			},
 			"muzzleparticles":
 			{
-				"0" : "particle_basicbulletlight"
+				"0" : "particle_basicfinishshot"
 			}
 		}
 	},
