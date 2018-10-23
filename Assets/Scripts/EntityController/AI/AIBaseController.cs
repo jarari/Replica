@@ -22,18 +22,22 @@ public class AIBaseController : BasicCharacterMovement {
     protected bool AIEnabled = true;
     protected string AIData;
 
+	JDictionary aiData;
     //초기 데이터 설정
     public void Initialize(Character c, string aidata) {
         base.Initialize(c);
         nextAttack = Time.time;
         nextSearch = Time.time;
         AIData = aidata;
-        recognitionRadius = (float)GameDataManager.instance.GetData(aidata, "RecognitionRadius");
-        minWanderDist = (float)GameDataManager.instance.GetData(aidata, "MinWanderDistance");
-        maxWanderDist = (float)GameDataManager.instance.GetData(aidata, "MaxWanderDistance");
-        restingTime = (float)GameDataManager.instance.GetData(aidata, "RestingTime");
-        if (GameDataManager.instance.GetData(aidata, "AttackRangeY") != null)
-            rangeY = Convert.ToSingle(GameDataManager.instance.GetData(aidata, "AttackRangeY"));
+		aiData = GameDataManager.instance.RootData[AIData];
+
+        recognitionRadius = aiData["RecognitionRadius"].Value<float>();
+        minWanderDist = aiData["MinWanderDistance"].Value<float>();
+        maxWanderDist = aiData["MaxWanderDistance"].Value<float>();
+        restingTime = aiData["RestingTime"].Value<float>();
+        if (aiData["AttackRangeY"])
+            rangeY = aiData["AttackRangeY"].Value<float>();
+
         direction = 1;
         distance = 0;
         restTimer = 1f;

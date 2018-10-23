@@ -7,38 +7,49 @@ public class Projectile : Bullet {
     protected float falloff50;
     protected float falloff25;
     protected Vector3 velVector;
-    
+
     public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         className = classname;
+		bulletData = GameDataManager.instance.RootData[className];
+
         attacker = user;
         weapon = firedfrom;
         speed = _speed;
         range = _range;
         data = _data;
         startPos = transform.position;
-        if(GameDataManager.instance.GetData(className, "Sprites", "smoke") != null)
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "smoke"), transform.position, transform.eulerAngles.z, transform);
-        if (GameDataManager.instance.GetAnimatorController(classname) != null)
+
+		if(bulletData["Sprites"]["smoke"])
+            EffectManager.instance.CreateEffect(
+				bulletData["Sprites"]["smoke"].Value<string>(), 
+				transform.position, 
+				transform.eulerAngles.z, 
+				transform
+				);
+
+		if (GameDataManager.instance.GetAnimatorController(classname))
             anim.runtimeAnimatorController = GameDataManager.instance.GetAnimatorController(classname);
         else {
             transform.localScale = new Vector3(0, 0, 0);
             anim = null;
         }
-        if (GameDataManager.instance.GetData(className, "PhysicsMaterial") != null) {
-            rb.sharedMaterial = Helper.GetPhysicsMaterial2D("Sprites/tileset/physicsmat", (string)GameDataManager.instance.GetData(className, "PhysicsMaterial"));
-        }
-        if (GameDataManager.instance.GetData(className, "FallOff50") != null) {
-            falloff50 = range * Convert.ToSingle(GameDataManager.instance.GetData(className, "FallOff50"));
-        }
-        else {
+
+        if (bulletData["PhysicsMaterial"])
+			rb.sharedMaterial = Helper.GetPhysicsMaterial2D(
+				"Sprites/tileset/physicsmat",
+				bulletData["PhysicsMaterial"].Value<string>()
+				);
+
+        if (bulletData["FallOff50"])
+            falloff50 = range * bulletData["FallOff50"].Value<float>();
+        else 
             falloff50 = range * 0.5f;
-        }
-        if (GameDataManager.instance.GetData(className, "FallOff25") != null) {
-            falloff25 = range * Convert.ToSingle(GameDataManager.instance.GetData(className, "FallOff25"));
-        }
-        else {
+
+        if (bulletData["FallOff25"])
+            falloff25 = range * bulletData["FallOff25"].Value<float>();
+        else
             falloff25 = range * 0.75f;
-        }
+
         rb.velocity = transform.right * speed;
         velVector = transform.right;
         init = true;
@@ -92,7 +103,7 @@ public class Projectile : Bullet {
         if (collision.gameObject.tag.Equals("Character")) {
             if(collision.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
                 collided = true;
-                DestroyObject(gameObject);
+                Destroy(gameObject);
                 init = false;
                 return;
             }
@@ -104,18 +115,22 @@ public class Projectile : Bullet {
         }
         else if (collision.gameObject.tag.Equals("Ground") || collision.gameObject.tag.Equals("Ceiling")) {
             collided = true;
-            DestroyObject(gameObject);
+            Destroy(gameObject);
             init = false;
             return;
         }
     }
 
     protected virtual void HitEffect() {
-        if (anim != null && GameDataManager.instance.GetData(className, "Sprites", "hit") != null) {
+        if (anim && bulletData["Sprites"]["hit"]) {
             Vector3 temp = collisionNorm;
             temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
             float ang = Helper.Vector2ToAng(temp);
-            EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(className, "Sprites", "hit"), collisionPos, ang);
+            EffectManager.instance.CreateEffect(
+				bulletData["Sprites"]["hit"].Value<string>(), 
+				collisionPos, 
+				ang
+				);
         }
     }
 
@@ -124,9 +139,11 @@ public class Projectile : Bullet {
         foreach (Character c in closeCharacters) {
             if (c.HasFlag(CharacterFlags.Invincible))
                 continue;
+
             Vector2 cBoxBorder = Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position);
             if (Helper.IsBlockedByMap(transform.position, c.transform.position))
                 continue;
+
             DamageData dmgdata = Helper.DamageCalc(attacker, data, c, true, true);
             float dist = Vector3.Distance(cBoxBorder, transform.position);
             float mult = 1;
@@ -137,8 +154,12 @@ public class Projectile : Bullet {
                     mult = 0.25f;
             }
             c.DoDamage(attacker, dmgdata.damage * mult, dmgdata.stagger);
-            if (GameDataManager.instance.GetData(className, "KnockBack") != null && !c.HasFlag(CharacterFlags.KnockBackImmunity)) {
-                c.AddForce((c.transform.position - transform.position).normalized * Convert.ToSingle(GameDataManager.instance.GetData(className, "KnockBack")) * mult, true);
+
+            if (bulletData["KnockBack"] && !c.HasFlag(CharacterFlags.KnockBackImmunity)) {
+                c.AddForce(
+					(c.transform.position - transform.position).normalized * bulletData["KnockBack"].Value<float>() * mult, 
+					true
+					);
             }
         }
     }

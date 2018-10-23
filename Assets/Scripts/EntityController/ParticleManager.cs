@@ -32,28 +32,36 @@ public class ParticleManager : MonoBehaviour {
     }
 
     public GameObject CreateParticle(string classname, Vector3 pos, float angle, float duration = -1, Transform parent = null, bool flip = false) {
-        if (!LevelManager.instance.isMapActive) return null;
-        if (GameDataManager.instance.GetData(classname, "Prefab") == null)
+        if (!LevelManager.instance.isMapActive)
+			return null;
+
+		JDictionary particleData = GameDataManager.instance.RootData[classname];
+
+        if (!particleData["Prefab"])
             return null;
-        GameObject particle_obj = (GameObject)Instantiate(Resources.Load((string)GameDataManager.instance.GetData(classname, "Prefab")), pos, new Quaternion());
+
+		GameObject particle_obj = (GameObject) Instantiate(Resources.Load(particleData["Prefab"].Value<string>()), pos, new Quaternion());
         Vector3 ang = particle_obj.transform.eulerAngles;
         ang.z = angle;
         particle_obj.transform.eulerAngles = ang;
-        if (parent != null) {
+        if (parent) {
             particle_obj.transform.SetParent(parent);
         }
+
         float dur = duration;
-        if (dur == -1 && GameDataManager.instance.GetData(classname, "Duration") != null)
-            dur = Convert.ToSingle(GameDataManager.instance.GetData(classname, "Duration"));
+        if (dur == -1 && particleData["Duration"])
+            dur = particleData["Duration"].Value<float>();
         else if (dur == -1)
             dur = 0.1f;
-        if (flip) {
+
+		if (flip) {
             Vector3 lscale = particle_obj.transform.localScale;
             lscale.x = lscale.x * -1;
             particle_obj.transform.localScale = lscale;
         }
         StartCoroutine(RemoveParticle(particle_obj, dur));
         AddParticles(particle_obj);
+
         return particle_obj;
     }
 
@@ -71,7 +79,7 @@ public class ParticleManager : MonoBehaviour {
 
     IEnumerator RemoveParticle(GameObject obj, float dur) {
         yield return new WaitForSeconds(dur);
-        DestroyObject(obj);
+        Destroy(obj);
         RemoveParticles(obj);
     }
 }

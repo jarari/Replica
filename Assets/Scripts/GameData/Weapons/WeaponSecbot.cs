@@ -9,8 +9,13 @@ public class WeaponSecbot : Weapon {
     public override void OnAttack(string eventname) {
         base.OnAttack(eventname);
         if (eventname == "attack_secbot") {
-            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "X")
-                                        , (float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "Y")));
+			JDictionary muzzlePosData = GameDataManager.instance.RootData[eventname]["MuzzlePos"];
+			SetMuzzlePos(
+				new Vector2(
+					muzzlePosData["X"].Value<float>(),
+					muzzlePosData["Y"].Value<float>()
+				)
+			);
         }
     }
 

@@ -28,6 +28,7 @@
       }
     },
     "Combo": {
+      "IsBasic": true,
       "Keys": {
         "0": "X"
       },
@@ -35,8 +36,7 @@
         "0": "attack_basic_02",
         "1": "attack_fist_01",
         "2": "attack_sword_01"
-      },
-      "IsBasic": 1
+      }
     }
   },
   "attack_basic_02": {
@@ -176,6 +176,7 @@
       }
     },
     "Combo": {
+      "IsBasic": true,
       "Keys": {
         "0": "Down",
         "1": "X"
@@ -183,8 +184,7 @@
       "PossibleCombos": {
         "0": "attack_fist_02",
         "1": "attack_sword_01"
-      },
-      "IsBasic": 1
+      }
     }
   },
   "attack_fist_02": {
@@ -340,6 +340,7 @@
       }
     },
     "Combo": {
+      "IsBasic": true,
       "Keys": {
         "0": "Up",
         "1": "X"
@@ -347,8 +348,7 @@
       "PossibleCombos": {
         "0": "attack_sword_02",
         "1": "attack_fist_01"
-      },
-      "IsBasic": 1
+      }
     }
   },
   "attack_sword_02": {
@@ -540,11 +540,11 @@
       }
     },
 	"Combo":{
+		"IsBasic":true,
+		"IsJumpAttack":true,
 		"Keys":{
 			"0":"X"
-		},
-		"IsBasic":1,
-		"IsJumpAttack":1
+		}
 	}
   },
   "throw_up": {
