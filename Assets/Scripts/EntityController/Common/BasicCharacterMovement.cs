@@ -94,10 +94,6 @@ public class BasicCharacterMovement : MoveObject {
         }
     }
 
-    protected void LateUpdate() {
-
-    }
-
     protected void Walk(float dir) {
         if (character.GetUncontrollableTimeLeft() > 0
             || character.GetState() == CharacterStates.Attack)
