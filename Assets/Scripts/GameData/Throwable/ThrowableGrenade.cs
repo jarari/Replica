@@ -10,17 +10,16 @@ using UnityEngine;
 class ThrowableGrenade : Throwable{
     private float cookTime = 0;
     private bool flying = false;
-
     protected override void AdditionalData() {
         flying = true;
-        cookTime = bulletData["CookTime"].Value<float>();
+        cookTime = Convert.ToSingle(GameDataManager.instance.GetData(className, "CookTime"));
     }
 
     protected override void FixedUpdate() {
         if (!init) return;
         cookTime -= Time.fixedDeltaTime;
         if(cookTime <= 0) {
-            Destroy(gameObject);
+            DestroyObject(gameObject);
             init = false;
         }
         if (flying) {

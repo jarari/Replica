@@ -21,24 +21,19 @@ public class CharacterSpawner : MonoBehaviour {
     public Character target = null;
     public bool autoEngage = false;
     public bool init = false;
-
-	private JDictionary characterData;
-
     public void Initialize() {
         Initialize(characterClass, team, weaponClass, characterType, spawnerType, target);
     }
     public void Initialize(string c, Teams t, string w, CharacterTypes tp, CharacterSpawnerTypes sptp, Character forcetarget = null) {
         characterClass = c;
-		characterData = GameDataManager.instance.RootData[characterClass];
-
         team = t;
         weaponClass = w;
         characterType = tp;
         spawnerType = sptp;
         target = forcetarget;
         nextSpawn = Time.realtimeSinceStartup;
-        if(characterData["AIScript"])
-            aiScript = characterData["AIScript"].Value<string>();
+        if(GameDataManager.instance.GetData(c, "AIScript") != null)
+            aiScript = (string)GameDataManager.instance.GetData(c, "AIScript");
         init = true;
         if (spawnerType == CharacterSpawnerTypes.Once)
             Spawn();
@@ -122,7 +117,7 @@ public class CharacterSpawner : MonoBehaviour {
     private void OnDestroy() {
         foreach(Character c in managed) {
             if(c != null)
-                Destroy(c.transform.gameObject);
+                DestroyObject(c.transform.gameObject);
         }
     }
 }

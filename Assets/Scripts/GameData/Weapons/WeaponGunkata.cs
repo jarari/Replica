@@ -8,84 +8,59 @@ using UnityEngine;
 public class WeaponGunkata : Weapon {
     public override void OnAttack(string eventname) {
         base.OnAttack(eventname);
-		JDictionary attackData = GameDataManager.instance.RootData[eventname];
-
         if (eventname == "hg_forward" || eventname == "hg_down" || eventname == "hg_up") {
-            SetMuzzlePos(
-				new Vector2(
-					attackData["MuzzlePos"]["X"].Value<float>(),
-					attackData["MuzzlePos"]["Y"].Value<float>()
-				)
-			);
+            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "X")
+                                        , (float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "Y")));
         }
     }
 
     public override void OnWeaponEvent(string eventname) {
         base.OnWeaponEvent(eventname);
-		JDictionary attackData = GameDataManager.instance.RootData[eventname];
-
         if (eventname == "hg_forward" || eventname == "hg_down" || eventname == "hg_up") {
-            SetMuzzlePos(
-				new Vector2(
-					attackData["MuzzlePos"]["X"].Value<float>(),
-					attackData["MuzzlePos"]["Y"].Value<float>()
-				)
-			);
-
+            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "X")
+                                        , (float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "Y")));
             if(owner.GetInventory().GetCount("item_bullet") > 0) {
-				JDictionary bulletSpriteData = GameDataManager.instance.RootData[bullet]["Sprites"];
-
-				if(eventname == "hg_up") {
-					FireBullet(bullet, 45);
-					CreateEffect(bulletSpriteData["light"]["up"].Value<string>());
-					CreateEffect(bulletSpriteData["muzzle"]["up"].Value<string>());
-				}
-				else if(eventname == "hg_down") {
-					FireBullet(bullet, 90);
-					CreateEffect(bulletSpriteData["light"]["down"].Value<string>());
-					CreateEffect(bulletSpriteData["muzzle"]["down"].Value<string>());
-				}
-				else if(eventname == "hg_forward") {
-					FireBullet(bullet, 90);
-					CreateEffect(bulletSpriteData["light"]["forward"].Value<string>());
-					CreateEffect(bulletSpriteData["muzzle"]["forward"].Value<string>());
-				}
-
+                if (eventname == "hg_up") {
+                    FireBullet(bullet, 45);
+                    CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "light", "up"));
+                    CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "muzzle", "up"));
+                }
+                else {
+                    if (eventname == "hg_down") {
+                        CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "light", "down"));
+                        CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "muzzle", "down"));
+                    }
+                    else if (eventname == "hg_forward") {
+                        CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "light", "forward"));
+                        CreateEffect((string)GameDataManager.instance.GetData(bullet, "Sprites", "muzzle", "forward"));
+                    }
+                    FireBullet(bullet, 90);
+                }
                 owner.GetInventory().ModCount("item_bullet", -1);
-
-                if (bulletSpriteData["muzzleparticles"]) {
-					foreach(JDictionary particle in bulletSpriteData["muzzleparticles"]) {
-						ParticleManager.instance.CreateParticle(particle.Value<string>(), transform.position, 0, null, !owner.IsFacingRight());
-					}
-                    //Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(bullet, "Sprites", "muzzleparticles");
-                    //for (int i = 0; i < dict.Count; i++) {
-                    //    string particleName = (string)dict[i.ToString()];
-                    //    ParticleManager.instance.CreateParticle(particleName, transform.position, 0, null, !owner.IsFacingRight());
-                    //}
+                if (GameDataManager.instance.GetData(bullet, "Sprites", "muzzleparticles") != null) {
+                    Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(bullet, "Sprites", "muzzleparticles");
+                    for (int i = 0; i < dict.Count; i++) {
+                        string particleName = (string)dict[i.ToString()];
+                        ParticleManager.instance.CreateParticle(particleName, transform.position, 0, null, !owner.IsFacingRight());
+                    }
                 }
             }
         }
         else if(eventname == "attack_basic_finish_fire") {
-			JDictionary muzzlePosData = GameDataManager.instance.RootData["hg_forward"]["MuzzlePos"];
-			SetMuzzlePos(
-				new Vector2(
-					muzzlePosData["X"].Value<float>(), 
-					muzzlePosData["Y"].Value<float>()
-				)
-			);
-
-			JDictionary particleData = GameDataManager.instance.RootData[bullet]["Sprites"]["muzzleparticles"];
+            SetMuzzlePos(new Vector2((float)GameDataManager.instance.GetData("hg_forward", "MuzzlePos", "X")
+                                        , (float)GameDataManager.instance.GetData("hg_forward", "MuzzlePos", "Y")));
             if (owner.GetInventory().GetCount("item_bullet") > 0) {
                 FireBullet("bullet_gunkata_finish", 90);
                 owner.GetInventory().ModCount("item_bullet", -1);
                 CreateEffect("effect_attack_basic_finish");
-				if(particleData) {
-					foreach(JDictionary particle in particleData) {
-						ParticleManager.instance.CreateParticle(particle.Value<string>(), transform.position, 0, null, !owner.IsFacingRight());
-					}
-				}
-			}
+                if (GameDataManager.instance.GetData(bullet, "Sprites", "muzzleparticles") != null) {
+                    Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(bullet, "Sprites", "muzzleparticles");
+                    for (int i = 0; i < dict.Count; i++) {
+                        string particleName = (string)dict[i.ToString()];
+                        ParticleManager.instance.CreateParticle(particleName, transform.position, 0, null, !owner.IsFacingRight());
+                    }
+                }
+            }
         }
-
     }
 }

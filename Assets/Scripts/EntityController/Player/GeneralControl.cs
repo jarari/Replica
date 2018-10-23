@@ -31,7 +31,7 @@ public class GeneralControl : BasicCharacterMovement {
         if (nextAttack >= Time.time || character.GetState() == CharacterStates.Shift)
             return;
         if (character.GetState() != CharacterStates.Attack || currentCombo == null) {
-            foreach(KeyValuePair<string, ComboData> kvp in GameDataManager.instance.BasicComboData) {
+            foreach(KeyValuePair<string, ComboData> kvp in GameDataManager.instance.GetBasicComboData()) {
                 if ((character.IsOnGround() && !kvp.Value.isJumpAttack)
                     || (!character.IsOnGround() && kvp.Value.isJumpAttack)) {
                     if (kc.Count - kvp.Value.keyCombos.Count >= 2)
@@ -58,7 +58,7 @@ public class GeneralControl : BasicCharacterMovement {
         }
         else {
             foreach (string nextCombo in currentCombo.nextPossibleCombos) {
-                ComboData next = GameDataManager.instance.ContinuousComboData[nextCombo];
+                ComboData next = GameDataManager.instance.GetContinuousComboData()[nextCombo];
                 if ((character.IsOnGround() && !next.isJumpAttack)
                     || (!character.IsOnGround() && next.isJumpAttack)) {
                     if (kc.Count - next.keyCombos.Count >= 2)

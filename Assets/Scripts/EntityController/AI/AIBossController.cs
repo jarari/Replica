@@ -13,15 +13,11 @@ public class AIBossController : BasicCharacterMovement {
     protected float nextActive;
     protected Character target;
     protected bool AIEnabled = true;
-
-	JDictionary aiData;
     public virtual void Initialize(Character c, string aidata) {
         base.Initialize(c);
         className = aidata;
-		aiData = GameDataManager.instance.RootData[className];
-
         currentPhase = 0;
-        restingTime = aiData["RestingTime"].Value<float>();
+        restingTime = (float)GameDataManager.instance.GetData(aidata, "RestingTime");
         targetApproachRange = character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.5f;
         target = CharacterManager.instance.GetPlayer();
         nextActive = Time.realtimeSinceStartup;

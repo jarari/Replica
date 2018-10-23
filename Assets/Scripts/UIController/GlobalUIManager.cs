@@ -264,7 +264,7 @@ public class GlobalUIManager : MonoBehaviour {
 
     public void DeleteUIElement(string id) {
         if (!NullCheck(id)) {
-            Destroy(UIElement[id]);
+            DestroyObject(UIElement[id]);
             UIElement.Remove(id);
         }
     }

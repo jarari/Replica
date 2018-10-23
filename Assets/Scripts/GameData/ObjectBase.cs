@@ -15,13 +15,8 @@ public class ObjectBase : MonoBehaviour {
     protected bool onGround = true;
     protected bool facingRight = true;
     protected float height = 1;
-
-	protected JDictionary objectData;
-
     public virtual void Initialize(string classname) {
         className = classname;
-		this.objectData = GameDataManager.instance.RootData[className];
-
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         if (GetComponents<BoxCollider2D>().Count() > 0) {
@@ -29,47 +24,29 @@ public class ObjectBase : MonoBehaviour {
             if(GetComponents<BoxCollider2D>().Count() > 1)
                 nofriction = GetComponents<BoxCollider2D>()[1];
         }
-
-		if(rb)
+        if(rb != null) {
             isStatic = false;
-
-        if (box) {
-			JDictionary colliderData = objectData["Collider"];
-			if (colliderData) {
-                box.offset = new Vector2(
-					colliderData["Offset_X"].Value<float>(),
-					colliderData["Offset_Y"].Value<float>()
-					);
-
-                box.size = new Vector2(
-					colliderData["Size_X"].Value<float>(),
-					colliderData["Size_Y"].Value<float>()
-					);
-
-                if(nofriction) {
-                    nofriction.offset = new Vector2(
-						colliderData["Offset_X"].Value<float>(),
-						colliderData["Offset_Y"].Value<float>() + 0.5f
-						);
-                    nofriction.size = new Vector2(
-						colliderData["Size_X"].Value<float>(),
-						colliderData["Size_Y"].Value<float>() - 1
-						);
+        }
+        if (box != null) {
+            if (GameDataManager.instance.GetData(classname, "Collider") != null) {
+                box.offset = new Vector2((float)GameDataManager.instance.GetData(classname, "Collider", "Offset_X")
+                                            , (float)GameDataManager.instance.GetData(classname, "Collider", "Offset_Y"));
+                box.size = new Vector2((float)GameDataManager.instance.GetData(classname, "Collider", "Size_X")
+                                                , (float)GameDataManager.instance.GetData(classname, "Collider", "Size_Y"));
+                if(nofriction != null) {
+                    nofriction.offset = new Vector2((float)GameDataManager.instance.GetData(classname, "Collider", "Offset_X")
+                                                , (float)GameDataManager.instance.GetData(classname, "Collider", "Offset_Y") + 0.5f);
+                    nofriction.size = new Vector2((float)GameDataManager.instance.GetData(classname, "Collider", "Size_X")
+                                                    , (float)GameDataManager.instance.GetData(classname, "Collider", "Size_Y") - 1);
                 }
             }
         }
-
-        if (objectData["Scale"]) {
-            transform.localScale = new Vector3(
-				objectData["Scale"]["X"].Value<float>(),
-				objectData["Scale"]["Y"].Value<float>(), 
-				1.0f
-				);
+        if (GameDataManager.instance.GetData(classname, "Scale") != null) {
+            transform.localScale = new Vector3((float)GameDataManager.instance.GetData(classname, "Scale", "X")
+                                            , (float)GameDataManager.instance.GetData(classname, "Scale", "Y"), 1);
         }
-
-		RuntimeAnimatorController animCtrl = GameDataManager.instance.GetAnimatorController(className);
-		if (animCtrl)
-			anim.runtimeAnimatorController = animCtrl;
+        if (GameDataManager.instance.GetAnimatorController(classname) != null)
+            anim.runtimeAnimatorController = GameDataManager.instance.GetAnimatorController(classname);
         else {
             Color c = GetComponent<SpriteRenderer>().color;
             c.a = 0;
@@ -107,11 +84,12 @@ public class ObjectBase : MonoBehaviour {
     }
 
     public void FlipFace(bool right) {
-		facingRight = right;
-
-		float sourceScale = objectData["Scale"]["X"].Value<float>();
-		Vector3 lscale = transform.localScale;
-		lscale.x = sourceScale * (right ? 1.0f : -1.0f);
+        facingRight = right;
+        Vector3 lscale = transform.localScale;
+        if (right)
+            lscale.x = (float)GameDataManager.instance.GetData(className, "Scale", "X") * 1;
+        else
+            lscale.x = (float)GameDataManager.instance.GetData(className, "Scale", "X") * -1;
         transform.localScale = lscale;
     }
 
@@ -139,35 +117,20 @@ public class ObjectBase : MonoBehaviour {
     public void ModifyHeight(float mult) {
         if (isStatic || mult == height)
             return;
-
-		JDictionary colliderData = objectData["Collider"];
-		if (colliderData) {
-            float originalheight = colliderData["Size_Y"].Value<float>();
+        if (GameDataManager.instance.GetData(className, "Collider") != null) {
+            float originalheight = (float)GameDataManager.instance.GetData(className, "Collider", "Size_Y");
             float difference = originalheight * mult - originalheight * height;
-
             //if(difference < 0)
             //    transform.position = transform.position + new Vector3(0, difference / 2f, 0);
-
-            box.offset = new Vector2(
-				colliderData["Offset_X"].Value<float>(), 
-				box.offset.y + difference / 2f
-				);
-
-            box.size = new Vector2(
-				colliderData["Size_X"].Value<float>(), 
-				originalheight * mult
-				);
-
-            if(nofriction) {
-                nofriction.offset = new Vector2(
-					colliderData["Offset_X"].Value<float>(), 
-					box.offset.y + 0.5f
-					);
-
-                nofriction.size = new Vector2(
-					colliderData["Size_X"].Value<float>(), 
-					originalheight * mult - 1
-					);
+            box.offset = new Vector2((float)GameDataManager.instance.GetData(className, "Collider", "Offset_X")
+                                        , box.offset.y + difference / 2f);
+            box.size = new Vector2((float)GameDataManager.instance.GetData(className, "Collider", "Size_X")
+                                            , originalheight * mult);
+            if(nofriction != null) {
+                nofriction.offset = new Vector2((float)GameDataManager.instance.GetData(className, "Collider", "Offset_X")
+                                            , box.offset.y + 0.5f);
+                nofriction.size = new Vector2((float)GameDataManager.instance.GetData(className, "Collider", "Size_X")
+                                                , originalheight * mult - 1);
             }
             height = mult;
         }

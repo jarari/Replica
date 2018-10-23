@@ -52,7 +52,7 @@ public class SoundManager : MonoBehaviour {
 
     IEnumerator DeleteAll(GameObject obj, AudioSource As, float delay) {
         yield return new WaitForSeconds(delay);
-        Destroy(obj);
+        DestroyObject(obj);
         Destroy(As);
     }
 }

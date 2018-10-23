@@ -95,7 +95,7 @@ public abstract class Character : ObjectBase {
     protected float lootThrowYMax = 450f;
 
     protected float colliderPushAmount = 50f;
-	
+
     protected void Update() {
         uncontrollableTimer = Mathf.Clamp(uncontrollableTimer - Time.deltaTime, 0, uncontrollableTimer);
         if (uncontrollableTimer > 0 || forceUncontrollable)
@@ -189,19 +189,21 @@ public abstract class Character : ObjectBase {
         GetComponent<CircleCollider2D>().offset = new Vector2(0, box.offset.y - box.size.y / 2f + 0.05f);
         GetComponent<CircleCollider2D>().radius = 0.6f;
 
-		if(objectData["Sprites"]["hasSub"])
-			hasSubSprite = objectData["Sprites"]["hasSub"].Value<int>();
+        if (GameDataManager.instance.GetData(className, "Sprites", "hasSub") != null)
+            hasSubSprite = Convert.ToInt32(GameDataManager.instance.GetData(className, "Sprites", "hasSub"));
 
-		if (objectData["KnockBackImmunity"])
-            if (objectData["KnockBackImmunity"].Value<float>() == 1)
+        if (GameDataManager.instance.GetData(className, "KnockBackImmunity") != null)
+            if (Convert.ToSingle(GameDataManager.instance.GetData(className, "KnockBackImmunity")) == 1)
                 SetFlag(CharacterFlags.KnockBackImmunity);
 
-        if (objectData["DropTable"]) {
-            foreach(JDictionary subDict in objectData["DropTable"]) {
-                float chance = subDict["Chance"].Value<float>();
-                int nmin = subDict["NumMin"].Value<int>();
-                int nmax = subDict["NumMax"].Value<int>();
-				droptable.Add(new LootData(subDict.Key, chance, nmin, nmax));
+        if (GameDataManager.instance.GetData(className, "DropTable") != null) {
+            Dictionary<string, object> list = (Dictionary<string, object>)GameDataManager.instance.GetData(classname, "DropTable");
+            int numOfItems = list.Count;
+            foreach(KeyValuePair<string, object> kvp in list) {
+                float chance = Convert.ToSingle(GameDataManager.instance.GetData(classname, "DropTable", kvp.Key, "Chance"));
+                int nmin = Convert.ToInt32(GameDataManager.instance.GetData(classname, "DropTable", kvp.Key, "NumMin"));
+                int nmax = Convert.ToInt32(GameDataManager.instance.GetData(classname, "DropTable", kvp.Key, "NumMax"));
+                droptable.Add(new LootData(kvp.Key, chance, nmin, nmax));
             }
         }
     }
@@ -356,7 +358,7 @@ public abstract class Character : ObjectBase {
     }
 
     public string GetName() {
-        return objectData["Name"].Value<string>();
+        return (string)GameDataManager.instance.GetData(className, "Name");
     }
 
     public int HasSubSprite() {
@@ -491,11 +493,9 @@ public abstract class Character : ObjectBase {
 
     public void GiveWeapon(string classname) {
         GameObject gun_obj = (GameObject)Instantiate(Resources.Load("Prefab/Weapon"), transform.position, new Quaternion());
-
-		string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
+        string script = (string)GameDataManager.instance.GetData(classname, "ScriptClass");
         if (script == null || script.Length == 0)
             script = "Weapon";
-
         Weapon wep = (Weapon)gun_obj.AddComponent(Type.GetType(script));
         wep.SetOwner(this);
         wep.Initialize(classname);
@@ -531,22 +531,17 @@ public abstract class Character : ObjectBase {
 
     public void DoDamage(Character attacker, float damage, float stagger) {
         if (damage == 0 || HasFlag(CharacterFlags.Invincible)) return;
-
         if (IsAI() && !IsBoss())
             ((AIBaseController)basecontroller).OnTakeDamage(attacker);
-
-		if (stagger > 0) {
+        if (stagger > 0) {
             OnStagger(stagger);
             if (EventManager.Event_CharacterStagger != null)
                 EventManager.Event_CharacterStagger(this, attacker, stagger);
         }
-
-		ModStat(CharacterStats.Health, -damage);
-
-		if (EventManager.Event_CharacterHit != null)
+        ModStat(CharacterStats.Health, -damage);
+        if (EventManager.Event_CharacterHit != null)
             EventManager.Event_CharacterHit(this, attacker, damage, stagger);
-
-		if (GetCurrentStat(CharacterStats.Health) == 0) {
+        if (GetCurrentStat(CharacterStats.Health) == 0) {
             OnDeath();
             if (EventManager.Event_CharacterKilled != null)
                 EventManager.Event_CharacterKilled(this, attacker);

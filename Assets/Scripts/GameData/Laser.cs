@@ -6,11 +6,7 @@ public class Laser : MonoBehaviour {
     public MeshFilter mf;
     public MeshRenderer mr;
     public Animator anim;
-
-	private JDictionary laserSpriteData;
-
     public void Initialize(string classname, Character attacker, Weapon weapon, Vector3 startPos, float angle, float distance, float width, Dictionary<WeaponStats, float> data) {
-		laserSpriteData = GameDataManager.instance.RootData[classname]["Sprites"];
 
         mf = GetComponent<MeshFilter>();
         Mesh mesh = new Mesh();
@@ -35,18 +31,15 @@ public class Laser : MonoBehaviour {
             Vector3 temp = rayhit.normal;
             temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
             float ang = Helper.Vector2ToAng(temp);
-            if (laserSpriteData["hit"]) {
-                EffectManager.instance.CreateEffect(laserSpriteData["hit"].Value<string>(), endPos, ang);
+            if (GameDataManager.instance.GetData(classname, "Sprites", "hit") != null) {
+                EffectManager.instance.CreateEffect((string)GameDataManager.instance.GetData(classname, "Sprites", "hit"), endPos, ang);
             }
-            if (laserSpriteData["hitparticles"]) {
-				foreach(JDictionary particle in laserSpriteData["hitparticles"]) {
-					ParticleManager.instance.CreateParticle(particle.Value<string>(), endPos, ang, false);
-				}
-                //Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(classname, "Sprites", "hitparticles");
-                //for (int i = 0; i < dict.Count; i++) {
-                //    string particleName = (string)dict[i.ToString()];
-                //    ParticleManager.instance.CreateParticle(particleName, endPos, ang, false);
-                //}
+            if (GameDataManager.instance.GetData(classname, "Sprites", "hitparticles") != null) {
+                Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(classname, "Sprites", "hitparticles");
+                for (int i = 0; i < dict.Count; i++) {
+                    string particleName = (string)dict[i.ToString()];
+                    ParticleManager.instance.CreateParticle(particleName, endPos, ang, false);
+                }
             }
         }
         Vector3 dtraj = endPos - startPos;
@@ -80,6 +73,6 @@ public class Laser : MonoBehaviour {
 
     IEnumerator DestroyEffect() {
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-        Destroy(gameObject);
+        DestroyObject(gameObject);
     }
 }

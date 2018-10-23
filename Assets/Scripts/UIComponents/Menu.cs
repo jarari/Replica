@@ -16,7 +16,7 @@ public abstract class Menu : MonoBehaviour {
     protected abstract void PopulateMenu();
 
     public void DestroyMenu() {
-        Destroy(gameObject);
+        DestroyObject(gameObject);
     }
 
     public string GetMenuName() {

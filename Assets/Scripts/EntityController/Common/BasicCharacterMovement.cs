@@ -363,16 +363,11 @@ public class BasicCharacterMovement : MoveObject {
     /* 수류탄 투척 함수.
      * 현재는 무조건 기본 수류탄이 나가도록 돼있지만
      * 차후 인벤토리에서 수류탄 갯수를 확인하여 해당 수류탄을 던질 수 있도록 바꿀 계획 */
-    protected void OnThrowGrenade(string className) {
-		JDictionary grenadeData = GameDataManager.instance.RootData[className];
-
-		//Get grenade class, not yet implemented for now.
-		Vector2 throwpos = (Vector2) transform.position +
-			new Vector2(
-				grenadeData["MuzzlePos"]["X"].Value<float>() * character.GetFacingDirection(),
-				grenadeData["MuzzlePos"]["Y"].Value<float>()
-				);
-        float throwang = grenadeData["ThrowAngle"].Value<float>();
+    protected void OnThrowGrenade(string eventname) {
+        //Get grenade class, not yet implemented for now.
+        Vector2 throwpos = (Vector2)transform.position + new Vector2((float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "X") * character.GetFacingDirection()
+                                        , (float)GameDataManager.instance.GetData(eventname, "MuzzlePos", "Y"));
+        float throwang = Convert.ToSingle(GameDataManager.instance.GetData(eventname, "ThrowAngle"));
         character.GiveWeapon("weapon_grenade");
         Weapon grenade = character.GetWeapon(WeaponTypes.Throwable);
         BulletManager.instance.CreateThrowable("throwable_grenade", throwpos, character, grenade,

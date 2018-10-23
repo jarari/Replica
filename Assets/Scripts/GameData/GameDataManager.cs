@@ -30,223 +30,278 @@ public class ComboData {
  * 이 클래스에서 ParseJSONData로 호출하면 등록됨. */
 public class GameDataManager : MonoBehaviour {
     public static GameDataManager instance;
-
     public bool debug = false;
-
-	private JDictionary                     rootData;
-	private Dictionary<string, ComboData>	basicCombos;
-    private Dictionary<string, ComboData>	continuousCombos;
-
-	public JDictionary						RootData {
-		get {
-			return this.rootData;
-		}
-	}
-	public Dictionary<string, ComboData>	BasicComboData {
-		get {
-			return basicCombos;
-		}
-	}
-	public Dictionary<string, ComboData>	ContinuousComboData {
-		get {
-			return continuousCombos;
-		}
-	}
-
-	void Awake() {
+    private Dictionary<string, object> GameData;
+    private Dictionary<string, ComboData> basicCombos;
+    private Dictionary<string, ComboData> continuousCombos;
+    void Awake() {
         if (instance == null) {
             instance = this;
         }
         else if (instance != this) {
             Destroy(gameObject);
         }
-
         DontDestroyOnLoad(this);
-
-		if(LoadingScreen.instance != null)
+        if(LoadingScreen.instance != null)
             LoadingScreen.instance.Close();
-
-		rootData = new JDictionary();
-		rootData.DeserializeJson(
-			"Data/characters/main",
-			"Data/weapons/weapondata",
-			"Data/effects/effectdata",
-			"Data/effects/particledata",
-			"Data/ai/aidata",
-			"Data/items/itemdata",
-			"Data/items/lootdata",
-			"Data/maps/mapdata",
-			"Data/weapons/attackdata",
-			"Data/weapons/bulletdata",
-			"Data/weapons/projectiledata"
-			);
-
-		ParseComboData();
-
-		if (!debug)
+        GameData = new Dictionary<string, object>();
+        ParseJSONData("characters/main");
+        ParseJSONData("weapons/weapondata");
+        ParseJSONData("effects/effectdata");
+        ParseJSONData("effects/particledata");
+        ParseJSONData("ai/aidata");
+        ParseJSONData("items/itemdata");
+        ParseJSONData("items/lootdata");
+        ParseJSONData("maps/mapdata");
+        ParseJSONData("weapons/attackdata");
+        ParseJSONData("weapons/bulletdata");
+        ParseJSONData("weapons/projectiledata");
+        if (!debug)
             GlobalUIManager.instance.LoadScene("1");
     }
 
-	private void ParseComboData() {
-		basicCombos = new Dictionary<string, ComboData>();
-		continuousCombos = new Dictionary<string, ComboData>();
+    private void ParseComboData(Dictionary<string, object> data) {
+        basicCombos = new Dictionary<string, ComboData>();
+        continuousCombos = new Dictionary<string, ComboData>();
+        foreach(string key in data.Keys) {
+            if(GetData(data, key, "Combo") != null) {
+                List<KeyCombo> keyCombos = new List<KeyCombo>();
+                List<string> nextPossibleCombos = new List<string>();
+                bool isBasic = false;
+                bool isJumpAttack = false;
+                if (GetData(data, key, "Combo", "IsBasic") != null && Convert.ToSingle(GetData(data, key, "Combo", "IsBasic")) == 1)
+                    isBasic = true;
+                if (GetData(data, key, "Combo", "IsJumpAttack") != null && Convert.ToSingle(GetData(data, key, "Combo", "IsJumpAttack")) == 1)
+                    isJumpAttack = true;
+                foreach (string keycombo in ((Dictionary<string, object>)GetData(data, key, "Combo", "Keys")).Values) {
+                    switch (keycombo) {
+                        case "Left":
+                            keyCombos.Add(KeyCombo.Left);
+                            break;
+                        case "Up":
+                            keyCombos.Add(KeyCombo.Up);
+                            break;
+                        case "Right":
+                            keyCombos.Add(KeyCombo.Right);
+                            break;
+                        case "Down":
+                            keyCombos.Add(KeyCombo.Down);
+                            break;
+                        case "LeftUp":
+                            keyCombos.Add(KeyCombo.Left | KeyCombo.Up);
+                            break;
+                        case "RightUp":
+                            keyCombos.Add(KeyCombo.Right | KeyCombo.Up);
+                            break;
+                        case "LeftDown":
+                            keyCombos.Add(KeyCombo.Left | KeyCombo.Down);
+                            break;
+                        case "RightDown":
+                            keyCombos.Add(KeyCombo.Right | KeyCombo.Down);
+                            break;
+                        case "X":
+                            keyCombos.Add(KeyCombo.X);
+                            break;
+                    }
+                }
+                if (GetData(data, key, "Combo", "PossibleCombos") != null) {
+                    foreach (string nextcombo in ((Dictionary<string, object>)GetData(data, key, "Combo", "PossibleCombos")).Values) {
+                        nextPossibleCombos.Add(nextcombo);
+                    }
+                }
+                if (isBasic) {
+                    basicCombos.Add(key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
+                    continuousCombos.Add(key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
+                }
+                else {
+                    continuousCombos.Add(key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
+                }
+            }
+        }
+        //GameData.Add("BasicCombos", basicCombos);
+        //GameData.Add("ContinuousCombos", continuousCombos);
+    }
 
-		JDictionary tempData = new JDictionary();
-		tempData.DeserializeJson("Data/weapons/attackdata");
+    /* JSON 안의 모든 내용을 찾아서 Dictionary화 시키는 함수.
+     * 자바스크립트의 object와 비슷한 형태가 됨. */
+    private Dictionary<string, object> RecursiveDigger(Dictionary<string, object> target) {
+        Dictionary<string, object> digged = new Dictionary<string, object>();
+        foreach(KeyValuePair<string, object> obj in target) {
+            if(obj.Value.GetType().Equals(typeof(JObject))) {
+                digged.Add(obj.Key, RecursiveDigger(((JObject)obj.Value).ToObject<Dictionary<string, object>>()));
+            }
+            else {
+                object temp = obj.Value;
+                if (obj.Value.GetType().Equals(typeof(System.Int64)))
+                    temp = Convert.ToInt32(obj.Value);
+                else if (obj.Value.GetType().Equals(typeof(double)))
+                    temp = Convert.ToSingle(obj.Value);
+                digged.Add(obj.Key, temp);
+            }
+        }
+        return digged;
+    }
 
-		foreach(JDictionary subData in tempData) {
-			JDictionary comboData = subData["Combo"];
+    private void ParseJSONData(string filename) {
+        TextAsset txtdata = Resources.Load<TextAsset>("Data/" + filename);
+        if (txtdata != null) {
+            string dataAsJson = txtdata.text;
+            JObject jsonObj = JObject.Parse(dataAsJson);
+            Dictionary<string, object> WholeFile = jsonObj.ToObject<Dictionary<string, object>>();
 
-			if(comboData) {
-				List<KeyCombo> keyCombos = new List<KeyCombo>();
-				List<string> nextPossibleCombos = new List<string>();
+            if (GameData.ContainsKey("Data")) {
+                Dictionary<string, object> temp = RecursiveDigger(WholeFile);
+                if (filename == "weapons/attackdata")
+                    ParseComboData(temp);
+                Dictionary<string, object> data = (Dictionary<string, object>)GameData["Data"];
+                foreach (KeyValuePair<string, object> kvp in temp) {
+                    data.Add(kvp.Key, kvp.Value);
+                }
+                GameData.Clear();
+                GameData.Add("Data", data);
+            }
+            else {
+                GameData.Add("Data", RecursiveDigger(WholeFile));
+            }
+        }
+        else {
+            Debug.LogError("Cannot find file!");
+        }
+    }
 
-				bool isBasic = (comboData["IsBasic"] ? comboData["IsBasic"].Value<bool>() : false);
-				bool isJumpAttack = (comboData["IsJumpAttack"] ? comboData["IsJumpAttack"].Value<bool>() : false);
+    public Dictionary<string, object> ParseMapData(string mapname) {
+        TextAsset txtdata = Resources.Load<TextAsset>("Data/maps/" + mapname);
+        if (txtdata != null) {
+            string dataAsJson = txtdata.text;
+            JObject jsonObj = JObject.Parse(dataAsJson);
+            Dictionary<string, object> WholeFile = jsonObj.ToObject<Dictionary<string, object>>();
 
-				foreach(JDictionary keycombo in comboData["Keys"]) {
-					switch(keycombo.Value<string>()) {
-						case "Left":
-							keyCombos.Add(KeyCombo.Left);
-							break;
-						case "Up":
-							keyCombos.Add(KeyCombo.Up);
-							break;
-						case "Right":
-							keyCombos.Add(KeyCombo.Right);
-							break;
-						case "Down":
-							keyCombos.Add(KeyCombo.Down);
-							break;
-						case "LeftUp":
-							keyCombos.Add(KeyCombo.Left | KeyCombo.Up);
-							break;
-						case "RightUp":
-							keyCombos.Add(KeyCombo.Right | KeyCombo.Up);
-							break;
-						case "LeftDown":
-							keyCombos.Add(KeyCombo.Left | KeyCombo.Down);
-							break;
-						case "RightDown":
-							keyCombos.Add(KeyCombo.Right | KeyCombo.Down);
-							break;
-						case "X":
-							keyCombos.Add(KeyCombo.X);
-							break;
-					}
-				}
+            return RecursiveDigger(WholeFile);
+        }
+        else {
+            Debug.LogError("Cannot find file!");
+        }
+        return null;
+    }
 
-				if(comboData["PossibleCombos"]) {
-					foreach(JDictionary nextcombo in comboData["PossibleCombos"]) {
-						nextPossibleCombos.Add(nextcombo.Value<string>());
-					}
-				}
+    public object GetData(params string[] Keys) {
+        Dictionary<string, object> tempDict = (Dictionary<string, object>)GameData["Data"];
+        int i = 0;
+        while (tempDict != null && i < Keys.Length - 1) {
+            tempDict = (Dictionary<string, object>)tempDict[Keys[i]];
+            i++;
+        }
+        if (tempDict != null) {
+            object val;
+            try {
+                val = tempDict[Keys[i]];
+            }
+            catch {
+                return null;
+            }
+            return val;
+        }
+        return null;
+    }
 
-				if(isBasic) {
-					basicCombos.Add(subData.Key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
-					continuousCombos.Add(subData.Key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
-				}
-				else {
-					continuousCombos.Add(subData.Key, new ComboData(keyCombos, nextPossibleCombos, isJumpAttack));
-				}
-			}
-		}
-	}
+    /* 이 매니저가 관리하지 않는 데이터 (예: 맵데이터는 레벨 매니저가 관리) 를 읽어올 때 사용 */
+    public object GetData(Dictionary<string, object> data, params string[] Keys) {
+        Dictionary<string, object> tempDict = data;
+        int i = 0;
+        while (tempDict != null && i < Keys.Length - 1) {
+            tempDict = (Dictionary<string, object>)tempDict[Keys[i]];
+            i++;
+        }
+        if (tempDict != null) {
+            object val;
+            try {
+                val = tempDict[Keys[i]];
+            }
+            catch {
+                return null;
+            }
+            return val;
+        }
+        return null;
+    }
 
-	/* 빠른 접근을 위한 스탯 관련 함수들 */
-	public float GetCharacterStat(string classname, CharacterStats stat) {
-		JDictionary statData = RootData[classname]["Stats"];
+    public Dictionary<string, ComboData> GetBasicComboData() {
+        return basicCombos;
+    }
+    public Dictionary<string, ComboData> GetContinuousComboData() {
+        return continuousCombos;
+    }
 
+    /* 빠른 접근을 위한 스탯 관련 함수들 */
+    public float GetCharacterStat(string classname, CharacterStats stat) {
         switch (stat) {
             case CharacterStats.Health:
-				return (statData["Health"] ? statData["Health"].Value<float>() : -1.0f);
-
-			case CharacterStats.MoveSpeed:
-				return (statData["MoveSpeed"] ? statData["MoveSpeed"].Value<float>() : -1.0f);
-
-			case CharacterStats.JumpPower:
-				return (statData["JumpPower"] ? statData["JumpPower"].Value<float>() : -1.0f);
-
-			case CharacterStats.MeleeArmor:
-				return (statData["MeleeArmor"] ? statData["MeleeArmor"].Value<float>() : -1.0f);
-
-			case CharacterStats.RangeArmor:
-				return (statData["RangeArmor"] ? statData["RangeArmor"].Value<float>() : -1.0f);
-
-			case CharacterStats.GrenadeFullCharge:
-				return (statData["GrenadeFullCharge"] ? statData["GrenadeFullCharge"].Value<float>() : 2.0f);
-
-			case CharacterStats.GrenadeThrowPower:
-				return (statData["GrenadeThrowPower"] ? statData["GrenadeThrowPower"].Value<float>() : 600.0f);
-
-			default:
-				return -1;
+                return Convert.ToSingle(GetData(classname, "Stats", "Health"));
+            case CharacterStats.MoveSpeed:
+                return Convert.ToSingle(GetData(classname, "Stats", "MoveSpeed"));
+            case CharacterStats.JumpPower:
+                return Convert.ToSingle(GetData(classname, "Stats", "JumpPower"));
+            case CharacterStats.MeleeArmor:
+                return Convert.ToSingle(GetData(classname, "Stats", "MeleeArmor"));
+            case CharacterStats.RangeArmor:
+                return Convert.ToSingle(GetData(classname, "Stats", "RangeArmor"));
+            case CharacterStats.GrenadeFullCharge:
+                if(GetData(classname, "Stats", "GrenadeFullCharge") != null)
+                    return Convert.ToSingle(GetData(classname, "Stats", "GrenadeFullCharge"));
+                return 2f;
+            case CharacterStats.GrenadeThrowPower:
+                if (GetData(classname, "Stats", "GrenadeThrowPower") != null)
+                    return Convert.ToSingle(GetData(classname, "Stats", "GrenadeThrowPower"));
+                return 600f;
         }
+        return -1;
     }
 
     public float GetWeaponStat(string classname, WeaponStats stat) {
-		JDictionary statData = RootData[classname]["Stats"];
-
         switch (stat) {
             case WeaponStats.AttackSpeed:
-				return (statData["AttackSpeed"]	? statData["AttackSpeed"].Value<float>() : -1.0f);
-
+                return Convert.ToSingle(GetData(classname, "Stats", "AttackSpeed"));
             case WeaponStats.Damage:
-				return (statData["Damage"] ? statData["Damage"].Value<float>() : -1.0f);
-
-			case WeaponStats.MagSize:
-				return (statData["MagSize"]	? statData["MagSize"].Value<float>() : -1.0f);
-
-			case WeaponStats.ReloadTime:
-				return (statData["ReloadTime"] ? statData["ReloadTime"].Value<float>() : -1.0f);
-
-			case WeaponStats.SADestruction:
-				return (statData["SADestruction"] ? statData["SADestruction"].Value<float>() : -1.0f);
-
-			case WeaponStats.Spread:
-				return (statData["Spread"] ? statData["Spread"].Value<float>() : -1.0f);
-
-			case WeaponStats.Stagger:
-				return (statData["Stagger"] ? statData["Stagger"].Value<float>() : -1.0f);
-
-			case WeaponStats.Range:
-				return (statData["Range"] ? statData["Range"].Value<float>() : -1.0f);
-
-			case WeaponStats.BulletSpeed:
-				return (statData["BulletSpeed"] ? statData["BulletSpeed"].Value<float>() : -1.0f);
-
-			case WeaponStats.ExplosionRadius:
-				return (statData["ExplosionRadius"] ? statData["ExplosionRadius"].Value<float>() : -1.0f);
-
-			default:
-				return -1.0f;
+                return Convert.ToSingle(GetData(classname, "Stats", "Damage"));
+            case WeaponStats.MagSize:
+                return Convert.ToSingle(GetData(classname, "Stats", "MagSize"));
+            case WeaponStats.ReloadTime:
+                return Convert.ToSingle(GetData(classname, "Stats", "ReloadTime"));
+            case WeaponStats.SADestruction:
+                return Convert.ToSingle(GetData(classname, "Stats", "SADestruction"));
+            case WeaponStats.Spread:
+                return Convert.ToSingle(GetData(classname, "Stats", "Spread"));
+            case WeaponStats.Stagger:
+                return Convert.ToSingle(GetData(classname, "Stats", "Stagger"));
+            case WeaponStats.Range:
+                return Convert.ToSingle(GetData(classname, "Stats", "Range"));
+            case WeaponStats.BulletSpeed:
+                return Convert.ToSingle(GetData(classname, "Stats", "BulletSpeed"));
+            case WeaponStats.ExplosionRadius:
+                return Convert.ToSingle(GetData(classname, "Stats", "ExplosionRadius"));
         }
+        return -1;
     }
 
-	/// <summary>
-	/// 애니메이터 컨트롤러를 가져오는 함수. JSON 데이터에 컨트롤러가 여러개 적혀있는 경우가 있는데, 그 컨트롤러 중 하나를 랜덤하게 가져옴. 주로 총알 피격이펙트 랜덤 재생에 사용됨.
-	/// </summary>
-	/// <param name="classname"></param>
-	/// <returns></returns>
-	public RuntimeAnimatorController GetAnimatorController(string classname) {
-        JDictionary controllerData = rootData[classname]["Sprites"]["controller"];
-
-		string controllername;
-		if(controllerData.IsValue) {
-			controllername = controllerData.Value<string>();
-		}
-		else {
-			int rand = UnityEngine.Random.Range(0, controllerData.Count);
-			controllername = controllerData[rand.ToString()].Value<string>();
-		}
-
+    /* 애니메이터 컨트롤러를 가져오는 함수.
+     * JSON 데이터에 컨트롤러가 여러개 적혀있는 경우가 있는데,
+     * 이 경우 그 컨트롤러 중 하나를 랜덤하게 가져옴.
+     * 주로 총알 피격이펙트 랜덤 재생에 사용됨. */
+    public RuntimeAnimatorController GetAnimatorController(string classname) {
+        string controllername;
+        if (GetData(classname, "Sprites", "controller").GetType().Equals(typeof(Dictionary<string, object>))) {
+            Dictionary<string, object> dict = (Dictionary<string, object>)GetData(classname, "Sprites", "controller");
+            int rand = UnityEngine.Random.Range(0, dict.Count);
+            controllername = (string)dict[rand.ToString()];
+        }
+        else {
+            controllername = (string)GetData(classname, "Sprites", "controller");
+        }
         var controller = Resources.Load("AnimatorController/" + controllername);
-
-		if (!controller) return null;
-
-		if(controller.GetType().Equals(typeof(AnimatorOverrideController)))
-			return (AnimatorOverrideController) controller;
-
-		return (RuntimeAnimatorController) controller;
+        if (controller == null)
+            return null;
+        if (controller.GetType().Equals(typeof(AnimatorOverrideController)))
+            return (AnimatorOverrideController)controller;
+        return (RuntimeAnimatorController)controller;
     }
 }

@@ -10,23 +10,18 @@ public class Item {
     protected ItemTypes type;
     protected bool stackable;
     protected Sprite image;
-
-	private JDictionary itemData;
-
     public Item() {
-        className	= "";
-        type		= ItemTypes.Consumable;
-        stackable	= false;
-        image		= null;
+        className = "";
+        type = ItemTypes.Consumable;
+        stackable = false;
+        image = null;
     }
     public Item(string classname) {
-        className	= classname;
-		itemData	= GameDataManager.instance.RootData[className];
-
-        name		= itemData["Name"].Value<string>();
-        type		= (ItemTypes) itemData["Type"].Value<int>();
-        stackable	= itemData["Stackable"].Value<bool>();
-        image		= Helper.GetSprite(itemData["SpritePath"].Value<string>(), itemData["SpriteName"].Value<string>());
+        className = classname;
+        name = (string)GameDataManager.instance.GetData(classname, "Name");
+        type = (ItemTypes)Convert.ToSingle(GameDataManager.instance.GetData(classname, "Type"));
+        stackable = Convert.ToBoolean(GameDataManager.instance.GetData(classname, "Stackable"));
+        image = Helper.GetSprite((string)GameDataManager.instance.GetData(classname, "SpritePath"), (string)GameDataManager.instance.GetData(classname, "SpriteName"));
     }
 
     public static Item Initialize(string classname) {
@@ -64,11 +59,8 @@ public static class CachedItem {
 
     public static Item GetItemClass(string className) {
         string classname = "Item";
-		JDictionary itemData = GameDataManager.instance.RootData[className];
-
-        if(itemData["ScriptClass"])
-            classname = itemData["ScriptClass"].Value<string>();
-
+        if(GameDataManager.instance.GetData(className, "ScriptClass") != null)
+            classname = (string)GameDataManager.instance.GetData(className, "ScriptClass");
         if (!InstanceCreateCache.ContainsKey(classname)) {
             Type type = Type.GetType(classname, false, true);
             MethodInfo mi = type.GetMethod("Initialize");
@@ -77,6 +69,7 @@ public static class CachedItem {
         }
 
         return InstanceCreateCache[classname].Invoke(className);
+
     }
 }
 

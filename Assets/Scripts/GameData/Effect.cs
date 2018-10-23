@@ -7,59 +7,47 @@ public class Effect : MonoBehaviour {
     private Animator anim;
     private int Loop = 0;
     private int Flip = 0;
-
-	private JDictionary effectData;
-
     void Awake() {
         anim = GetComponent<Animator>();
     }
 
     public void Initialize(string classname) {
-        if (GameDataManager.instance.GetAnimatorController(classname))
+        if (GameDataManager.instance.GetAnimatorController(classname) != null)
             anim.runtimeAnimatorController = GameDataManager.instance.GetAnimatorController(classname);
         else
             transform.localScale = new Vector3(0, 0, 0);
-
-		effectData = GameDataManager.instance.RootData[classname];
-
-		Loop = effectData["Loop"].Value<int>();
+        Loop = (int)GameDataManager.instance.GetData(classname, "Loop");
         if (Loop == 0)
             StartCoroutine(DestroyEffect());
-
-        if (effectData["Flip"])
-            Flip = effectData["Flip"].Value<int>();
-
+        if (GameDataManager.instance.GetData(classname, "Flip") != null)
+            Flip = (int)GameDataManager.instance.GetData(classname, "Flip");
         Vector3 temp = transform.localScale;
-        if (effectData["Scale"]) {
-            temp.x *= effectData["Scale"]["X"].Value<float>();
-            temp.y *= effectData["Scale"]["Y"].Value<float>();
+        if (GameDataManager.instance.GetData(classname, "Scale") != null) {
+            temp.x *= (float)GameDataManager.instance.GetData(classname, "Scale", "X");
+            temp.y *= (float)GameDataManager.instance.GetData(classname, "Scale", "Y");
         }
         transform.localScale = temp;
-
         temp = transform.eulerAngles;
-        if(effectData["Rotation"]) {
-            temp.z += effectData["Rotation"].Value<float>();
+        if(GameDataManager.instance.GetData(classname, "Rotation") != null) {
+            temp.z += (float)GameDataManager.instance.GetData(classname, "Rotation");
         }
         transform.eulerAngles = temp;
-
         temp = new Vector3(0, 0, 0);
-        if (effectData["Position"]) {
-            temp.x = effectData["Position"]["X"].Value<float>();
-            temp.y = effectData["Position"]["Y"].Value<float>();
-		}
-		transform.position = transform.TransformPoint(temp);
-
-		if(effectData["ShouldDisplayBeneathGround"] && effectData["ShouldDisplayBeneathGround"].Value<int>() == 1) {
+        if (GameDataManager.instance.GetData(classname, "Position") != null) {
+            temp.x = (float)GameDataManager.instance.GetData(classname, "Position", "X");
+            temp.y = (float)GameDataManager.instance.GetData(classname, "Position", "Y");
+        }
+        if(GameDataManager.instance.GetData(classname, "ShouldDisplayBeneathGround") != null
+            && (int)GameDataManager.instance.GetData(classname, "ShouldDisplayBeneathGround") == 1) {
             GetComponent<SpriteRenderer>().sortingLayerName = "DustEffect";
         }
-
-        if (effectData["SortingOrder"]) {
-            GetComponent<SpriteRenderer>().sortingOrder = effectData["SortingOrder"].Value<int>();
+        if (GameDataManager.instance.GetData(classname, "SortingOrder") != null) {
+            GetComponent<SpriteRenderer>().sortingOrder = Convert.ToInt32(GameDataManager.instance.GetData(classname, "SortingOrder"));
         }
-
-        if (effectData["Material"]) {
-            GetComponent<SpriteRenderer>().material = Helper.GetMaterial("Sprites/shader/", effectData["Material"].Value<string>());
+        if (GameDataManager.instance.GetData(classname, "Material") != null) {
+            GetComponent<SpriteRenderer>().material = Helper.GetMaterial("Sprites/shader/", (string)GameDataManager.instance.GetData(classname, "Material"));
         }
+        transform.position = transform.TransformPoint(temp);
     }
 
     private void Update() {
@@ -78,7 +66,7 @@ public class Effect : MonoBehaviour {
 
     IEnumerator DestroyEffect() {
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-        Destroy(gameObject);
+        DestroyObject(gameObject);
     }
 
 	// 이펙트 오브젝트 제거시에 리스트도 즉시 제거

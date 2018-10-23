@@ -34,19 +34,10 @@ public static class PlayerHUD {
     public static void DrawGrenadeTrajectory(string pose, float chargeAmount) {
         if (!uimanager)
             return;
-
-		JDictionary attackData = GameDataManager.instance.RootData[pose];
-
-		Vector3 throwpos =
-			player.transform.position +
-			new Vector3(
-				attackData["MuzzlePos"]["X"].Value<float>() * player.GetFacingDirection(),
-				attackData["MuzzlePos"]["Y"].Value<float>()
-				);
-
-        float throwang = attackData["ThrowAngle"].Value<float>();
+        Vector3 throwpos = player.transform.position + new Vector3((float)GameDataManager.instance.GetData(pose, "MuzzlePos", "X") * player.GetFacingDirection()
+                                        , (float)GameDataManager.instance.GetData(pose, "MuzzlePos", "Y"));
+        float throwang = Convert.ToSingle(GameDataManager.instance.GetData(pose, "ThrowAngle"));
         throwang = 90 - (90 - throwang) * player.GetFacingDirection();
-
         List<Vector3> traj = Helper.GetTrajectoryPath(throwpos, throwang, player.GetCurrentStat(CharacterStats.GrenadeThrowPower) * chargeAmount, player, trajLineCount);
 
         Vector2 pos = player.transform.position;
