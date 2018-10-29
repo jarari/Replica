@@ -316,8 +316,8 @@ public class LevelManager : MonoBehaviour {
 			spriteData["MaterialName"].Value<string>()
 			);
 
-		sr.flipX = spriteData["FlipX"].Value<bool>();
-        sr.flipY = spriteData["FlipY"].Value<bool>();
+        sr.flipX = (spriteData["FlipX"].Value<int>() == 1);
+        sr.flipY = (spriteData["FlipY"].Value<int>() == 1);
 
         sr.sortingLayerName = spriteData["SortingLayer"].Value<string>();
         sr.sortingOrder		= spriteData["SortOrder"].Value<int>();
