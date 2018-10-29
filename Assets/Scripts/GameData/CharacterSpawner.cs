@@ -48,7 +48,7 @@ public class CharacterSpawner : MonoBehaviour {
         int sortorder = 0;
         if (characterType == CharacterTypes.Player)
             sortorder = 5;
-        Character spawned = CharacterManager.instance.CreateCharacter(characterClass, transform.position, team, sortorder);
+        Character spawned = CharacterManager.CreateCharacter(characterClass, transform.position, team, sortorder);
         switch (characterType) {
             case CharacterTypes.Player:
                 spawned.GiveWeapon("weapon_fist");
@@ -56,7 +56,7 @@ public class CharacterSpawner : MonoBehaviour {
                 spawned.GiveWeapon("weapon_sword");
                 //Save.DataLoad();
                 //PlayerHUD.UpdateHealth(spawned.GetCurrentStat(CharacterStats.Health) / spawned.GetMaxStat(CharacterStats.Health));
-                CharacterManager.instance.InsertControl(spawned);
+                CharacterManager.InsertControl(spawned);
                 PlayerHUD.Initialize();
                 CamController.instance.AttachCam(spawned.transform);
                 spawned.GetInventory().AddItem("item_grenade", 500);
@@ -65,7 +65,7 @@ public class CharacterSpawner : MonoBehaviour {
             case CharacterTypes.AI:
                 spawned.GiveWeapon(weaponClass);
                 if (aiScript.Length != 0) {
-                    CharacterManager.instance.InsertAI(spawned, aiScript, false);
+                    CharacterManager.InsertAI(spawned, aiScript, false);
                     spawned.GetComponent<AIBaseController>().ForceTarget(target);
                 }
                 break;
@@ -74,7 +74,7 @@ public class CharacterSpawner : MonoBehaviour {
                 spawned.SetFlag(CharacterFlags.KnockBackImmunity);
                 spawned.SetFlag(CharacterFlags.StaggerImmunity);
                 if (aiScript.Length != 0) {
-                    CharacterManager.instance.InsertAI(spawned, aiScript, true);
+                    CharacterManager.InsertAI(spawned, aiScript, true);
                 }
                 break;
         }
@@ -101,7 +101,7 @@ public class CharacterSpawner : MonoBehaviour {
     private void Update() {
         if (!init) return;
         if (autoEngage) {
-            Character closest = CharacterManager.instance.GetClosestEnemy(transform.position, team);
+            Character closest = CharacterManager.GetClosestEnemy(transform.position, team);
             if (closest != null)
                 target = closest;
         }

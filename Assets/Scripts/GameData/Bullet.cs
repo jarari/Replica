@@ -67,7 +67,7 @@ public class Bullet : MonoBehaviour {
         if (!init) return;
         rb.velocity = transform.right * speed;
         if (Vector3.Distance(transform.position, startPos) >= range)
-            Destroy(gameObject);
+            PoolDestroy();
     }
 
     protected virtual void OnCollisionEnter2D(Collision2D collision) {
@@ -97,14 +97,14 @@ public class Bullet : MonoBehaviour {
             }
             else {
                 collided = true;
-                Destroy(gameObject);
+                PoolDestroy();
                 init = false;
                 return;
             }
         }
         else if (collision.gameObject.tag.Equals("Ceiling")) {
             collided = true;
-            Destroy(gameObject);
+            PoolDestroy();
             init = false;
             return;
         }
@@ -137,7 +137,7 @@ public class Bullet : MonoBehaviour {
                     }
                     else {
                         List<Character> closeEnemies = 
-							CharacterManager.instance.GetEnemies(attacker.GetTeam()).FindAll(
+							CharacterManager.GetEnemies(attacker.GetTeam()).FindAll(
 								enemy => 
 								Vector3.Distance(
 									Helper.GetClosestBoxBorder(enemy.transform.position, enemy.GetComponent<BoxCollider2D>(), 
@@ -171,7 +171,7 @@ public class Bullet : MonoBehaviour {
                         }
                     }
 
-                    Destroy(gameObject);
+                    PoolDestroy();
                     //EffectManager.instance.CreateEffect("effect_hitback_bullet", colliding.transform.position + transform.right * 10f, Helper.Vector2ToAng(transform.right));
                     init = false;
                     return;
@@ -183,7 +183,7 @@ public class Bullet : MonoBehaviour {
 
     protected virtual void ShakeCam() {
         if (bulletData["ShakeCam"]) {
-			float distance = Vector2.Distance(CharacterManager.instance.GetPlayer().transform.position, transform.position);
+			float distance = Vector2.Distance(CharacterManager.GetPlayer().transform.position, transform.position);
 			float radius = bulletData["ShakeCam"]["Radius"].Value<float>();
 			if (distance < radius) {
                 CamController.instance.ShakeCam(
@@ -194,15 +194,15 @@ public class Bullet : MonoBehaviour {
         }
     }
 
-    protected virtual void OnDestroy() {
+    protected virtual void PoolDestroy() {
         if (!collided) return;
         ShakeCam();
-        BulletManager.instance.OnBulletHit(this);
+        BulletManager.OnBulletDestroy(this);
         Vector3 temp = collisionNorm;
         temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
         float ang = Helper.Vector2ToAng(temp);
         if (anim && bulletData["Sprites"]["hit"]) {
-            EffectManager.instance.CreateEffect(bulletData["Sprites"]["hit"].Value<string>(), collisionPos, ang);
+            EffectManager.CreateEffect(bulletData["Sprites"]["hit"].Value<string>(), collisionPos, ang);
         }
         if (bulletData["Sprites"]["hitparticles"]) {
             //Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(className, "Sprites", "hitparticles");

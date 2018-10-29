@@ -17,7 +17,7 @@ public class InventoryMenu : Menu {
     public void CreateItemList() {
         if(scrollview != null) {
             Transform content = scrollview.transform.GetChild(0).GetChild(0);
-            Inventory inventory = CharacterManager.instance.GetPlayer().GetInventory();
+            Inventory inventory = CharacterManager.GetPlayer().GetInventory();
             Sprite sprite_btn = Helper.GetSprite("Sprites/ui/pauseui/", "pauseui_button");
             int itemY = -40;
             foreach (InventorySlot slot in inventory.GetList()) {

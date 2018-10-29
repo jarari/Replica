@@ -46,7 +46,7 @@ public class Loot : ObjectBase {
 
     protected void LandDust() {
         if (objectData["Sprites"]["dust"])
-            EffectManager.instance.CreateEffect(
+            EffectManager.CreateEffect(
 				objectData["Sprites"]["dust"].Value<string>(),
                 transform.position, 0
 				);
@@ -67,28 +67,24 @@ public class Loot : ObjectBase {
     }
 
     public virtual void Pickup(Character c) {
-        if (item.Length != 0) {
+        if (item.Length != 0 && c.GetInventory() != null) {
             c.GetInventory().AddItem(item, count);
         }
         if (objectData["Sprites"]["pickup"])
-            EffectManager.instance.CreateEffect(
+            EffectManager.CreateEffect(
 				objectData["Sprites"]["pickup"].Value<string>(),
                 transform.position, 
 				0
 				);
 
         if (objectData["Sprites"]["particle"])
-			EffectManager.instance.CreateEffect(
+			EffectManager.CreateEffect(
 				objectData["Sprites"]["particle"].Value<string>(),
                 c.transform.position, 
 				0, 
 				c.transform
 				);
 
-        Destroy(gameObject);
+        LootManager.RemoveLoot(this);
     }
-
-	public void OnDestroy() {
-		LootManager.instance.RemoveLoot(this);
-	}
 }

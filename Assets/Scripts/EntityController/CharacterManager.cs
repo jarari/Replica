@@ -6,28 +6,23 @@ using UnityEngine;
 
 /* 캐릭터 생성, 관리 클래스
  * 캐릭터의 생성과 적/아군 가져오기, 범위 내 캐릭터 가져오기 등의 기능 제공 */
-public class CharacterManager : MonoBehaviour {
-    private List<Character> Characters = new List<Character>();
-    private Character player;
-    public static CharacterManager instance;
-    private void Awake() {
-        if (instance == null) {
-            instance = this;
-        }
-        else if (instance != this) {
-            Destroy(gameObject);
-        }
-        /*foreach(GameObject spawner in GameObject.FindGameObjectsWithTag("Spawner")) {
-            spawner.GetComponent<CharacterSpawner>().Initialize();
-        }*/
+public static class CharacterManager {
+    private static List<Character> Characters = new List<Character>();
+    private static Character player;
+
+    private static EntityManager em;
+    public static void SetEntityManager(EntityManager _em) {
+        em = _em;
     }
 
-    public Character CreateCharacter(string classname, Vector3 pos, Teams team, int sortorder = 0) {
+    public static Character CreateCharacter(string classname, Vector3 pos, Teams team, int sortorder = 0) {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-		GameObject character_obj = (GameObject)Instantiate(Resources.Load("Prefab/Character"), pos, new Quaternion());
-		string scriptClass = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
+        GameObject character_obj = em.GetCharacterFromPool();
+        character_obj.transform.position = pos;
+
+        string scriptClass = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
 		Character character = (Character)character_obj.AddComponent(Type.GetType(scriptClass));
         character.Initialize(classname);
         character.SetTeam(team);
@@ -40,7 +35,7 @@ public class CharacterManager : MonoBehaviour {
         return character;
     }
 
-    public void InsertAI(Character ai, string aidata, bool isBoss) {
+    public static void InsertAI(Character ai, string aidata, bool isBoss) {
         string scriptClass = GameDataManager.instance.RootData[aidata]["ScriptClass"].Value<string>();
 
 		if (!isBoss) {
@@ -69,40 +64,42 @@ public class CharacterManager : MonoBehaviour {
         ai.SetFlag(CharacterFlags.AIControlled);
     }
 
-    public void InsertControl(Character c) {
+    public static void InsertControl(Character c) {
         c.gameObject.AddComponent<GeneralControl>();
         c.gameObject.GetComponent<GeneralControl>().Initialize(c);
         c.SetController(c.gameObject.GetComponent<GeneralControl>());
         player = c;
     }
 
-    public void OnCharacterDead(Character c) {
+    public static void OnCharacterDeath(Character c) {
         Characters.Remove(c);
+        em.AddCharacterToPool(c.gameObject);
+        UnityEngine.Object.Destroy(c);
         if (EventManager.Event_CharacterDeath != null)
             EventManager.Event_CharacterDeath(c);
     }
 
-    public Character GetPlayer() {
+    public static Character GetPlayer() {
         return player;
     }
 
-    public List<Character> GetAllCharacters() {
+    public static List<Character> GetAllCharacters() {
         return Characters;
     }
 
-    public List<Character> GetAllies(Teams team) {
+    public static List<Character> GetAllies(Teams team) {
         return Characters.Where(c => c.GetTeam() == team).ToList();
     }
 
-    public List<Character> GetEnemies(Teams team) {
+    public static List<Character> GetEnemies(Teams team) {
         return Characters.Where(c => c.GetTeam() != team).ToList();
     }
 
-    public Character GetClosestAlly(Vector3 pos, Teams team) {
+    public static Character GetClosestAlly(Vector3 pos, Teams team) {
         return Characters.Where(c => c.GetTeam() == team).OrderBy(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), pos), pos)).FirstOrDefault();
     }
 
-    public Character GetClosestEnemy(Vector3 pos, Teams team) {
+    public static Character GetClosestEnemy(Vector3 pos, Teams team) {
         return Characters.Where(c => c.GetTeam() != team).OrderBy(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), pos), pos)).FirstOrDefault();
     }
 }

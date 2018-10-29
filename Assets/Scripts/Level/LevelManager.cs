@@ -135,9 +135,7 @@ public class LevelManager : MonoBehaviour {
 		stageData.DeserializeJson("Data/maps/" + mapname);
 
 		if(stageData) {
-			// integer
-			int numOfLayers;
-			int.TryParse(stageData["NumOfLayers"].Value<string>(), out numOfLayers);
+			int numOfLayers = stageData["NumOfLayers"].Value<int>();
 
 			// Backgrounds
 			this.BGParents.Clear();
@@ -318,11 +316,10 @@ public class LevelManager : MonoBehaviour {
 			spriteData["MaterialName"].Value<string>()
 			);
 
-		// bool
-		sr.flipX = (spriteData["FlipX"].Value<int>() == 1);
-		sr.flipY = (spriteData["FlipY"].Value<int>() == 1);
+		sr.flipX = spriteData["FlipX"].Value<bool>();
+        sr.flipY = spriteData["FlipY"].Value<bool>();
 
-		sr.sortingLayerName = spriteData["SortingLayer"].Value<string>();
+        sr.sortingLayerName = spriteData["SortingLayer"].Value<string>();
         sr.sortingOrder		= spriteData["SortOrder"].Value<int>();
     }
 
@@ -432,24 +429,18 @@ public class LevelManager : MonoBehaviour {
 			}
         }
 		createdObjs.Clear();
-        if (CharacterManager.instance != null) {
-            List<Character> characters = CharacterManager.instance.GetAllCharacters();
-            for (int i = characters.Count - 1; i > -1; i--) {
-                characters[i].Kill();
-            }
+        List<Character> characters = CharacterManager.GetAllCharacters();
+        for (int i = characters.Count - 1; i > -1; i--) {
+            characters[i].DestroyQuietly();
         }
-		if(EffectManager.instance != null) {
-			List<Effect> effects = EffectManager.instance.GetEffects();
-			for(int i = 0; i < effects.Count; i++) {
-				Destroy(effects[i].gameObject);
-			}
-		}
-		if(LootManager.instance != null) {
-			List<Loot> loots = LootManager.instance.GetLoots();
-			for(int i = 0; i < loots.Count; i++) {
-				Destroy(loots[i].gameObject);
-			}
-		}
+        List<Effect> effects = EffectManager.GetEffects();
+        for (int i = 0; i < effects.Count; i++) {
+            EffectManager.RemoveEffect(effects[i]);
+        }
+        List<Loot> loots = LootManager.GetLoots();
+        for (int i = 0; i < loots.Count; i++) {
+            LootManager.RemoveLoot(loots[i]);
+        }
     }
 
     public void Initialize() {

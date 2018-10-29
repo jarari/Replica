@@ -101,7 +101,7 @@ public class AIBaseController : BasicCharacterMovement {
         }
         if (Time.time >= nextSearch) {
             nextSearch = Time.time + 1f;
-            Character closestPlayer = CharacterManager.instance.GetClosestEnemy(transform.position, character.GetTeam());
+            Character closestPlayer = CharacterManager.GetClosestEnemy(transform.position, character.GetTeam());
             if (closestPlayer != null) {
                 if ((Vector3.Distance(closestPlayer.transform.position, character.transform.position) < recognitionRadius
                         && Mathf.Sign(closestPlayer.transform.position.x - transform.position.x) == direction
@@ -184,7 +184,7 @@ public class AIBaseController : BasicCharacterMovement {
 
     /* AI가 공격당하면 주위의 아군에게도 어그로가 전달됨. */
     public virtual void OnTakeDamage(Character attacker) {
-        List<Character> closeAllies = CharacterManager.instance.GetAllies(character.GetTeam()).FindAll(c => Vector3.Distance(c.transform.position, transform.position) <= alertRange);
+        List<Character> closeAllies = CharacterManager.GetAllies(character.GetTeam()).FindAll(c => Vector3.Distance(c.transform.position, transform.position) <= alertRange);
         foreach (Character c in closeAllies) {
             if (c.IsAI())
                 ((AIBaseController)c.GetController()).ForceTarget(attacker);

@@ -5,40 +5,52 @@ using UnityEngine;
 
 /* 투사체 생성 클래스
  * 여기서는 총알, 포환, 투척물을 생성할 수 있음. */
-public class BulletManager : MonoBehaviour {
-    public static BulletManager instance;
-    private List<Bullet> bullets = new List<Bullet>();
-    private List<Projectile> projectiles = new List<Projectile>();
-    void Awake() {
-        if (instance == null) {
-            instance = this;
-        }
-        else if (instance != this) {
-            Destroy(gameObject);
-        }
+public static class BulletManager {
+    private static List<Bullet> bullets = new List<Bullet>();
+    private static List<Projectile> projectiles = new List<Projectile>();
+    private static List<Laser> lasers = new List<Laser>();
+
+    private static EntityManager em;
+    public static void SetEntityManager(EntityManager _em) {
+        em = _em;
     }
 
-    public List<Bullet> GetBullets() {
+    public static List<Bullet> GetBullets() {
         return bullets;
     }
 
-    public void OnBulletHit(Bullet b) {
+    public static void OnBulletDestroy(Bullet b) {
         bullets.Remove(b);
+        em.AddBulletToPool(b.gameObject);
+        UnityEngine.Object.Destroy(b);
     }
 
-    public List<Projectile> GetProjectiles() {
+    public static List<Projectile> GetProjectiles() {
         return projectiles;
     }
 
-    public void OnProjectileHit(Projectile p) {
+    public static void OnProjectileDestroy(Projectile p) {
         projectiles.Remove(p);
+        em.AddProjectileToPool(p.gameObject);
+        UnityEngine.Object.Destroy(p);
     }
 
-    public Bullet CreateBullet(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data, bool ignoreGround = false) {
+    public static List<Laser> GetLasers() {
+        return lasers;
+    }
+
+    public static void OnLaserDestroy(Laser l) {
+        lasers.Remove(l);
+        em.AddLaserToPool(l.gameObject);
+        UnityEngine.Object.Destroy(l);
+    }
+
+    public static Bullet CreateBullet(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data, bool ignoreGround = false) {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-		GameObject bullet_obj = (GameObject)Instantiate(Resources.Load("Prefab/Bullet"), pos, new Quaternion());
+        GameObject bullet_obj = em.GetBulletFromPool();
+        bullet_obj.transform.position = pos;
 
 		JDictionary scriptData = GameDataManager.instance.RootData[classname]["ScriptClass"];
 		string script = (scriptData ? scriptData.Value<string>() : "Bullet");
@@ -59,11 +71,13 @@ public class BulletManager : MonoBehaviour {
         return bullet;
     }
 
-    public Projectile CreateProjectile(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, Dictionary<WeaponStats, float> _data, bool candirecthit) {
+    public static Projectile CreateProjectile(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, Dictionary<WeaponStats, float> _data, bool candirecthit) {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-		GameObject projectile_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
+        GameObject projectile_obj = em.GetProjectileFromPool();
+        projectile_obj.transform.position = pos;
+
         string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
 		if (script == null || script.Length == 0)
             script = "Projectile";
@@ -80,11 +94,13 @@ public class BulletManager : MonoBehaviour {
         return projectile;
     }
 
-    public Throwable CreateThrowable(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, float torque, Dictionary<WeaponStats, float> _data, bool candirecthit = true) {
+    public static Throwable CreateThrowable(string classname, Vector3 pos, Character user, Weapon firedfrom, float speed, float range, float angle, float torque, Dictionary<WeaponStats, float> _data, bool candirecthit = true) {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-		GameObject throwable_obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), pos, new Quaternion());
+        GameObject throwable_obj = em.GetProjectileFromPool();
+        throwable_obj.transform.position = pos;
+
         string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
 		if (script == null || script.Length == 0)
             script = "Throwable";
@@ -101,14 +117,18 @@ public class BulletManager : MonoBehaviour {
         return throwable;
     }
 
-    public Laser CreateLaser(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data) {
+    public static Laser CreateLaser(string classname, Vector3 pos, Character user, Weapon firedfrom, float angle, Dictionary<WeaponStats, float> _data) {
         if (!LevelManager.instance.isMapActive)
 			return null;
 
-        GameObject laser_obj = (GameObject)Instantiate(Resources.Load("Prefab/Laser"), pos, new Quaternion());
-        Laser l = laser_obj.GetComponent<Laser>();
+        GameObject laser_obj = em.GetLaserFromPool();
+        laser_obj.transform.position = pos;
+
+        Laser l = laser_obj.AddComponent<Laser>();
 		float laserWidth = GameDataManager.instance.RootData[classname]["LaserWidth"].Value<float>();
 		l.Initialize(classname, user, firedfrom, pos, angle, _data[WeaponStats.Range], laserWidth, _data);
+
+        lasers.Add(l);
 
 		return l;
     }

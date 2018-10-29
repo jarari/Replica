@@ -28,8 +28,12 @@ public class Effect : MonoBehaviour {
 
         if (effectData["Flip"])
             Flip = effectData["Flip"].Value<int>();
+        else {
+            GetComponent<SpriteRenderer>().flipY = false;
+            Flip = 0;
+        }
 
-        Vector3 temp = transform.localScale;
+        Vector3 temp = new Vector3(1, 1, 1);
         if (effectData["Scale"]) {
             temp.x *= effectData["Scale"]["X"].Value<float>();
             temp.y *= effectData["Scale"]["Y"].Value<float>();
@@ -52,13 +56,22 @@ public class Effect : MonoBehaviour {
 		if(effectData["ShouldDisplayBeneathGround"] && effectData["ShouldDisplayBeneathGround"].Value<int>() == 1) {
             GetComponent<SpriteRenderer>().sortingLayerName = "DustEffect";
         }
+        else {
+            GetComponent<SpriteRenderer>().sortingLayerName = "Effect";
+        }
 
         if (effectData["SortingOrder"]) {
             GetComponent<SpriteRenderer>().sortingOrder = effectData["SortingOrder"].Value<int>();
         }
+        else {
+            GetComponent<SpriteRenderer>().sortingOrder = 0;
+        }
 
         if (effectData["Material"]) {
             GetComponent<SpriteRenderer>().material = Helper.GetMaterial("Sprites/shader/", effectData["Material"].Value<string>());
+        }
+        else {
+            GetComponent<SpriteRenderer>().material = Helper.GetMaterial("Sprites/shader/", "TestEffectMaterial");
         }
     }
 
@@ -78,11 +91,6 @@ public class Effect : MonoBehaviour {
 
     IEnumerator DestroyEffect() {
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-        Destroy(gameObject);
+        EffectManager.RemoveEffect(this);
     }
-
-	// 이펙트 오브젝트 제거시에 리스트도 즉시 제거
-	private void OnDestroy() {
-		EffectManager.instance.RemoveEffect(this);
-	}
 }

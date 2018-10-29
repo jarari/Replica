@@ -351,6 +351,7 @@
     <Compile Include="Assets\Scripts\EntityController\Common\BasicCharacterMovement.cs" />
     <Compile Include="Assets\Scripts\EntityController\Common\MoveObject.cs" />
     <Compile Include="Assets\Scripts\EntityController\EffectManager.cs" />
+    <Compile Include="Assets\Scripts\EntityController\EntityManager.cs" />
     <Compile Include="Assets\Scripts\EntityController\EventManager.cs" />
     <Compile Include="Assets\Scripts\EntityController\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\EntityController\LootManager.cs" />

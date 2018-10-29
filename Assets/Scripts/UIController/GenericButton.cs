@@ -20,7 +20,7 @@ public class GenericButton : MonoBehaviour {
                 MenuManager.instance.ShowMenu(Argument);
                 break;
             case "UseItem":
-                CharacterManager.instance.GetPlayer().GetInventory().UseItem(Argument, 1);
+                CharacterManager.GetPlayer().GetInventory().UseItem(Argument, 1);
                 break;
             case "default":
                 break;

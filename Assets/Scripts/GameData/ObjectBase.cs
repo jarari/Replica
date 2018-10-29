@@ -15,6 +15,7 @@ public class ObjectBase : MonoBehaviour {
     protected bool onGround = true;
     protected bool facingRight = true;
     protected float height = 1;
+    protected int uniqueID = 0;
 
 	protected JDictionary objectData;
 
@@ -195,5 +196,21 @@ public class ObjectBase : MonoBehaviour {
         pos.x = Mathf.Round(pos.x * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
         pos.y = Mathf.Round(pos.y * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
         transform.position = pos;
+    }
+
+    /// <summary>
+    /// 오브젝트 고유 ID 설정
+    /// </summary>
+    /// <param name="id">정수 ID</param>
+    protected void SetUniqueID(int id) {
+        uniqueID = id;
+    }
+
+    /// <summary>
+    /// 오브젝트 고유 ID 받아오기
+    /// </summary>
+    /// <returns>정수 ID</returns>
+    protected int GetUniqueID() {
+        return uniqueID;
     }
 }

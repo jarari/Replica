@@ -36,7 +36,7 @@ public class Laser : MonoBehaviour {
             temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
             float ang = Helper.Vector2ToAng(temp);
             if (laserSpriteData["hit"]) {
-                EffectManager.instance.CreateEffect(laserSpriteData["hit"].Value<string>(), endPos, ang);
+                EffectManager.CreateEffect(laserSpriteData["hit"].Value<string>(), endPos, ang);
             }
             if (laserSpriteData["hitparticles"]) {
 				foreach(JDictionary particle in laserSpriteData["hitparticles"]) {
@@ -80,6 +80,6 @@ public class Laser : MonoBehaviour {
 
     IEnumerator DestroyEffect() {
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-        Destroy(gameObject);
+        BulletManager.OnLaserDestroy(this);
     }
 }

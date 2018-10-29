@@ -4,47 +4,42 @@ using UnityEngine;
 
 /* 이펙트 생성 클래스
  * 여기서는 오브젝트에 부착된 이펙트, 오브젝트와 독립된 이펙트, 오브젝트와 독립되어 특정 방향으로 움직이는 이펙트 생성 가능 */
-public class EffectManager : MonoBehaviour {
-    public static EffectManager instance;
-	private List<Effect> effects = new List<Effect>();
+public static class EffectManager {
+	private static List<Effect> effects = new List<Effect>();
 
-    void Awake() {
-        if (instance == null) {
-            instance = this;
-        }
-        else if (instance != this) {
-            Destroy(gameObject);
-        }
+    private static EntityManager em;
+    public static void SetEntityManager(EntityManager _em) {
+        em = _em;
     }
 
-	public List<Effect> GetEffects() {
+    public static List<Effect> GetEffects() {
 		return effects;
 	}
 
-	public void RemoveEffect(Effect effect) {
+	public static void RemoveEffect(Effect effect) {
 		effects.Remove(effect);
+        em.AddEffectToPool(effect.gameObject);
 	}
 
-    public void CreateEffect(string classname, Vector3 pos, float angle, Transform parent = null, bool flip = false) {
+    public static void CreateEffect(string classname, Vector3 pos, float angle, Transform parent = null, bool flip = false) {
 		if(!LevelManager.instance.isMapActive) return;
-		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect"), pos, new Quaternion());
+        GameObject effect_obj = em.GetEffectFromPool();
+        effect_obj.transform.position = pos;
         Vector3 ang = effect_obj.transform.eulerAngles;
         ang.z = angle;
         effect_obj.transform.eulerAngles = ang;
-        if (flip) {
-            Vector3 lscale = effect_obj.transform.localScale;
-            lscale.x = lscale.x * -1;
-            effect_obj.transform.localScale = lscale;
-        }
+        effect_obj.GetComponent<SpriteRenderer>().flipX = flip;
         effect_obj.GetComponent<Effect>().Initialize(classname);
+        effect_obj.GetComponent<Rigidbody2D>().velocity = new Vector2();
         if (parent != null) {
             effect_obj.transform.SetParent(parent);
         }
     }
 
-    public void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, int dir, Transform parent = null) {
+    public static void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, int dir, Transform parent = null) {
 		if(!LevelManager.instance.isMapActive) return;
-		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect_Moving"), pos, new Quaternion());
+        GameObject effect_obj = em.GetEffectFromPool();
+        effect_obj.transform.position = pos;
         Vector3 lscale = effect_obj.transform.localScale;
         lscale.x = lscale.x * dir;
         effect_obj.transform.localScale = lscale;
@@ -55,9 +50,10 @@ public class EffectManager : MonoBehaviour {
         }
     }
 
-    public void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, float angle, Transform parent = null) {
+    public static void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, float angle, Transform parent = null) {
 		if(!LevelManager.instance.isMapActive) return;
-		GameObject effect_obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect_Moving"), pos, new Quaternion());
+        GameObject effect_obj = em.GetEffectFromPool();
+        effect_obj.transform.position = pos;
         Vector3 ang = effect_obj.transform.eulerAngles;
         ang.z = angle;
         effect_obj.transform.eulerAngles = ang;

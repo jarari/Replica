@@ -419,6 +419,8 @@ public abstract class Character : ObjectBase {
     }
 
     public void AddForce(Vector2 force, bool knockdown = false) {
+        if (GetComponentInParent<MoveObject>() == null)
+            return;
         GetComponentInParent<MoveObject>().AddForce(force);
         if (knockdown) {
             if (force.x > 0)
@@ -557,6 +559,20 @@ public abstract class Character : ObjectBase {
         DoDamage(this, GetCurrentStat(CharacterStats.Health), 0);
     }
 
+    public void DestroyQuietly() {
+        CharacterManager.OnCharacterDeath(this);
+        for (int i = 0; i < transform.childCount; i++) {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+        if (GetInventory() != null) {
+            Destroy(GetInventory());
+            InventoryManager.DestroyInventory(gameObject);
+        }
+        if (basecontroller != null) {
+            Destroy(basecontroller);
+        }
+    }
+
     protected virtual void OnStagger(float stagger) {
         if (HasFlag(CharacterFlags.StaggerImmunity))
             return;
@@ -579,15 +595,11 @@ public abstract class Character : ObjectBase {
                         int direction = (int)((UnityEngine.Random.Range(0, 2) - 0.5f) * 2f);
                         float throwX = UnityEngine.Random.Range(lootThrowXMax, lootThrowXMax);
                         float throwY = UnityEngine.Random.Range(lootThrowYMin, lootThrowYMax);
-                        LootManager.instance.CreateLoot(loot.item, count, transform.position, 0, new Vector2(throwX * direction, throwY));
+                        LootManager.CreateLoot(loot.item, count, transform.position, 0, new Vector2(throwX * direction, throwY));
                     }
                 }
             }
         }
-        Destroy(gameObject);
+        DestroyQuietly();
     }
-
-    protected virtual void OnDestroy() {
-        CharacterManager.instance.OnCharacterDead(this);
-    }    
 }

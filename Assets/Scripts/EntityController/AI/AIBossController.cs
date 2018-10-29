@@ -23,7 +23,7 @@ public class AIBossController : BasicCharacterMovement {
         currentPhase = 0;
         restingTime = aiData["RestingTime"].Value<float>();
         targetApproachRange = character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.5f;
-        target = CharacterManager.instance.GetPlayer();
+        target = CharacterManager.GetPlayer();
         nextActive = Time.realtimeSinceStartup;
         AIEnabled = true;
         AdditionalData();
@@ -39,7 +39,7 @@ public class AIBossController : BasicCharacterMovement {
 
     protected override void Update() {
         base.Update();
-        target = CharacterManager.instance.GetPlayer();
+        target = CharacterManager.GetPlayer();
         if (AIEnabled && nextActive <= Time.realtimeSinceStartup && target != null)
             Pattern();
     }

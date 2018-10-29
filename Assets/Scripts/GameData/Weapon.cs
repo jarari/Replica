@@ -101,17 +101,17 @@ public class Weapon : ObjectBase {
 		JDictionary bulletData = GameDataManager.instance.RootData[bulletclass];
 
         if (bulletData["Type"].Value<string>() == "bullet")
-            BulletManager.instance.CreateBullet(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
+            BulletManager.CreateBullet(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
 
         else if (bulletData["Type"].Value<string>() == "laser")
-            BulletManager.instance.CreateLaser(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
+            BulletManager.CreateLaser(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
 
         if (EventManager.Event_WeaponFire != null)
             EventManager.Event_WeaponFire(owner, this, bulletclass);
     }
 
     public void CreateEffect(string effectname) {
-        EffectManager.instance.CreateEffect(effectname, transform.position, 0, null, !owner.IsFacingRight());
+        EffectManager.CreateEffect(effectname, transform.position, 0, null, !owner.IsFacingRight());
     }
 
     public virtual void OnAttack(string eventname) {
@@ -201,7 +201,7 @@ public class Weapon : ObjectBase {
         yield return new WaitWhile(() => owner.GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime < normalizedtime);
         if (owner.GetState() != CharacterStates.Attack)
             yield break;
-        List<Character> closeEnemies = CharacterManager.instance.GetEnemies(GetOwner().GetTeam()).FindAll
+        List<Character> closeEnemies = CharacterManager.GetEnemies(GetOwner().GetTeam()).FindAll
             (c => Helper.IsInBox((Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset - c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)c.transform.position + c.GetComponent<BoxCollider2D>().offset + c.GetComponent<BoxCollider2D>().size / 2f, (Vector2)owner.transform.position + localPos - area / 2f, (Vector2)owner.transform.position + localPos + area / 2f));
         StartCoroutine(Helper.DrawBox((Vector2)owner.transform.position + localPos, area, Color.red));
         Vector2 avgHitPos = new Vector2();
@@ -220,7 +220,7 @@ public class Weapon : ObjectBase {
         }
         if(actualEnemiesHit.Count > 0) {
             if (objectData["Sprites"]["hit"])
-                EffectManager.instance.CreateEffect(
+                EffectManager.CreateEffect(
 					objectData["Sprites"]["hit"].Value<string>(), 
 					avgHitPos, 
 					0, 
@@ -250,7 +250,7 @@ public class Weapon : ObjectBase {
     }
 
     public virtual void OnWeaponHit(Character victim, Vector2 hitPos, string eventname) {
-        if(owner == CharacterManager.instance.GetPlayer() || victim == CharacterManager.instance.GetPlayer())
+        if(owner == CharacterManager.GetPlayer() || victim == CharacterManager.GetPlayer())
             CamController.instance.ShakeCam(
 				Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 20f, 0, 2),
                 Mathf.Clamp(owner.GetCurrentStat(this, WeaponStats.Damage) / 50f, 0, 0.5f)

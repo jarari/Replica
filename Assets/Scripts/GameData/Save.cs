@@ -31,7 +31,7 @@ public static class Save
 
     public static void SaveData()
     {
-        player = CharacterManager.instance.GetPlayer();
+        player = CharacterManager.GetPlayer();
         bf = new BinaryFormatter();
         file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
         PlayerData data = new PlayerData();

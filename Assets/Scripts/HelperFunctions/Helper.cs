@@ -85,7 +85,7 @@ public static class Helper {
                 stagger = 0;
                 victim.ModStat(CharacterStats.SuperArmor, -stats[WeaponStats.SADestruction]);
                 if (victim.GetCurrentStat(CharacterStats.SuperArmor) == 0) {
-                    EffectManager.instance.CreateEffect("effect_indicator_armorpen", victim.transform.position, 0);
+                    EffectManager.CreateEffect("effect_indicator_armorpen", victim.transform.position, 0);
                 }
             }
             float armor = victim.GetCurrentStat(CharacterStats.MeleeArmor);

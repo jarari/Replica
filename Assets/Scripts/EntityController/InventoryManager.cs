@@ -28,4 +28,10 @@ public static class InventoryManager {
         inventories.Add(obj, inventory);
         obj.GetComponent<ObjectBase>().SetInventory(inventory);
     }
+
+    public static void DestroyInventory(GameObject obj) {
+        if (inventories.ContainsKey(obj)) {
+            inventories.Remove(obj);
+        }
+    }
 }

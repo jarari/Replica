@@ -13,7 +13,7 @@ public static class PlayerHUD {
 
     public static void Initialize() {
         uimanager = GlobalUIManager.instance;
-        player = CharacterManager.instance.GetPlayer();
+        player = CharacterManager.GetPlayer();
     }
 
     public static void DrawUI() {

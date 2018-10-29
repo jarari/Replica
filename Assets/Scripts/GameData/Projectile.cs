@@ -20,7 +20,7 @@ public class Projectile : Bullet {
         startPos = transform.position;
 
 		if(bulletData["Sprites"]["smoke"])
-            EffectManager.instance.CreateEffect(
+            EffectManager.CreateEffect(
 				bulletData["Sprites"]["smoke"].Value<string>(), 
 				transform.position, 
 				transform.eulerAngles.z, 
@@ -103,7 +103,7 @@ public class Projectile : Bullet {
         if (collision.gameObject.tag.Equals("Character")) {
             if(collision.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
                 collided = true;
-                Destroy(gameObject);
+                PoolDestroy();
                 init = false;
                 return;
             }
@@ -115,7 +115,7 @@ public class Projectile : Bullet {
         }
         else if (collision.gameObject.tag.Equals("Ground") || collision.gameObject.tag.Equals("Ceiling")) {
             collided = true;
-            Destroy(gameObject);
+            PoolDestroy();
             init = false;
             return;
         }
@@ -126,7 +126,7 @@ public class Projectile : Bullet {
             Vector3 temp = collisionNorm;
             temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
             float ang = Helper.Vector2ToAng(temp);
-            EffectManager.instance.CreateEffect(
+            EffectManager.CreateEffect(
 				bulletData["Sprites"]["hit"].Value<string>(), 
 				collisionPos, 
 				ang
@@ -135,7 +135,7 @@ public class Projectile : Bullet {
     }
 
     protected virtual void Explode() {
-        List<Character> closeCharacters = CharacterManager.instance.GetAllCharacters().FindAll(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position) <= range);
+        List<Character> closeCharacters = CharacterManager.GetAllCharacters().FindAll(c => Vector3.Distance(Helper.GetClosestBoxBorder(c.transform.position, c.GetComponent<BoxCollider2D>(), transform.position), transform.position) <= range);
         foreach (Character c in closeCharacters) {
             if (c.HasFlag(CharacterFlags.Invincible))
                 continue;
@@ -164,10 +164,10 @@ public class Projectile : Bullet {
         }
     }
 
-    protected override void OnDestroy() {
+    protected override void PoolDestroy() {
         ShakeCam();
         Explode();
         HitEffect();
-        BulletManager.instance.OnProjectileHit(this);
+        BulletManager.OnProjectileDestroy(this);
     }
 }

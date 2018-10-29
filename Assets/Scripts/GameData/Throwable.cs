@@ -27,7 +27,7 @@ public class Throwable : Projectile {
 
     protected override void HitEffect() {
         if (anim && bulletData["Sprites"]["hit"]) {
-            EffectManager.instance.CreateEffect(
+            EffectManager.CreateEffect(
 				bulletData["Sprites"]["hit"].Value<string>(), 
 				collisionPos, 
 				0
