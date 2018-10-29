@@ -87,7 +87,7 @@ public class LevelExporter : MonoBehaviour {
                 }
             }
         }
-        data += "\"NumOfLayers\":\"" + BGlayerCount.ToString() + "\",";
+        data += "\"NumOfLayers\":" + BGlayerCount.ToString() + ",";
         data = data.Substring(0, data.Length - 1) + "}";
         var path = EditorUtility.SaveFilePanel(
                 "Save map",
