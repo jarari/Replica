@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //기본 AI 움직임 클래스
-public class AIBaseController : BasicCharacterMovement {
+public class AIBaseController : Controller {
     protected float nextAttack;
     protected float nextSearch;
     protected float recognitionRadius = 2f;
@@ -43,7 +43,6 @@ public class AIBaseController : BasicCharacterMovement {
         restTimer = 1f;
         targetFound = false;
         AIEnabled = true;
-        minDistToDash = -1f;
         AdditionalData(aidata);
     }
 
@@ -152,7 +151,7 @@ public class AIBaseController : BasicCharacterMovement {
                 }
                 else {
                     direction = (int)Mathf.Sign(distance);
-                    Follow(target.transform.position, character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f);
+                    character.Follow(target.transform.position, character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f);
                     return;
                 }
                 character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
@@ -163,7 +162,7 @@ public class AIBaseController : BasicCharacterMovement {
     }
 
     protected virtual void Walk() {
-        Walk(direction);
+        character.Walk(direction);
     }
 
     protected virtual void Attack() {
@@ -177,8 +176,7 @@ public class AIBaseController : BasicCharacterMovement {
     }
 
     /* 슈퍼아머가 없는 AI는 타격당하면 공격 타이머가 리셋됨. */
-    protected override void OnHitEvent(int invincible) {
-        base.OnHitEvent(invincible);
+    public override void ResetAttackTimer() {
         nextAttack = Time.time + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
     }
 

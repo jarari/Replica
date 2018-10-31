@@ -63,7 +63,8 @@ public class WeaponBuff {
 public abstract class Character : ObjectBase {
     protected Teams team;
     protected CharacterFlags flag;
-    protected BasicCharacterMovement basecontroller;
+    protected Controller basecontroller;
+    protected Weapon lastUsedWeapon = null;
     protected Dictionary<WeaponTypes, Weapon> weapons = new Dictionary<WeaponTypes, Weapon>();
 
     protected float uncontrollableTimer = 0.0f;
@@ -95,8 +96,28 @@ public abstract class Character : ObjectBase {
     protected float lootThrowYMax = 450f;
 
     protected float colliderPushAmount = 50f;
-	
-    protected void Update() {
+
+    protected float maxJump = 0;
+    protected float dashCooldown = 0.6f;
+    protected float lastDash = 0;
+    protected float dashDir = 1;
+    protected float minDistToDash = 100f;
+    protected float targetApproachRange;
+    protected float subX = -1f;
+    protected float grenadeCharge = 0f;
+    protected float grenadeChargeRatio = 0f;
+    protected float grenadeThrowMin = 0.25f;
+    protected bool goingdown = false;
+    protected bool satdown = false;
+
+    protected float maxSpeed = 0f;
+    protected float accel = 0f;
+    protected float actualSpeed = 0f;
+    protected float movedir = 0;
+    protected float lastdir = 0;
+    protected bool movedThisFrame = false;
+
+    protected virtual void Update() {
         uncontrollableTimer = Mathf.Clamp(uncontrollableTimer - Time.deltaTime, 0, uncontrollableTimer);
         if (uncontrollableTimer > 0 || forceUncontrollable)
             uncontrollable = true;
@@ -155,6 +176,67 @@ public abstract class Character : ObjectBase {
                 }
             }
         }
+
+        /* 위, 아래로 자유롭게 이동할 수 있도록 윗쪽 블럭과의 충돌을 미리 꺼놓음 */
+        if (Mathf.Abs(GetComponent<Rigidbody2D>().velocity.y) > 0f) {
+            foreach (Collider2D rayvel in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, (box.size.y / 2f + 16f) * Mathf.Sign(GetComponent<Rigidbody2D>().velocity.y)), new Vector2(2000, 8f), 0, Helper.groundLayer)) {
+                if (rayvel != null) {
+                    if (GetComponent<Rigidbody2D>().velocity.y > 0) {
+                        Physics2D.IgnoreCollision(rayvel, box);
+                        Physics2D.IgnoreCollision(rayvel, nofriction);
+                    }
+                    else if (!goingdown) {
+                        Physics2D.IgnoreCollision(rayvel, box, false);
+                        Physics2D.IgnoreCollision(rayvel, nofriction, false);
+                    }
+                }
+            }
+        }
+        else {
+            foreach (Collider2D rayup in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, (box.size.y / 2f + 16f)), new Vector2(2000, 8f), 0, Helper.groundLayer)) {
+                if (rayup != null) {
+                    Physics2D.IgnoreCollision(rayup, box);
+                    Physics2D.IgnoreCollision(rayup, nofriction);
+                }
+            }
+        }
+
+        /* 조종 불가상태에서 돌아왔을 때 Idle 실행*/
+        if (GetUncontrollableTimeLeft() == 0 && state == CharacterStates.Uncontrollable) {
+            SetState(CharacterStates.Idle);
+            anim.SetInteger("State", (int)CharacterStates.Idle);
+        }
+
+        /* 키보드 입력을 유지해야하는 동작들 (걷기, 달리기, 앉기)은 매 프레임마다 Idle로 리셋 */
+        if (anim.GetInteger("State") == (int)CharacterStates.Walk
+            || anim.GetInteger("State") == (int)CharacterStates.Sprint
+            || anim.GetInteger("State") == (int)CharacterStates.Sit) {
+            anim.SetInteger("State", (int)CharacterStates.Idle);
+        }
+
+        /* 투척 동작 관련
+         * 투척 관련 자세가 아닌데 수류탄 게이지가 올라가있으면 캔슬당한 것으로 판정 */
+        if (state != CharacterStates.Throw) {
+            if (grenadeCharge != 0) {
+                OnGrenadeCancelled();
+            }
+        }
+        else {
+            grenadeCharge = Mathf.Clamp(grenadeCharge + Time.deltaTime, 0, GetCurrentStat(CharacterStats.GrenadeFullCharge));
+            grenadeChargeRatio = Mathf.Clamp(grenadeCharge / GetCurrentStat(CharacterStats.GrenadeFullCharge)
+            , grenadeThrowMin, 1);
+        }
+
+
+        /* 앉았을 때 캐릭터 히트박스 감소 */
+        if (state == CharacterStates.Sit) {
+            ModifyHeight(0.65f);
+            satdown = true;
+        }
+        else if(satdown){
+            ModifyHeight(1f);
+            satdown = false;
+        }
     }
 
     protected override void FixedUpdate() {
@@ -204,6 +286,8 @@ public abstract class Character : ObjectBase {
 				droptable.Add(new LootData(subDict.Key, chance, nmin, nmax));
             }
         }
+
+        lastDash = Time.time - dashCooldown;
     }
 
     public void AddBuff(string name, Dictionary<CharacterStats, float> data, bool isAdd, float time = -1) {
@@ -418,19 +502,6 @@ public abstract class Character : ObjectBase {
         return GetBuffedWeaponStat(weaponstats[wep.GetWeaponType()][(int)stat], wep.GetWeaponType(), stat);
     }
 
-    public void AddForce(Vector2 force, bool knockdown = false) {
-        if (GetComponentInParent<MoveObject>() == null)
-            return;
-        GetComponentInParent<MoveObject>().AddForce(force);
-        if (knockdown) {
-            if (force.x > 0)
-                FlipFace(false);
-            else if (force.x < 0)
-                FlipFace(true);
-            KnockDown();
-        }
-    }
-
     public virtual void KnockDown() {
 
     }
@@ -447,7 +518,7 @@ public abstract class Character : ObjectBase {
         forceUncontrollable = b;
     }
 
-    public void SetController(BasicCharacterMovement controller) {
+    public void SetController(Controller controller) {
         basecontroller = controller;
     }
 
@@ -527,7 +598,11 @@ public abstract class Character : ObjectBase {
         return weapons[type];
     }
 
-    public BasicCharacterMovement GetController() {
+    public Weapon GetLastUsedWeapon() {
+        return lastUsedWeapon;
+    }
+
+    public Controller GetController() {
         return basecontroller;
     }
 
@@ -601,5 +676,468 @@ public abstract class Character : ObjectBase {
             }
         }
         DestroyQuietly();
+    }
+
+    /* 이동속도에 비례해서 움직이기.
+     * a 값으로 속도를 조절할 수는 있지만 최대 속도를 넘어설 수는 없음 */
+    public virtual void Move(float a) {
+        movedThisFrame = true;
+        lastdir = movedir;
+        movedir = a;
+        accel = GetCurrentStat(CharacterStats.MoveSpeed) / 10f;
+        maxSpeed = GetCurrentStat(CharacterStats.MoveSpeed);
+        actualSpeed = Mathf.Clamp(actualSpeed + accel, 0, maxSpeed);
+        if (Mathf.Abs(GetComponent<Rigidbody2D>().velocity.x) < Mathf.Abs(movedir * actualSpeed)) {
+            float velX = Mathf.Clamp(movedir * actualSpeed, -maxSpeed, maxSpeed);
+            GetComponent<Rigidbody2D>().velocity = new Vector2(velX, GetComponent<Rigidbody2D>().velocity.y);
+        }
+        else if (movedir * GetComponent<Rigidbody2D>().velocity.x < 0) {
+            float velX = GetComponent<Rigidbody2D>().velocity.x + movedir * actualSpeed;
+            GetComponent<Rigidbody2D>().velocity = new Vector2(velX, GetComponent<Rigidbody2D>().velocity.y);
+        }
+    }
+
+    /* 최고 속도로 즉시 움직일 떄 사용 */
+    public void ForceMove(float a) {
+        maxSpeed = GetCurrentStat(CharacterStats.MoveSpeed);
+        actualSpeed = maxSpeed;
+        Move(a);
+    }
+
+    /* 밀어내기 */
+    public void AddForce(Vector2 force) {
+        GetComponent<Rigidbody2D>().velocity += force;
+    }
+
+    public void AddForce(Vector2 force, bool knockdown = false) {
+        AddForce(force);
+        if (knockdown) {
+            if (force.x > 0)
+                FlipFace(false);
+            else if (force.x < 0)
+                FlipFace(true);
+            KnockDown();
+        }
+    }
+
+    /* y 가속도 강제 오버라이드 */
+    public void SetVelY(float v) {
+        GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, v);
+    }
+
+    protected override void LateUpdate() {
+        base.LateUpdate();
+        if (GetUncontrollableTimeLeft() > 0 || !movedThisFrame || lastdir * movedir < 0) {
+            actualSpeed = 0.0f;
+            return;
+        }
+        movedThisFrame = false;
+        movedir = 0;
+    }
+
+    public virtual void Walk(float dir) {
+        if (GetUncontrollableTimeLeft() > 0
+            || GetState() == CharacterStates.Attack)
+            return;
+        GetAnimator().SetInteger("State", (int)CharacterStates.Walk);
+        if (GetState() != CharacterStates.Sit
+            && GetState() != CharacterStates.Throw)
+            Move(dir * 0.6f);
+        if (dir > 0) {
+            FlipFace(true);
+        }
+        else if (dir < 0) {
+            FlipFace(false);
+        }
+        if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk")) {
+            SetState(CharacterStates.Walk);
+        }
+    }
+
+    public virtual void Sprint(float dir) {
+        if (GetUncontrollableTimeLeft() > 0
+            || GetState() == CharacterStates.Attack)
+            return;
+        GetAnimator().SetInteger("State", (int)CharacterStates.Sprint);
+        if (GetState() != CharacterStates.Sit
+            && GetState() != CharacterStates.Throw
+            && IsOnGround()) {
+            SetState(CharacterStates.Sprint);
+            Move(dir);
+            if (dir > 0) {
+                FlipFace(true);
+            }
+            else if (dir < 0) {
+                FlipFace(false);
+            }
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("jump") || GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("fall")) {
+            Move(dir * 0.6f);
+            if (dir == 1) {
+                FlipFace(true);
+            }
+            else if (dir == -1) {
+                FlipFace(false);
+            }
+        }
+    }
+
+
+    protected bool CanJump() {
+        if (GetUncontrollableTimeLeft() > 0)
+            return false;
+        if (!IsOnGround())
+            return false;
+        return true;
+    }
+
+    public virtual void Jump() {
+        if (!CanJump())
+            return;
+        GetAnimator().SetInteger("State", (int)CharacterStates.Jump);
+    }
+
+    protected void OnJumpEvent() {
+        SetState(CharacterStates.Jump);
+        AddForce(Vector3.up * GetCurrentStat(CharacterStats.JumpPower));
+        GetAnimator().SetBool("DiscardFromAnyState", true);
+    }
+
+    protected void OnFallEvent() {
+        if (GetState() != CharacterStates.Jump) {
+            SetState(CharacterStates.Jump);
+            GetAnimator().SetInteger("State", (int)CharacterStates.Jump);
+            GetAnimator().SetBool("DiscardFromAnyState", true);
+        }
+    }
+
+    protected void OnLandEvent() {
+        SetState(CharacterStates.Idle);
+        GetAnimator().SetBool("DiscardFromAnyState", false);
+        GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
+    }
+
+    /* 이름이 대쉬인데 덤블링임 사실 */
+    protected bool CanDash() {
+        if (GetUncontrollableTimeLeft() > 0)
+            return false;
+        if (!IsOnGround())
+            return false;
+        if (Time.time - lastDash < dashCooldown)
+            return false;
+        return true;
+    }
+
+    /* 방향이 입력이 없다면 백덤블링
+     * 있다면 해당 방향으로 덤블링 */
+    public virtual void Dash(int dir) {
+        
+    }
+
+    /* 덤블링 높이는 점프력에 비례함 */
+    protected void OnTumbleEvent() {
+        if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("tumble_back")) {
+            EffectManager.CreateEffect("effect_tumble_back", transform.position, 0, null, !IsFacingRight());
+            EffectManager.CreateEffect("effect_tumble_back2", transform.position, 0, null, !IsFacingRight());
+            EffectManager.CreateEffect("effect_tumble_backf", transform.position, 0, transform, !IsFacingRight());
+            ParticleManager.instance.CreateParticle("particle_tumb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            ParticleManager.instance.CreateParticle("particle_tumb2", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            ParticleManager.instance.CreateParticle("particle_tumbb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            ParticleManager.instance.CreateParticle("particle_tumbb", transform.position, (int)Mathf.Sign(transform.localScale.x), !IsFacingRight());
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("tumble_front")) {
+            EffectManager.CreateEffect("effect_tumble_front", transform.position, 0, null, !IsFacingRight());
+            EffectManager.CreateEffect("effect_tumble_front2", transform.position, 0, null, !IsFacingRight());
+            EffectManager.CreateEffect("effect_tumble_frontf", transform.position, 0, transform, !IsFacingRight());
+            ParticleManager.instance.CreateParticle("particle_tumb", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            ParticleManager.instance.CreateParticle("particle_tumb2", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            ParticleManager.instance.CreateParticle("particle_tumbf", transform.position, (int)Mathf.Sign(transform.localScale.x), transform);
+            ParticleManager.instance.CreateParticle("particle_tumbf", transform.position, (int)Mathf.Sign(transform.localScale.x), !IsFacingRight());
+        }
+
+        lastDash = Time.time;
+        AddUncontrollableTime(0.25f);
+        ForceMove(dashDir);
+        AddForce(Vector3.up * GetCurrentStat(CharacterStats.JumpPower) * 0.15f
+            + Vector3.right * dashDir * GetCurrentStat(CharacterStats.JumpPower) * 0.7f);
+        SetFlag(CharacterFlags.Invincible);
+        gameObject.layer = LayerMask.NameToLayer("CharactersShifting");
+        GetAnimator().SetBool("DiscardFromAnyState", true);
+    }
+
+    protected void OnTumbleInvincibilityEndEvent() {
+        RemoveFlag(CharacterFlags.Invincible);
+        gameObject.layer = LayerMask.NameToLayer("Characters");
+    }
+
+    protected void OnTumbleEndEvent() {
+        SetState(CharacterStates.Idle);
+        GetAnimator().SetBool("DiscardFromAnyState", false);
+        GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
+    }
+
+    public void Sit() {
+        if (GetState() == CharacterStates.Uncontrollable)
+            return;
+        GetAnimator().SetInteger("State", (int)CharacterStates.Sit);
+    }
+
+    /* 앉으면 가속도 초기화 (슬라이딩 방지)*/
+    protected void OnSit() {
+        ForceMove(0);
+        SetState(CharacterStates.Sit);
+        GetAnimator().SetBool("DiscardFromAnyState", true);
+    }
+
+    protected void OnSitLoop() {
+        SetState(CharacterStates.Sit);
+    }
+
+    protected void OnStandup() {
+        SetState(CharacterStates.Idle);
+        GetAnimator().SetBool("DiscardFromAnyState", false);
+    }
+
+    /* 맵 레이어는 Ground와 Ceiling으로 나뉘는데,
+     * Ceiling은 어떤 상황에서도 뚫리지 않는 지형
+     * Ground는 자유자재로 위아래로 돌아다닐 수 있는 지형 */
+    protected bool CanGoDown() {
+        return Physics2D.OverlapBox((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 16f), new Vector2(box.size.x, 16f), 0, Helper.ceilingLayer) == null;
+    }
+
+    public void GoDown() {
+        if (!CanGoDown())
+            return;
+        goingdown = true;
+        StartCoroutine(GoDownEnd());
+        foreach (Collider2D raydown in Physics2D.OverlapBoxAll((Vector2)transform.position + box.offset + new Vector2(0, -box.size.y / 2f), new Vector2(2000, 64f), 0, Helper.groundLayer)) {
+            if (raydown != null) {
+                Physics2D.IgnoreCollision(raydown, box);
+                Physics2D.IgnoreCollision(raydown, nofriction);
+            }
+        }
+    }
+    protected IEnumerator GoDownEnd() {
+        yield return new WaitWhile(() => IsOnGround());
+        yield return new WaitWhile(() => !IsOnGround() || GetComponentInParent<Rigidbody2D>().velocity.y < -1f);
+        goingdown = false;
+    }
+
+    protected void OnIdle() {
+        SetState(CharacterStates.Idle);
+        GetAnimator().SetBool("DiscardFromAnyState", false);
+    }
+
+    /* 공격 이벤트 */
+    protected virtual void OnAttackEvent(string eventname) {
+        GetAnimator().SetInteger("State", (int)CharacterStates.Attack);
+        SetState(CharacterStates.Attack);
+        if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("gunkata")) {
+            GetWeapon(WeaponTypes.Pistol).OnAttack(eventname);
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("fist")) {
+            GetWeapon(WeaponTypes.Fist).OnAttack(eventname);
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("sword")) {
+            GetWeapon(WeaponTypes.Sword).OnAttack(eventname);
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("ai")) {
+            GetWeapon(WeaponTypes.AI).OnAttack(eventname);
+        }
+    }
+
+    /* 기타 무기 이벤트 (타이밍에 맞게 특정 행동을 하기 위함) */
+    protected virtual void OnWeaponEvent(string eventname) {
+        if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("gunkata")) {
+            GetWeapon(WeaponTypes.Pistol).OnWeaponEvent(eventname);
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("fist")) {
+            GetWeapon(WeaponTypes.Fist).OnWeaponEvent(eventname);
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("sword")) {
+            GetWeapon(WeaponTypes.Sword).OnWeaponEvent(eventname);
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("ai")) {
+            GetWeapon(WeaponTypes.AI).OnWeaponEvent(eventname);
+        }
+    }
+
+    /* 캐릭터에 부착된 이펙트 생성 (애니메이션 이벤트용) */
+    protected void OnParentedEffectEvent(string effect) {
+        EffectManager.CreateEffect(effect, transform.position, 0, transform, !IsFacingRight());
+    }
+
+    /* 캐릭터와 독립된 이펙트 생성 (애니메이션 이벤트용) */
+    protected void OnEffectEvent(string effect) {
+        EffectManager.CreateEffect(effect, transform.position, 0, null, !IsFacingRight());
+    }
+
+    protected void OnChargeGrenade() {
+        GetAnimator().SetInteger("State", (int)CharacterStates.Throw);
+        SetState(CharacterStates.Throw);
+    }
+
+    protected void OnGrenadeCancelled() {
+        if (GetState() == CharacterStates.Throw)
+            GetAnimator().Play("idle_loop");
+        grenadeCharge = 0;
+        grenadeChargeRatio = 0;
+    }
+
+    /* 수류탄 투척 함수.
+     * 현재는 무조건 기본 수류탄이 나가도록 돼있지만
+     * 차후 인벤토리에서 수류탄 갯수를 확인하여 해당 수류탄을 던질 수 있도록 바꿀 계획 */
+    protected void OnThrowGrenade(string className) {
+        JDictionary grenadeData = GameDataManager.instance.RootData[className];
+
+        //Get grenade class, not yet implemented for now.
+        Vector2 throwpos = (Vector2)transform.position +
+            new Vector2(
+                grenadeData["MuzzlePos"]["X"].Value<float>() * GetFacingDirection(),
+                grenadeData["MuzzlePos"]["Y"].Value<float>()
+                );
+        float throwang = grenadeData["ThrowAngle"].Value<float>();
+        GiveWeapon("weapon_grenade");
+        Weapon grenade = GetWeapon(WeaponTypes.Throwable);
+        BulletManager.CreateThrowable("throwable_grenade", throwpos, this, grenade,
+            GetCurrentStat(CharacterStats.GrenadeThrowPower) * grenadeChargeRatio,
+            GetCurrentStat(grenade, WeaponStats.ExplosionRadius), 90 - (90 - throwang) * GetFacingDirection(), 300,
+            grenade.GetEssentialStats());
+        RemoveWeapon(WeaponTypes.Throwable);
+    }
+
+    /* 피격 이벤트 */
+    protected virtual void OnHitEvent(int invincible) {
+        GetAnimator().SetInteger("State", 8);
+        SetState(CharacterStates.Uncontrollable);
+        if (invincible == 1)
+            SetFlag(CharacterFlags.Invincible);
+        GetAnimator().SetBool("DiscardFromAnyState", true);
+        if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("knockout"))
+            StartCoroutine(OnKnockoutRecoverEvent(invincible));
+        else
+            StartCoroutine(OnHitRecoverEvent(GetUncontrollableTimeLeft() + 0.25f, invincible));
+        if (IsAI() && !IsBoss())
+            basecontroller.ResetAttackTimer();
+    }
+
+    /* 피격 회복 이벤트 */
+    protected IEnumerator OnHitRecoverEvent(float delay, int invincible) {
+        yield return new WaitForSeconds(delay);
+        if (invincible == 1)
+            RemoveFlag(CharacterFlags.Invincible);
+        if (GetAnimator().GetInteger("State") == 8)
+            GetAnimator().SetBool("DiscardFromAnyState", false);
+    }
+
+    protected IEnumerator OnKnockoutRecoverEvent(int invincible) {
+        yield return new WaitWhile(() => GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("knockout"));
+        SetUncontrollable(false);
+        if (invincible == 1)
+            RemoveFlag(CharacterFlags.Invincible);
+        GetAnimator().SetBool("DiscardFromAnyState", false);
+    }
+
+    /* 다양한 용도로 쓸 수 있는 좌표를 향해 가기 함수
+     * Navmesh같은걸 이용한다면 좀 더 멋드러지고 효과적이겠지만
+     * 일단은 이 알고리즘을 쓰도록 함. */
+    public virtual void Follow(Vector3 pos, float xradius) {
+        float dx = pos.x - transform.position.x;
+        float dy = pos.y - transform.position.y;
+        float dist = Mathf.Abs(dx);
+        int dir = (int)Mathf.Sign(dx);
+        maxJump = Mathf.Pow(GetCurrentStat(CharacterStats.JumpPower), 2) / 3924f;
+        if (GetUncontrollableTimeLeft() == 0) {
+            GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
+            RaycastHit2D rayup = Physics2D.Raycast(transform.position, new Vector2(0, 1), maxJump, Helper.groundLayer);
+            RaycastHit2D rayunder = Physics2D.Raycast((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 33), new Vector2(0, -1), 128f, Helper.groundLayer);
+            if (dist > xradius) {
+                subX = -1;
+                if (minDistToDash != -1 && dist > minDistToDash && CanDash()) {
+                    Dash(dir);
+                }
+                else {
+                    Walk(dir);
+                }
+            }
+            else {
+                if (dy > 1f) {
+                    if (rayup.collider == null) {
+                        if (subX == -1) {
+                            float minXDist = 999999;
+                            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Ground")) {
+                                float odx = obj.transform.position.x - transform.position.x;
+                                float ody = obj.transform.position.y - transform.position.y;
+                                if (ody < 0 || ody > maxJump || odx * dx < 0 || Mathf.Abs(odx) >= 600)
+                                    continue;
+                                else {
+                                    if (minXDist > Mathf.Abs(odx)) {
+                                        subX = obj.transform.position.x;
+                                        minXDist = Mathf.Abs(odx);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (subX != -1) {
+                        if (Mathf.Abs(subX - transform.position.x) < 3f) {
+                            subX = -1;
+                            return;
+                        }
+                        dir = (int)Mathf.Sign(subX - transform.position.x);
+                        Walk(dir);
+                    }
+                    else {
+                        Walk(dir);
+                    }
+                }
+                else if (dy < -1f) {
+                    if (rayunder.collider == null && subX == -1) {
+                        float minXDist = 999999;
+                        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Ground")) {
+                            float odx = obj.transform.position.x - transform.position.x;
+                            float ody = obj.transform.position.y - transform.position.y;
+                            if (ody > -32 || odx * dx < 0 || Mathf.Abs(odx) >= 600)
+                                continue;
+                            else {
+                                if (minXDist > Mathf.Abs(odx)) {
+                                    subX = obj.transform.position.x;
+                                    minXDist = Mathf.Abs(odx);
+                                }
+                            }
+                        }
+                    }
+                    else if (subX != -1) {
+                        if (Mathf.Abs(subX - transform.position.x) < 3f) {
+                            subX = -1;
+                            return;
+                        }
+                        dir = (int)Mathf.Sign(subX - transform.position.x);
+                        Walk(dir);
+                    }
+                    else {
+                        Walk(dir);
+                    }
+                }
+            }
+            if (Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(box.size.x / 2f * GetFacingDirection(), 4 - box.size.y / 2f), new Vector2(16, 5), 0, Helper.mapLayer) != null
+                            && Physics2D.OverlapBox((Vector2)transform.position + box.offset + new Vector2(box.size.x / 2f * GetFacingDirection(), maxJump - box.size.y / 2f), new Vector2(16, 5), 0, Helper.mapLayer) == null) {
+                Jump();
+            }
+            if (Mathf.Abs(dy) > 32f && IsOnGround() && GetState() != CharacterStates.Jump) {
+                if (dy < -32) {
+                    if (CanGoDown()) {
+                        GoDown();
+                    }
+                }
+                else if (rayup.collider != null && dy > 32) {
+                    Jump();
+                    subX = -1;
+                }
+            }
+        }
+        else {
+            GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
+        }
     }
 }

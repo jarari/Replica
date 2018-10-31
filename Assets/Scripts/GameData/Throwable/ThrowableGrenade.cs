@@ -20,7 +20,7 @@ class ThrowableGrenade : Throwable{
         if (!init) return;
         cookTime -= Time.fixedDeltaTime;
         if(cookTime <= 0) {
-            Destroy(gameObject);
+            PoolDestroy();
             init = false;
         }
         if (flying) {

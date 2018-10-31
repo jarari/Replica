@@ -348,8 +348,7 @@
     <Compile Include="Assets\Scripts\EntityController\AI\AIBossController.cs" />
     <Compile Include="Assets\Scripts\EntityController\BulletManager.cs" />
     <Compile Include="Assets\Scripts\EntityController\CharacterManager.cs" />
-    <Compile Include="Assets\Scripts\EntityController\Common\BasicCharacterMovement.cs" />
-    <Compile Include="Assets\Scripts\EntityController\Common\MoveObject.cs" />
+    <Compile Include="Assets\Scripts\EntityController\Common\Controller.cs" />
     <Compile Include="Assets\Scripts\EntityController\EffectManager.cs" />
     <Compile Include="Assets\Scripts\EntityController\EntityManager.cs" />
     <Compile Include="Assets\Scripts\EntityController\EventManager.cs" />

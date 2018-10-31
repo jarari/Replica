@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* 플레이어 조작 */
-public class GeneralControl : BasicCharacterMovement {
+public class GeneralControl : Controller {
     private float attackPostComboTimer = 0;
     private float attackPostComboTime = 0.075f;
     private ComboData currentCombo;
@@ -85,24 +85,6 @@ public class GeneralControl : BasicCharacterMovement {
         }
     }
 
-    protected override void OnAttackEvent(string eventname) {
-        base.OnAttackEvent(eventname);
-        Weapon wep = null;
-        if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("gunkata")) {
-            wep = character.GetWeapon(WeaponTypes.Pistol);
-        }
-        else if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("fist")) {
-            wep = character.GetWeapon(WeaponTypes.Fist);
-        }
-        else if (character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("sword")) {
-            wep = character.GetWeapon(WeaponTypes.Sword);
-        }
-        if (wep != null) {
-            attackPostComboTimer = 0;
-            nextAttack = Time.time + 1f / character.GetCurrentStat(wep, WeaponStats.AttackSpeed);
-        }
-    }
-
     protected override void Update() {
         base.Update();
 
@@ -152,7 +134,7 @@ public class GeneralControl : BasicCharacterMovement {
 				//이동
                 if (Input.GetKey(KeyCode.RightArrow)) {
 					if(sprint == 1) {
-						Sprint(1);
+						character.Sprint(1);
 					}
 					else {
 						if(sprintDoubleTabTimerToggle) {
@@ -167,7 +149,7 @@ public class GeneralControl : BasicCharacterMovement {
 						}
 						else {
 							sprint = 0;
-							Walk(1);
+                            character.Walk(1);
 							walk = 1;
 						}
 						canSprint = false; // 스프린트 중 방향 전환 시 스프린트 유지 제한
@@ -175,7 +157,7 @@ public class GeneralControl : BasicCharacterMovement {
                 }
                 else if (Input.GetKey(KeyCode.LeftArrow)) {
 					if(sprint == -1) {
-						Sprint(-1);
+                        character.Sprint(-1);
 					}
 					else {
 						if(sprintDoubleTabTimerToggle) {
@@ -190,7 +172,7 @@ public class GeneralControl : BasicCharacterMovement {
 						}
 						else {
 							sprint = 0;
-							Walk(-1);
+                            character.Walk(-1);
 							walk = -1;
 						}
 						canSprint = false;
@@ -209,37 +191,35 @@ public class GeneralControl : BasicCharacterMovement {
 
                 if (Input.GetKeyDown(KeyCode.LeftShift)) {
                     if (Input.GetKey(KeyCode.LeftArrow)) {
-                        Dash(-1);
+                        character.Dash(-1);
                     }
                     else if(Input.GetKey(KeyCode.RightArrow)){
-                        Dash(1);
+                        character.Dash(1);
                     }
                     else {
-                        Dash(0);
+                        character.Dash(0);
                     }
                 }
 
                 if (character.GetState() != CharacterStates.Attack
                     && character.GetState() != CharacterStates.Throw) {
                     if (Input.GetKey(KeyCode.DownArrow)) {
-                        Sit();
+                        character.Sit();
                     }
 
                     if (Input.GetKeyDown(KeyCode.Space)) {
                         if (Input.GetKey(KeyCode.DownArrow)) {
-                            if (CanGoDown()) {
-                                GoDown();
-                            }
+                            character.GoDown();
                         }
                         else {
-                            Jump();
+                            character.Jump();
                         }
                     }
                 }
                 else if (character.GetState() == CharacterStates.Attack
                     && Input.GetKey(KeyCode.DownArrow)
                     && character.GetAnimator().GetCurrentAnimatorStateInfo(0).IsName("HG Continue"))
-                    Sit();
+                    character.Sit();
 
                 if(keyCombos.Count == 0) {
                     comboLeft = KeyCode.LeftArrow;
@@ -422,18 +402,14 @@ public class GeneralControl : BasicCharacterMovement {
 			if(Input.GetKeyDown(KeyCode.Delete)) {
 				LevelManager.instance.DestroyMap();
 			}
-            if(character.GetState() == CharacterStates.Throw) {
-                string throwPose = "throw_mid";
-                if (Input.GetKey(KeyCode.DownArrow))
-                    throwPose = "throw_down";
-                else if (Input.GetKey(KeyCode.UpArrow))
-                    throwPose = "throw_up";
-                PlayerHUD.DrawGrenadeTrajectory(throwPose, grenadeChargeRatio);
-            }
         }
         else {
             if (Input.GetKeyDown(KeyCode.Escape))
                 MenuManager.instance.GoBack();
         }
+    }
+
+    public override void ResetAttackTimer() {
+        nextAttack = Time.time + 1f / character.GetCurrentStat(character.GetLastUsedWeapon(), WeaponStats.AttackSpeed);
     }
 }

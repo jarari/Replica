@@ -117,7 +117,7 @@ public class Weapon : ObjectBase {
     public virtual void OnAttack(string eventname) {
         if (!owner.IsOnGround()) {
             if(owner.GetComponent<Rigidbody2D>().velocity.y < 300)
-                owner.GetController().SetVelY(300);
+                owner.SetVelY(300);
         }
 
 		JDictionary attackData = GameDataManager.instance.RootData[eventname];
@@ -137,7 +137,7 @@ public class Weapon : ObjectBase {
 				StartCoroutine(DelayedCharge(time / numOfFrames, chargeAmount));
 			}
 			else {
-				owner.GetController().ForceMove(0);
+				owner.ForceMove(0);
 				owner.AddForce(Vector2.right * chargeAmount * owner.GetFacingDirection());
 			}
 		}
@@ -245,7 +245,7 @@ public class Weapon : ObjectBase {
         yield return new WaitWhile(() => owner.GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime < normalizedtime);
         if (owner.GetState() != CharacterStates.Attack)
             yield break;
-        owner.GetController().ForceMove(0);
+        owner.ForceMove(0);
         owner.AddForce(Vector2.right * chargeAmount * owner.GetFacingDirection());
     }
 

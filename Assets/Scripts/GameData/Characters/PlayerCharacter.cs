@@ -29,4 +29,34 @@ public class PlayerCharacter : Character {
         SetUncontrollable(true);
         SetState(CharacterStates.Uncontrollable);
     }
+
+    protected override void OnAttackEvent(string eventname) {
+        base.OnAttackEvent(eventname);
+        Weapon wep = null;
+        if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("gunkata")) {
+            wep = GetWeapon(WeaponTypes.Pistol);
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("fist")) {
+            wep = GetWeapon(WeaponTypes.Fist);
+        }
+        else if (GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("sword")) {
+            wep = GetWeapon(WeaponTypes.Sword);
+        }
+        if (wep != null) {
+            lastUsedWeapon = wep;
+            basecontroller.ResetAttackTimer();
+        }
+    }
+
+    protected override void Update() {
+        base.Update();
+        if(state == CharacterStates.Throw) {
+            string throwPose = "throw_mid";
+            if (Input.GetKey(KeyCode.DownArrow))
+                throwPose = "throw_down";
+            else if (Input.GetKey(KeyCode.UpArrow))
+                throwPose = "throw_up";
+            PlayerHUD.DrawGrenadeTrajectory(throwPose, grenadeChargeRatio);
+        }
+    }
 }
