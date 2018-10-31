@@ -6,6 +6,11 @@ using UnityEngine;
 
 /* 플레이어 캐릭터 클래스 */
 public class PlayerCharacter : Character {
+
+    public override void Initialize(string classname) {
+        base.Initialize(classname);
+        minDistToDash = 100f;
+    }
     protected override void OnHealthChanged(float delta) {
         base.OnHealthChanged(delta);
         if(delta < 0) {

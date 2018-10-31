@@ -101,7 +101,7 @@ public abstract class Character : ObjectBase {
     protected float dashCooldown = 0.6f;
     protected float lastDash = 0;
     protected float dashDir = 1;
-    protected float minDistToDash = 100f;
+    protected float minDistToDash = -1f;
     protected float targetApproachRange;
     protected float subX = -1f;
     protected float grenadeCharge = 0f;
@@ -964,7 +964,7 @@ public abstract class Character : ObjectBase {
 
     /* 캐릭터에 부착된 이펙트 생성 (애니메이션 이벤트용) */
     protected void OnParentedEffectEvent(string effect) {
-        EffectManager.CreateEffect(effect, transform.position, 0, transform, !IsFacingRight());
+        EffectManager.CreateEffect(effect, transform.position, 0, transform, false);
     }
 
     /* 캐릭터와 독립된 이펙트 생성 (애니메이션 이벤트용) */
