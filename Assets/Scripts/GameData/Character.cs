@@ -581,14 +581,13 @@ public abstract class Character : ObjectBase {
         lscale.x = gun_obj.transform.localScale.x * Mathf.Sign(transform.localScale.x);
         gun_obj.transform.localScale = lscale;
         gun_obj.transform.SetParent(transform);
-        if (EventManager.Event_WeaponEquipped != null)
-            EventManager.Event_WeaponEquipped(this, wep);
+
+		EventManager.OnWeaponEquipped(this, wep);
     }
 
     public void RemoveWeapon(WeaponTypes type) {
         if (weapons.ContainsKey(type)) {
-            if (EventManager.Event_WeaponUnequipped != null)
-                EventManager.Event_WeaponUnequipped(this, weapons[type]);
+			EventManager.OnWeaponUnEquipped(this, weapons[type]);
             Destroy(weapons[type].gameObject);
             weapons.Remove(type);
         }
@@ -614,19 +613,18 @@ public abstract class Character : ObjectBase {
 
 		if (stagger > 0) {
             OnStagger(stagger);
-            if (EventManager.Event_CharacterStagger != null)
-                EventManager.Event_CharacterStagger(this, attacker, stagger);
+
+			EventManager.OnCharacterStagger(this, attacker, stagger);
         }
 
 		ModStat(CharacterStats.Health, -damage);
 
-		if (EventManager.Event_CharacterHit != null)
-            EventManager.Event_CharacterHit(this, attacker, damage, stagger);
+		EventManager.OnCharacterHit(this, attacker, damage, stagger);
 
 		if (GetCurrentStat(CharacterStats.Health) == 0) {
             OnDeath();
-            if (EventManager.Event_CharacterKilled != null)
-                EventManager.Event_CharacterKilled(this, attacker);
+
+			EventManager.OnCharacterKilled(this, attacker);
         }
     }
 
@@ -655,8 +653,7 @@ public abstract class Character : ObjectBase {
     }
 
     protected virtual void OnHealthChanged(float delta) {
-        if (EventManager.Event_CharacterHealthChanged != null)
-            EventManager.Event_CharacterHealthChanged(this, delta);
+		EventManager.OnCharacterHealthChanged(this, delta);
     }
 
     protected virtual void OnDeath() {

@@ -15,6 +15,7 @@ public static class LootManager {
     public static List<Loot> GetLoots() {
 		return loots;
 	}
+
 	public static void RemoveLoot(Loot loot) {
 		loots.Remove(loot);
         em.AddLootToPool(loot.gameObject);
@@ -26,16 +27,20 @@ public static class LootManager {
 			return null;
 
         GameObject loot_obj = em.GetLootFromPool();
-        loot_obj.transform.position = pos;
-        string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
-        if (script == null || script.Length == 0)
+
+		string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
+        if (string.IsNullOrEmpty(script))
             script = "Loot";
         Loot loot = (Loot)loot_obj.AddComponent(Type.GetType(script));
-        loot.GetComponent<Rigidbody2D>().velocity += vel;
+		loot.Initialize(classname, count);
+
+		loot_obj.transform.position = pos;
         Vector3 ang = loot_obj.transform.eulerAngles;
         ang.z = angle;
-        loot_obj.transform.eulerAngles = ang;
-        loot.Initialize(classname, count);
+		loot_obj.transform.eulerAngles = ang;
+		
+		loot.GetComponent<Rigidbody2D>().velocity += vel;
+
 		loots.Add(loot);
 
         return loot_obj;

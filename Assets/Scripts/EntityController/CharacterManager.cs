@@ -29,8 +29,8 @@ public static class CharacterManager {
         character_obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = sortorder;
         Characters.Add(character);
         InventoryManager.CreateInventory(character_obj);
-        if(EventManager.Event_CharacterCreated != null)
-            EventManager.Event_CharacterCreated(character, pos);
+
+		EventManager.OnCharacterCreated(character, pos);
 
         return character;
     }
@@ -75,8 +75,8 @@ public static class CharacterManager {
         Characters.Remove(c);
         em.AddCharacterToPool(c.gameObject);
         UnityEngine.Object.Destroy(c);
-        if (EventManager.Event_CharacterDeath != null)
-            EventManager.Event_CharacterDeath(c);
+
+		EventManager.OnCharacterDeath(c);
     }
 
     public static Character GetPlayer() {

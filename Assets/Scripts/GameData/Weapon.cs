@@ -106,8 +106,7 @@ public class Weapon : ObjectBase {
         else if (bulletData["Type"].Value<string>() == "laser")
             BulletManager.CreateLaser(bulletclass, GetMuzzlePos(), owner, this, 90 - ang * owner.GetFacingDirection(), GetEssentialStats());
 
-        if (EventManager.Event_WeaponFire != null)
-            EventManager.Event_WeaponFire(owner, this, bulletclass);
+		EventManager.OnWeaponFire(owner, this, bulletclass);
     }
 
     public void CreateEffect(string effectname) {
@@ -190,8 +189,8 @@ public class Weapon : ObjectBase {
 			//	StartCoroutine(HitCheck(time / numOfFrames, pos, area, eventname));
 			//}
 		}
-        if (EventManager.Event_WeaponAttack != null)
-            EventManager.Event_WeaponAttack(owner, this, eventname);
+
+		EventManager.OnWeaponAttack(owner, this, eventname);
         /*Dictionary<CharacterStats, float> moveSpeedDebuff = new Dictionary<CharacterStats, float>();
         moveSpeedDebuff.Add(CharacterStats.MoveSpeed, -99);
         owner.AddBuff("debuff_ms_attack", moveSpeedDebuff, false, owner.GetAnimator().GetCurrentAnimatorStateInfo(0).length);*/
@@ -282,7 +281,6 @@ public class Weapon : ObjectBase {
     }
 
     public virtual void OnWeaponEvent(string eventname) {
-        if (EventManager.Event_WeaponEvent != null)
-            EventManager.Event_WeaponEvent(owner, this, eventname);
+		EventManager.OnWeaponEvent(owner, this, eventname);
     }
 }

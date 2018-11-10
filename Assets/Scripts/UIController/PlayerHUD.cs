@@ -28,7 +28,8 @@ public static class PlayerHUD {
         uimanager.RescaleUI("ammo_gb", 1, 1);
         uimanager.CreateText("ammo_b", new Vector2(125, 940), "0", 50, 50);
         uimanager.CreateText("ammo_g", new Vector2(232, 940), "0", 50, 50);
-        EventManager.RegisterEvent("HUD_UpdateHealth", new EventManager.OnCharacterHealthChanged(UpdateHealth));
+
+        EventManager.RegisterEvent("HUD_UpdateHealth", new EventManager.CharacterHealthChanged(UpdateHealth));
     }
 
     public static void DrawGrenadeTrajectory(string pose, float chargeAmount) {

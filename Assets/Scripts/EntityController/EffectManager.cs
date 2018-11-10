@@ -23,42 +23,42 @@ public static class EffectManager {
 
     public static void CreateEffect(string classname, Vector3 pos, float angle, Transform parent = null, bool flip = false) {
 		if(!LevelManager.instance.isMapActive) return;
+
         GameObject effect_obj = em.GetEffectFromPool();
         effect_obj.transform.position = pos;
+
         Vector3 ang = effect_obj.transform.eulerAngles;
         ang.z = angle;
         effect_obj.transform.eulerAngles = ang;
+
         effect_obj.GetComponent<SpriteRenderer>().flipX = flip;
         effect_obj.GetComponent<Effect>().Initialize(classname);
         effect_obj.GetComponent<Rigidbody2D>().velocity = new Vector2();
+
         if (parent != null) {
             effect_obj.transform.SetParent(parent);
         }
+		
     }
 
-    public static void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, int dir, Transform parent = null) {
+    public static void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, float angle, int dir = 1, Transform parent = null) {
 		if(!LevelManager.instance.isMapActive) return;
+
         GameObject effect_obj = em.GetEffectFromPool();
+
         effect_obj.transform.position = pos;
+
         Vector3 lscale = effect_obj.transform.localScale;
         lscale.x = lscale.x * dir;
         effect_obj.transform.localScale = lscale;
-        effect_obj.GetComponent<Effect>().Initialize(classname);
-        effect_obj.GetComponent<Rigidbody2D>().velocity = vel;
-        if (parent != null) {
-            effect_obj.transform.SetParent(parent);
-        }
-    }
 
-    public static void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, float angle, Transform parent = null) {
-		if(!LevelManager.instance.isMapActive) return;
-        GameObject effect_obj = em.GetEffectFromPool();
-        effect_obj.transform.position = pos;
-        Vector3 ang = effect_obj.transform.eulerAngles;
-        ang.z = angle;
-        effect_obj.transform.eulerAngles = ang;
-        effect_obj.GetComponent<Effect>().Initialize(classname);
+		Vector3 ang = effect_obj.transform.eulerAngles;
+		ang.z = angle;
+		effect_obj.transform.eulerAngles = ang;
+
+		effect_obj.GetComponent<Effect>().Initialize(classname);
         effect_obj.GetComponent<Rigidbody2D>().velocity = vel;
+
         if (parent != null) {
             effect_obj.transform.SetParent(parent);
         }

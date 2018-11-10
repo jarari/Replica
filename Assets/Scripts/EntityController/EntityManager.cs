@@ -14,6 +14,13 @@ public class EntityManager : MonoBehaviour {
     private int max_effects = 10000;
     private int max_loots = 100;
 
+	private GameObject pool_bullets_object;
+	private GameObject pool_projectiles_object;
+	private GameObject pool_lasers_object;
+	private GameObject pool_characters_object;
+	private GameObject pool_effects_object;
+	private GameObject pool_loots_object;
+
     private Stack<GameObject> pool_bullets;
     private Stack<GameObject> pool_projectiles;
     private Stack<GameObject> pool_lasers;
@@ -36,6 +43,13 @@ public class EntityManager : MonoBehaviour {
     }
 
     private void InitializePools() {
+		pool_bullets_object = new GameObject("Pool_Bullets");
+		pool_projectiles_object = new GameObject("Pool_Projectiles");
+		pool_lasers_object = new GameObject("Pool_Lasers");
+		pool_characters_object = new GameObject("Pool_Characters");
+		pool_effects_object = new GameObject("Pool_Effects");
+		pool_loots_object = new GameObject("Pool_Loots");
+
         pool_bullets = new Stack<GameObject>(max_bullets);
         pool_projectiles = new Stack<GameObject>(max_projectiles);
         pool_lasers = new Stack<GameObject>(max_lasers);
@@ -45,45 +59,56 @@ public class EntityManager : MonoBehaviour {
     }
 
     private void FillPoolsWithObjects() {
+		Object prefabToLoad;
+
+		prefabToLoad = Resources.Load("Prefab/Bullet");
         for(int i = 0; i < max_bullets; i++) {
-            GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/Bullet"), new Vector3(), new Quaternion());
-            AddBulletToPool(obj);
+			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
+			AddBulletToPool(obj);
         }
-        for (int i = 0; i < max_projectiles; i++) {
-            GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/Projectile"), new Vector3(), new Quaternion());
-            AddProjectileToPool(obj);
+
+		prefabToLoad = Resources.Load("Prefab/Projectile");
+		for (int i = 0; i < max_projectiles; i++) {
+			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
+			AddProjectileToPool(obj);
         }
-        for (int i = 0; i < max_lasers; i++) {
-            GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/Laser"), new Vector3(), new Quaternion());
-            AddLaserToPool(obj);
+
+		prefabToLoad = Resources.Load("Prefab/Laser");
+		for (int i = 0; i < max_lasers; i++) {
+			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
+			AddLaserToPool(obj);
         }
-        for (int i = 0; i < max_characters; i++) {
-            GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/Character"), new Vector3(), new Quaternion());
-            AddCharacterToPool(obj);
+
+		prefabToLoad = Resources.Load("Prefab/Character");
+		for (int i = 0; i < max_characters; i++) {
+			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
+			AddCharacterToPool(obj);
         }
-        for (int i = 0; i < max_effects; i++) {
-            GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/Effect"), new Vector3(), new Quaternion());
-            AddEffectToPool(obj);
+
+		prefabToLoad = Resources.Load("Prefab/Effect");
+		for (int i = 0; i < max_effects; i++) {
+			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
+			AddEffectToPool(obj);
         }
-        for (int i = 0; i < max_loots; i++) {
-            GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/Loot"), new Vector3(), new Quaternion());
-            AddLootToPool(obj);
+
+		prefabToLoad = Resources.Load("Prefab/Loot");
+		for (int i = 0; i < max_loots; i++) {
+			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
+			AddLootToPool(obj);
         }
     }
 
     public GameObject GetBulletFromPool() {
         if(pool_bullets.Count > 0) {
             GameObject obj = pool_bullets.Pop();
+
             obj.SetActive(true);
             return obj;
         }
-        Debug.Log("Cannot create more bullets.");
-        return null;
-    }
 
-    public void AddBulletToPool(GameObject obj) {
-        obj.SetActive(false);
-        pool_bullets.Push(obj);
+        Debug.Log("Cannot create more bullets.");
+
+        return null;
     }
 
     public GameObject GetProjectileFromPool() {
@@ -92,72 +117,97 @@ public class EntityManager : MonoBehaviour {
             obj.SetActive(true);
             return obj;
         }
-        Debug.Log("Cannot create more projectiles.");
-        return null;
-    }
 
-    public void AddProjectileToPool(GameObject obj) {
-        obj.SetActive(false);
-        pool_projectiles.Push(obj);
+        Debug.Log("Cannot create more projectiles.");
+
+        return null;
     }
 
     public GameObject GetLaserFromPool() {
         if (pool_lasers.Count > 0) {
             GameObject obj = pool_lasers.Pop();
             obj.SetActive(true);
+
             return obj;
         }
-        Debug.Log("Cannot create more lasers.");
-        return null;
-    }
 
-    public void AddLaserToPool(GameObject obj) {
-        obj.SetActive(false);
-        pool_lasers.Push(obj);
+        Debug.Log("Cannot create more lasers.");
+
+        return null;
     }
 
     public GameObject GetCharacterFromPool() {
         if (pool_characters.Count > 0) {
             GameObject obj = pool_characters.Pop();
             obj.SetActive(true);
+
             return obj;
         }
-        Debug.Log("Cannot create more characters.");
-        return null;
-    }
 
-    public void AddCharacterToPool(GameObject obj) {
-        obj.SetActive(false);
-        pool_characters.Push(obj);
+        Debug.Log("Cannot create more characters.");
+
+        return null;
     }
 
     public GameObject GetEffectFromPool() {
         if (pool_effects.Count > 0) {
             GameObject obj = pool_effects.Pop();
             obj.SetActive(true);
+
             return obj;
         }
-        Debug.Log("Cannot create more effects.");
-        return null;
-    }
 
-    public void AddEffectToPool(GameObject obj) {
-        obj.SetActive(false);
-        pool_effects.Push(obj);
+        Debug.Log("Cannot create more effects.");
+
+        return null;
     }
 
     public GameObject GetLootFromPool() {
         if (pool_loots.Count > 0) {
             GameObject obj = pool_loots.Pop();
             obj.SetActive(true);
+
             return obj;
         }
-        Debug.Log("Cannot create more loots.");
-        return null;
-    }
 
-    public void AddLootToPool(GameObject obj) {
+        Debug.Log("Cannot create more loots.");
+
+        return null;
+	}
+
+	public void AddBulletToPool(GameObject obj) {
+		obj.SetActive(false);
+		obj.transform.SetParent(pool_bullets_object.transform);
+		pool_bullets.Push(obj);
+	}
+
+	public void AddProjectileToPool(GameObject obj) {
+		obj.SetActive(false);
+		obj.transform.SetParent(pool_projectiles_object.transform);
+		pool_projectiles.Push(obj);
+	}
+
+	public void AddLaserToPool(GameObject obj) {
+		obj.SetActive(false);
+		obj.transform.SetParent(pool_lasers_object.transform);
+		pool_lasers.Push(obj);
+	}
+
+	public void AddCharacterToPool(GameObject obj) {
+		obj.SetActive(false);
+		obj.transform.SetParent(pool_characters_object.transform);
+		pool_characters.Push(obj);
+	}
+
+	public void AddEffectToPool(GameObject obj) {
+		obj.SetActive(false);
+		obj.transform.SetParent(pool_effects_object.transform);
+		pool_effects.Push(obj);
+	}
+
+	public void AddLootToPool(GameObject obj) {
         obj.SetActive(false);
-        pool_loots.Push(obj);
+		obj.transform.SetParent(pool_loots_object.transform);
+		pool_loots.Push(obj);
     }
 }
