@@ -14,12 +14,19 @@ public class EntityManager : MonoBehaviour {
     private int max_effects = 10000;
     private int max_loots = 100;
 
-	private GameObject pool_bullets_object;
-	private GameObject pool_projectiles_object;
-	private GameObject pool_lasers_object;
-	private GameObject pool_characters_object;
-	private GameObject pool_effects_object;
-	private GameObject pool_loots_object;
+	private GameObject pool_bullets_parent;
+	private GameObject pool_projectiles_parent;
+	private GameObject pool_lasers_parent;
+	private GameObject pool_characters_parent;
+	private GameObject pool_effects_parent;
+	private GameObject pool_loots_parent;
+
+	private GameObject pool_bullets_prefab;
+	private GameObject pool_projectiles_prefab;
+	private GameObject pool_lasers_prefab;
+	private GameObject pool_characters_prefab;
+	private GameObject pool_effects_prefab;
+	private GameObject pool_loots_prefab;
 
     private Stack<GameObject> pool_bullets;
     private Stack<GameObject> pool_projectiles;
@@ -43,62 +50,91 @@ public class EntityManager : MonoBehaviour {
     }
 
     private void InitializePools() {
-		pool_bullets_object = new GameObject("Pool_Bullets");
-		pool_projectiles_object = new GameObject("Pool_Projectiles");
-		pool_lasers_object = new GameObject("Pool_Lasers");
-		pool_characters_object = new GameObject("Pool_Characters");
-		pool_effects_object = new GameObject("Pool_Effects");
-		pool_loots_object = new GameObject("Pool_Loots");
+		this.pool_bullets_parent		= new GameObject("Pool_Bullets");
+		this.pool_projectiles_parent	= new GameObject("Pool_Projectiles");
+		this.pool_lasers_parent			= new GameObject("Pool_Lasers");
+		this.pool_characters_parent		= new GameObject("Pool_Characters");
+		this.pool_effects_parent		= new GameObject("Pool_Effects");
+		this.pool_loots_parent			= new GameObject("Pool_Loots");
 
-        pool_bullets = new Stack<GameObject>(max_bullets);
-        pool_projectiles = new Stack<GameObject>(max_projectiles);
-        pool_lasers = new Stack<GameObject>(max_lasers);
-        pool_characters = new Stack<GameObject>(max_characters);
-        pool_effects = new Stack<GameObject>(max_effects);
-        pool_loots = new Stack<GameObject>(max_loots);
+		this.pool_bullets		= new Stack<GameObject>(this.max_bullets);
+		this.pool_projectiles	= new Stack<GameObject>(this.max_projectiles);
+		this.pool_lasers		= new Stack<GameObject>(this.max_lasers);
+		this.pool_characters	= new Stack<GameObject>(this.max_characters);
+		this.pool_effects		= new Stack<GameObject>(this.max_effects);
+		this.pool_loots			= new Stack<GameObject>(this.max_loots);
+
+		this.pool_bullets_prefab		= Instantiate(Resources.Load("Prefab/Bullet")) as GameObject;
+		this.pool_projectiles_prefab	= Instantiate(Resources.Load("Prefab/Projectile")) as GameObject;
+		this.pool_lasers_prefab			= Instantiate(Resources.Load("Prefab/Laser")) as GameObject;
+		this.pool_characters_prefab		= Instantiate(Resources.Load("Prefab/Character")) as GameObject;
+		this.pool_effects_prefab		= Instantiate(Resources.Load("Prefab/Effect")) as GameObject;
+		this.pool_loots_prefab			= Instantiate(Resources.Load("Prefab/Loot")) as GameObject;
+
+		this.pool_bullets_prefab.name		= "Pool_Bullets_Prefab";
+		this.pool_projectiles_prefab.name	= "Pool_Projectiles_Prefab";
+		this.pool_lasers_prefab.name		= "Pool_Lasers_Prefab";
+		this.pool_characters_prefab.name	= "Pool_Characters_Prefab";
+		this.pool_effects_prefab.name		= "Pool_Effects_Prefab";
+		this.pool_loots_prefab.name			= "Pool_Loots_Prefab";
+
+		this.pool_bullets_prefab.transform.SetParent(this.pool_bullets_parent.transform);
+		this.pool_projectiles_prefab.transform.SetParent(this.pool_projectiles_parent.transform);
+		this.pool_lasers_prefab.transform.SetParent(this.pool_lasers_parent.transform);
+		this.pool_characters_prefab.transform.SetParent(this.pool_characters_parent.transform);
+		this.pool_effects_prefab.transform.SetParent(this.pool_effects_parent.transform);
+		this.pool_loots_prefab.transform.SetParent(this.pool_loots_parent.transform);
     }
 
     private void FillPoolsWithObjects() {
-		Object prefabToLoad;
+        for(int i = 0; i < this.max_bullets; i++) {
+			GameObject obj = Instantiate(this.pool_bullets_prefab, Vector3.zero, Quaternion.identity);
+			obj.name = "Bullet";
 
-		prefabToLoad = Resources.Load("Prefab/Bullet");
-        for(int i = 0; i < max_bullets; i++) {
-			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
-			AddBulletToPool(obj);
+			this.PushBulletToPool(obj);
         }
+		for (int i = 0; i < this.max_projectiles; i++) {
+			GameObject obj = Instantiate(this.pool_projectiles_prefab, Vector3.zero, Quaternion.identity);
+			obj.name = "Projectile";
 
-		prefabToLoad = Resources.Load("Prefab/Projectile");
-		for (int i = 0; i < max_projectiles; i++) {
-			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
-			AddProjectileToPool(obj);
+			this.PushProjectileToPool(obj);
         }
+		for (int i = 0; i < this.max_lasers; i++) {
+			GameObject obj = Instantiate(this.pool_lasers_prefab, Vector3.zero, Quaternion.identity);
+			obj.name = "Laser";
 
-		prefabToLoad = Resources.Load("Prefab/Laser");
-		for (int i = 0; i < max_lasers; i++) {
-			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
-			AddLaserToPool(obj);
+			this.PushLaserToPool(obj);
         }
+		for (int i = 0; i < this.max_characters; i++) {
+			GameObject obj = Instantiate(this.pool_characters_prefab, Vector3.zero, Quaternion.identity);
+			obj.name = "Character";
 
-		prefabToLoad = Resources.Load("Prefab/Character");
-		for (int i = 0; i < max_characters; i++) {
-			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
-			AddCharacterToPool(obj);
+			this.PushCharacterToPool(obj);
         }
+		for (int i = 0; i < this.max_effects; i++) {
+			GameObject obj = Instantiate(this.pool_effects_prefab, Vector3.zero, Quaternion.identity);
+			obj.name = "Effect";
 
-		prefabToLoad = Resources.Load("Prefab/Effect");
-		for (int i = 0; i < max_effects; i++) {
-			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
-			AddEffectToPool(obj);
+			this.PushEffectToPool(obj);
         }
+		for (int i = 0; i < this.max_loots; i++) {
+			GameObject obj = Instantiate(this.pool_loots_prefab, Vector3.zero, Quaternion.identity);
+			obj.name = "Loot";
 
-		prefabToLoad = Resources.Load("Prefab/Loot");
-		for (int i = 0; i < max_loots; i++) {
-			GameObject obj = (GameObject) Instantiate(prefabToLoad, Vector3.zero, Quaternion.identity);
-			AddLootToPool(obj);
+			this.PushLootToPool(obj);
         }
     }
 
-    public GameObject GetBulletFromPool() {
+	public static bool IsManagedObject(GameObject obj) {
+		return obj.GetComponent<Bullet>()
+			|| obj.GetComponent<Projectile>()
+			|| obj.GetComponent<Laser>()
+			|| obj.GetComponent<Character>()
+			|| obj.GetComponent<Effect>()
+			|| obj.GetComponent<Loot>();
+	}
+
+	public GameObject PullBulletFromPool() {
         if(pool_bullets.Count > 0) {
             GameObject obj = pool_bullets.Pop();
 
@@ -110,8 +146,7 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
-
-    public GameObject GetProjectileFromPool() {
+    public GameObject PullProjectileFromPool() {
         if (pool_projectiles.Count > 0) {
             GameObject obj = pool_bullets.Pop();
             obj.SetActive(true);
@@ -122,8 +157,7 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
-
-    public GameObject GetLaserFromPool() {
+    public GameObject PullLaserFromPool() {
         if (pool_lasers.Count > 0) {
             GameObject obj = pool_lasers.Pop();
             obj.SetActive(true);
@@ -135,8 +169,7 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
-
-    public GameObject GetCharacterFromPool() {
+    public GameObject PullCharacterFromPool() {
         if (pool_characters.Count > 0) {
             GameObject obj = pool_characters.Pop();
             obj.SetActive(true);
@@ -148,8 +181,7 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
-
-    public GameObject GetEffectFromPool() {
+    public GameObject PullEffectFromPool() {
         if (pool_effects.Count > 0) {
             GameObject obj = pool_effects.Pop();
             obj.SetActive(true);
@@ -161,8 +193,7 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
-
-    public GameObject GetLootFromPool() {
+    public GameObject PullLootFromPool() {
         if (pool_loots.Count > 0) {
             GameObject obj = pool_loots.Pop();
             obj.SetActive(true);
@@ -175,39 +206,46 @@ public class EntityManager : MonoBehaviour {
         return null;
 	}
 
-	public void AddBulletToPool(GameObject obj) {
+	// asdf 
+	public void PushToPool(GameObject obj) {
+
+	}
+
+	public void PushBulletToPool(GameObject obj) {
 		obj.SetActive(false);
-		obj.transform.SetParent(pool_bullets_object.transform);
+		obj.transform.SetParent(pool_bullets_parent.transform);
+
 		pool_bullets.Push(obj);
 	}
 
-	public void AddProjectileToPool(GameObject obj) {
+	public void PushProjectileToPool(GameObject obj) {
 		obj.SetActive(false);
-		obj.transform.SetParent(pool_projectiles_object.transform);
+		obj.transform.SetParent(pool_projectiles_parent.transform);
 		pool_projectiles.Push(obj);
 	}
 
-	public void AddLaserToPool(GameObject obj) {
+	public void PushLaserToPool(GameObject obj) {
 		obj.SetActive(false);
-		obj.transform.SetParent(pool_lasers_object.transform);
+		obj.transform.SetParent(pool_lasers_parent.transform);
 		pool_lasers.Push(obj);
 	}
 
-	public void AddCharacterToPool(GameObject obj) {
+	public void PushCharacterToPool(GameObject obj) {
 		obj.SetActive(false);
-		obj.transform.SetParent(pool_characters_object.transform);
+		obj.transform.SetParent(pool_characters_parent.transform);
 		pool_characters.Push(obj);
 	}
 
-	public void AddEffectToPool(GameObject obj) {
+	public void PushEffectToPool(GameObject obj) {
 		obj.SetActive(false);
-		obj.transform.SetParent(pool_effects_object.transform);
+		obj.transform.SetParent(pool_effects_parent.transform);
 		pool_effects.Push(obj);
 	}
 
-	public void AddLootToPool(GameObject obj) {
+	public void PushLootToPool(GameObject obj) {
         obj.SetActive(false);
-		obj.transform.SetParent(pool_loots_object.transform);
+		obj.transform.SetParent(pool_loots_parent.transform);
 		pool_loots.Push(obj);
     }
+
 }

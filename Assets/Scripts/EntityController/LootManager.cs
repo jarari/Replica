@@ -18,7 +18,7 @@ public static class LootManager {
 
 	public static void RemoveLoot(Loot loot) {
 		loots.Remove(loot);
-        em.AddLootToPool(loot.gameObject);
+        em.PushLootToPool(loot.gameObject);
         UnityEngine.Object.Destroy(loot);
     }
 	
@@ -26,7 +26,7 @@ public static class LootManager {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-        GameObject loot_obj = em.GetLootFromPool();
+        GameObject loot_obj = em.PullLootFromPool();
 
 		string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
         if (string.IsNullOrEmpty(script))

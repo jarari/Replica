@@ -21,7 +21,7 @@ public static class BulletManager {
 
     public static void OnBulletDestroy(Bullet b) {
         bullets.Remove(b);
-        em.AddBulletToPool(b.gameObject);
+        em.PushBulletToPool(b.gameObject);
         UnityEngine.Object.Destroy(b);
     }
 
@@ -31,7 +31,7 @@ public static class BulletManager {
 
     public static void OnProjectileDestroy(Projectile p) {
         projectiles.Remove(p);
-        em.AddProjectileToPool(p.gameObject);
+        em.PushBulletToPool(p.gameObject);
         UnityEngine.Object.Destroy(p);
     }
 
@@ -41,7 +41,7 @@ public static class BulletManager {
 
     public static void OnLaserDestroy(Laser l) {
         lasers.Remove(l);
-        em.AddLaserToPool(l.gameObject);
+        em.PushLaserToPool(l.gameObject);
         UnityEngine.Object.Destroy(l);
     }
 
@@ -49,23 +49,25 @@ public static class BulletManager {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-        GameObject bullet_obj = em.GetBulletFromPool();
-        bullet_obj.transform.position = pos;
+        GameObject bullet_obj = em.PullBulletFromPool();
+
+		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
+		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[1], user.GetComponentsInParent<Collider2D>()[0]);
+		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[1]);
+		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[1], user.GetComponentsInParent<Collider2D>()[1]);
+
+		bullet_obj.transform.position = pos;
+
+		Vector3 ang = bullet_obj.transform.eulerAngles;
+		ang.z = angle;
+		bullet_obj.transform.eulerAngles = ang;
 
 		JDictionary scriptData = GameDataManager.instance.RootData[classname]["ScriptClass"];
 		string script = (scriptData ? scriptData.Value<string>() : "Bullet");
 		Bullet bullet = (Bullet)bullet_obj.AddComponent(Type.GetType(script));
 
-		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
-        Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[1], user.GetComponentsInParent<Collider2D>()[0]);
-        Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[1]);
-        Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[1], user.GetComponentsInParent<Collider2D>()[1]);
-
-        Vector3 ang = bullet_obj.transform.eulerAngles;
-        ang.z = angle;
-        bullet_obj.transform.eulerAngles = ang;
-
 		bullet.Initialize(classname, user, firedfrom, _data, ignoreGround);
+
         bullets.Add(bullet);
 
         return bullet;
@@ -75,7 +77,7 @@ public static class BulletManager {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-        GameObject projectile_obj = em.GetProjectileFromPool();
+        GameObject projectile_obj = em.PullProjectileFromPool();
         projectile_obj.transform.position = pos;
 
         string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
@@ -98,7 +100,7 @@ public static class BulletManager {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-        GameObject throwable_obj = em.GetProjectileFromPool();
+        GameObject throwable_obj = em.PullProjectileFromPool();
         throwable_obj.transform.position = pos;
 
         string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
@@ -121,7 +123,7 @@ public static class BulletManager {
         if (!LevelManager.instance.isMapActive)
 			return null;
 
-        GameObject laser_obj = em.GetLaserFromPool();
+        GameObject laser_obj = em.PullLaserFromPool();
         laser_obj.transform.position = pos;
 
         Laser l = laser_obj.AddComponent<Laser>();

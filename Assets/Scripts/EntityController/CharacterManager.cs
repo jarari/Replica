@@ -19,7 +19,7 @@ public static class CharacterManager {
 		if(!LevelManager.instance.isMapActive)
 			return null;
 
-        GameObject character_obj = em.GetCharacterFromPool();
+        GameObject character_obj = em.PullCharacterFromPool();
         character_obj.transform.position = pos;
 
         string scriptClass = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
@@ -73,7 +73,7 @@ public static class CharacterManager {
 
     public static void OnCharacterDeath(Character c) {
         Characters.Remove(c);
-        em.AddCharacterToPool(c.gameObject);
+        em.PushCharacterToPool(c.gameObject);
         UnityEngine.Object.Destroy(c);
 
 		EventManager.OnCharacterDeath(c);

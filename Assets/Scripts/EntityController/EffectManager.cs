@@ -18,13 +18,13 @@ public static class EffectManager {
 
 	public static void RemoveEffect(Effect effect) {
 		effects.Remove(effect);
-        em.AddEffectToPool(effect.gameObject);
+        em.PushEffectToPool(effect.gameObject);
 	}
 
     public static void CreateEffect(string classname, Vector3 pos, float angle, Transform parent = null, bool flip = false) {
 		if(!LevelManager.instance.isMapActive) return;
 
-        GameObject effect_obj = em.GetEffectFromPool();
+        GameObject effect_obj = em.PullEffectFromPool();
         effect_obj.transform.position = pos;
 
         Vector3 ang = effect_obj.transform.eulerAngles;
@@ -44,7 +44,7 @@ public static class EffectManager {
     public static void CreateMovingEffect(string classname, Vector3 pos, Vector2 vel, float angle, int dir = 1, Transform parent = null) {
 		if(!LevelManager.instance.isMapActive) return;
 
-        GameObject effect_obj = em.GetEffectFromPool();
+        GameObject effect_obj = em.PullEffectFromPool();
 
         effect_obj.transform.position = pos;
 

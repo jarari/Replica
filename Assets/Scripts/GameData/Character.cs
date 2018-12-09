@@ -247,7 +247,7 @@ public abstract class Character : ObjectBase {
             if(col != null) {
                 if (col.gameObject != gameObject) {
                     Character c = col.GetComponent<Character>();
-                    if (!c.GetClass().Equals(GetClass())) {
+                    if (c && !c.GetClass().Equals(GetClass())) {
                         float xDiff = (transform.position.x - c.transform.position.x);
                         int pushDir = 1;
                         if (xDiff > 0) {

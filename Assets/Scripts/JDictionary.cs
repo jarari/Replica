@@ -19,17 +19,17 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 
 	#region Fields
 
-	private Dictionary<string, JDictionary> collisions = null;
+	private Dictionary<string, JDictionary> _collisions = null;
 
-	private readonly string key = null;
-	private int count = 0;
-	private JValue value = null;
-	private JArray array = null;
+	private readonly string _key	= null;
+	private int				_count	= 0;
+	private JValue			_value	= null;
+	private JArray			_array	= null;
 
 	// For enumerating
-	private JDictionary first = null;
-	private JDictionary next = null;
-	private JDictionary last = null;
+	private JDictionary _first	= null;
+	private JDictionary _next	= null;
+	private JDictionary _last	= null;
 
 	#endregion
 
@@ -40,7 +40,7 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 	/// </summary>
 	public bool IsValue {
 		get {
-			return (this.value != null || this.array != null);
+			return (_value != null || _array != null);
 		}
 	}
 
@@ -49,13 +49,13 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 	/// </summary>
 	public string Key {
 		get {
-			return this.key;
+			return _key;
 		}
 	}
 
 	public new int Count {
 		get {
-			return this.count;
+			return _count;
 		}
 	}
 
@@ -68,7 +68,7 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 	/// </summary>
 	/// <param name="key">이름</param>
 	public JDictionary(string key = null) {
-		this.key = key;
+		_key = key;
 	}
 
 	#endregion
@@ -94,15 +94,15 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 			if(subDictExist) {
 				// 전체 데이터가 가지고 있는 문자열 키 이외에
 				// 전혀 엉뚱한 문자열의 해쉬값이 우연히 같을 수 있으므로 문자열 키를 비교
-				if(subDict.key.Equals(key))
+				if(subDict._key.Equals(key))
 					return subDict;
 
 				// 문자열 키가 다르지만
 				// 현재 해쉬값을 가진 JDictionary가 충돌이 일어났던 JDictionary일 경우
-				if(subDict.collisions != null) {
+				if(subDict._collisions != null) {
 					// 해당 JDictionary의 collisions 필드에서 입력받은 문자열 키로 접근
 					JDictionary subDictCollision;
-					bool keyExist = subDict.collisions.TryGetValue(key, out subDictCollision);
+					bool keyExist = subDict._collisions.TryGetValue(key, out subDictCollision);
 
 					return (keyExist ? subDictCollision : null);
 				}
@@ -136,28 +136,28 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 
 			// 하위 JDictionary 생성
 			JDictionary currentDict = new JDictionary(current.Key);
-			this.count++;
+			_count++;
 
 			// For enumerating
 			// enumerator의 마지막이 null이면 하위 JDictionary가 처음 생성 되었다는 것이므로 enumerator의 첫번째 초기화
 			// 아니라면 기존의 마지막 개체의 next필드를 이 개체로 설정.
-			if(this.last)
-				this.last.next = currentDict;
+			if(_last)
+				_last._next = currentDict;
 			else
-				this.first = currentDict;
+				_first = currentDict;
 			// 새로 생성된 JDictionary를 enumerator의 마지막 개체로 설정
-			this.last = currentDict;
+			_last = currentDict;
 
 			// 이미 해당 해쉬값이 이미 사용 중(collision)이라면
 			JDictionary occupied;
 			bool isOccupied = this.TryGetValue(hashCodeKey, out occupied);
 			if(isOccupied) {
-				Debug.LogWarning("Collision occured! " + occupied.key + " : " + current.Key + " [" + hashCodeKey + "]");
+				Debug.LogWarning("Collision occured! " + occupied._key + " : " + current.Key + " [" + hashCodeKey + "]");
 				// 해당 하위 인스턴스의 collisions 필드에 문자열 키로 저장
-				if(occupied.collisions == null)
-					occupied.collisions = new Dictionary<string, JDictionary>();
+				if(occupied._collisions == null)
+					occupied._collisions = new Dictionary<string, JDictionary>();
 
-				occupied.collisions.Add(current.Key, currentDict);
+				occupied._collisions.Add(current.Key, currentDict);
 
 				// 아예 같은 문자열 키(property)가 Json에 있을 때(해쉬값도 같고 문자열 키도 같음)에는 JObject.Parse 메서드에서 덮어쓰기 처리되어
 				// 같은 키가 두 개가 생성되는게 아니라 한 개만 남게되므로 이 if문이 실행될 수 없다.
@@ -177,10 +177,10 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 			else {
 				// 생성한 JDictionary의 value 필드를 설정. 배열의 경우 array 필드.
 				if(current.Value.Type == JTokenType.Array) {
-					currentDict.array = current.Value.ToObject<JArray>();
+					currentDict._array = current.Value.ToObject<JArray>();
 				}
 				else {
-					currentDict.value = current.Value.ToObject<JValue>();
+					currentDict._value = current.Value.ToObject<JValue>();
 				}
 			}
 		}
@@ -212,8 +212,8 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 		// 값 형식이 아닌 경우 예외 발생
 		if(this.IsValue) {
 			// 값이 배열일 경우 예외 발생
-			if(this.value == null)
-				throw new JDictionaryException(key + " property is array type value. try Array() instead.");
+			if(_value == null)
+				throw new JDictionaryException(_key + " property is array type value. try Array() instead.");
 
 			Type type = typeof(T);
 			// 입력받은 형식 T를 JTokenType으로 표시
@@ -242,14 +242,14 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 
 			// 입력받은 형식이 json의 형식과 다른경우 예외 발생
 			// 단 정수형의 경우는 float형으로 출력 가능.
-			if(this.value.Type != valueType)
-				if(this.value.Type != JTokenType.Integer || valueType != JTokenType.Float)
-					throw new JDictionaryException("value type doesn't match with given type. \"" + this.key + "\" property is " + this.value.Type + " type.");
+			if(_value.Type != valueType)
+				if(_value.Type != JTokenType.Integer || valueType != JTokenType.Float)
+					throw new JDictionaryException("value type doesn't match with given type. \"" + _key + "\" property is " + _value.Type + " type.");
 
-			return this.value.Value<T>();
+			return _value.Value<T>();
 		}
 		else
-			throw new JDictionaryException(this.key + " property is not value type.");
+			throw new JDictionaryException(_key + " property is not value type.");
 	}
 
 	/// <summary>
@@ -259,13 +259,13 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 	public JArray Array() {
 		if(this.IsValue) {
 			// 값이 배열이 아닐 경우 예외 발생
-			if(this.array == null)
-				throw new JDictionaryException(key + " property is not array type value.");
+			if(_array == null)
+				throw new JDictionaryException(_key + " property is not array type value.");
 
-			return this.array;
+			return _array;
 		}
 		else
-			throw new JDictionaryException(key + " property is not value type.");
+			throw new JDictionaryException(_key + " property is not value type.");
 	}
 
 	#endregion
@@ -273,17 +273,17 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 	#region Enumerator
 
 	public new class Enumerator: IEnumerator<JDictionary> {
-		readonly JDictionary sourceJDict = null;
-		JDictionary currentJDict = null;
-
-		public Enumerator(JDictionary jDict) {
-			this.sourceJDict = jDict;
-		}
+		readonly JDictionary _sourceJDict = null;
+		JDictionary _currentJDict = null;
 
 		public JDictionary Current {
 			get {
-				return this.currentJDict;
+				return _currentJDict;
 			}
+		}
+
+		public Enumerator(JDictionary jDict) {
+			_sourceJDict = jDict;
 		}
 
 		public void Dispose() { }
@@ -291,18 +291,18 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 		// true 반환하면 반복문 실행, false 반환하면 반복문 종료
 		public bool MoveNext() {
 			// 원소가 없으면 실행 종료
-			if(this.sourceJDict.Count <= 0)
+			if(_sourceJDict.Count <= 0)
 				return false;
 
 			// 반복문 처음 실행시
-			if(!this.currentJDict) {
-				this.currentJDict = this.sourceJDict.first;
+			if(!_currentJDict) {
+				_currentJDict = _sourceJDict._first;
 				return true;
 			}
 			else {
-				JDictionary nextJDict = this.currentJDict.next;
+				JDictionary nextJDict = _currentJDict._next;
 				if(nextJDict) {
-					this.currentJDict = nextJDict;
+					_currentJDict = nextJDict;
 					return true;
 				}
 				else
@@ -311,7 +311,7 @@ public class JDictionary: Dictionary<int, JDictionary>, IEnumerable<JDictionary>
 		}
 
 		public void Reset() {
-			this.currentJDict = null;
+			_currentJDict = null;
 		}
 
 		object IEnumerator.Current {
