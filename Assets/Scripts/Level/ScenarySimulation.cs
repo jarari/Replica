@@ -6,6 +6,7 @@ public class ScenarySimulation : MonoBehaviour {
     public static ScenarySimulation instance;
     private List<float> bgLength = new List<float>();
     private List<float> bgDist = new List<float>();
+    private List<Vector2> bgOrig = new List<Vector2>();
     private float mapLength;
     private float farthestDist;
     private bool init = false;
@@ -32,7 +33,8 @@ public class ScenarySimulation : MonoBehaviour {
         BGParents = BGp;
         bgLength.Clear();
         bgDist.Clear();
-        for(int i = 0; i < BGParents.Count; i++) {
+        bgOrig.Clear();
+        for (int i = 0; i < BGParents.Count; i++) {
             GameObject parent = BGParents[i];
             if (parent.transform.childCount > 0) {
                 float xmax = -Mathf.Infinity;
@@ -47,13 +49,25 @@ public class ScenarySimulation : MonoBehaviour {
                 bgLength.Add(0);
             }
             bgDist.Add(parent.transform.position.z);
+            bgOrig.Add(parent.transform.position);
         }
 
-        farthestDist = GameObject.FindGameObjectWithTag("BG_Farthest").transform.position.z;
+        if (GameObject.FindGameObjectWithTag("BG_Farthest") != null)
+            farthestDist = GameObject.FindGameObjectWithTag("BG_Farthest").transform.position.z;
+        else
+            farthestDist = 0;
         init = true;
+        EventManager.RegisterEvent("DestroyScenary", new EventManager.MapDestroyed(OnMapDestroy));
     }
 
-    public void OnMapDestroy() {
+    public void StopSimulation() {
+        init = false;
+        for (int i = 0; i < BGParents.Count; i++) {
+            BGParents[i].transform.position = bgOrig[i];
+        }
+    }
+
+    private void OnMapDestroy() {
         BGParents.Clear();
         init = false;
     }
