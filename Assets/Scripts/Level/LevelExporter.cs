@@ -97,7 +97,8 @@ public class LevelExporter : MonoBehaviour {
         if (path.Length != 0)
             System.IO.File.WriteAllText(path, data);
     }
-    private void Awake() {
+    public void TestRun(bool auto = false) {
+        ScenearySimulation = auto;
         StartCoroutine(WaitTillInit());
     }
     IEnumerator WaitTillInit() {
