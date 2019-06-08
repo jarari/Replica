@@ -45,6 +45,9 @@ public static class EventManager {
 
 	public delegate void AttachmentEquipped(Character character, Attachment attachment);
 	public delegate void AttachmentUnequipped(Character character, Attachment attachment);
+
+    public delegate void MapCreated();
+    public delegate void MapDestroyed();
 	#endregion
 
 	#region Events
@@ -67,6 +70,9 @@ public static class EventManager {
 
 	private static AttachmentEquipped Event_AttachmentEquipped;
 	private static AttachmentUnequipped Event_AttachmentUnequipped;
+
+    private static MapCreated Event_MapCreated;
+    private static MapDestroyed Event_MapDestroyed;
 	#endregion
 
 	private static Dictionary<string, EventFunc> eventFunctions = new Dictionary<string, EventFunc>();
@@ -126,8 +132,14 @@ public static class EventManager {
         else if (t.Equals(typeof(AttachmentUnequipped))) {
 			Event_AttachmentUnequipped += (AttachmentUnequipped) func;
 		}
+        else if (t.Equals(typeof(MapCreated))) {
+            Event_MapCreated += (MapCreated)func;
+        }
+        else if (t.Equals(typeof(MapDestroyed))) {
+            Event_MapDestroyed += (MapDestroyed)func;
+        }
 
-		eventFunctions.Add(id, new EventFunc(func, t));
+        eventFunctions.Add(id, new EventFunc(func, t));
 	}
     public static void UnregisterEvent(string id) {
         if(!eventFunctions.ContainsKey(id)) {
@@ -185,8 +197,14 @@ public static class EventManager {
         else if (t.Equals(typeof(AttachmentUnequipped))) {
 			Event_AttachmentUnequipped -= (AttachmentUnequipped) func;
         }
+        else if (t.Equals(typeof(MapCreated))) {
+            Event_MapCreated -= (MapCreated)func;
+        }
+        else if (t.Equals(typeof(MapDestroyed))) {
+            Event_MapDestroyed -= (MapDestroyed)func;
+        }
 
-		eventFunctions.Remove(id);
+        eventFunctions.Remove(id);
 	}
     public static void UnregisterAll() {
         foreach(string id in eventFunctions.Keys) {
@@ -261,4 +279,14 @@ public static class EventManager {
 		if(Event_AttachmentUnequipped != null)
 			Event_AttachmentUnequipped(character, attachment);
 	}
+
+    public static void OnMapCreated() {
+        if (Event_MapCreated != null)
+            Event_MapCreated();
+    }
+
+    public static void OnMapDestroyed() {
+        if (Event_MapDestroyed != null)
+            Event_MapDestroyed();
+    }
 }
