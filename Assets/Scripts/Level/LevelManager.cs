@@ -21,6 +21,7 @@ public class LevelManager : MonoBehaviour {
         "effects",
         "ui"
     };
+    private string currentMap = "";
     public bool debug = false;
 	public bool isMapActive = false;
 
@@ -42,6 +43,7 @@ public class LevelManager : MonoBehaviour {
     IEnumerator Debugger() {
         yield return new WaitForEndOfFrame();
         //LoadMap("map_stage01");
+        isMapActive = true;
         foreach (GameObject bgparent in GameObject.FindGameObjectsWithTag("BG")) {
             BGParents.Add(bgparent);
         }
@@ -85,6 +87,7 @@ public class LevelManager : MonoBehaviour {
 		JDictionary mapData = GameDataManager.instance.RootData[mapname];
 
         if (mapData) {
+            currentMap = mapname;
             DestroyMap();
 			int totalNumOfRooms = mapData["TotalNumberOfRooms"].Value<int>();
 
@@ -122,6 +125,10 @@ public class LevelManager : MonoBehaviour {
                 }
             }
             Initialize();
+            isMapActive = true;
+            EventManager.OnMapCreated();
+            if (!loadOnce)
+                PreloadEssentialSprites();
         }
         else {
             Debug.LogError("No data for the map " + mapname);
@@ -198,9 +205,6 @@ public class LevelManager : MonoBehaviour {
 				}
 			}
 			inheritances.Clear();
-
-			if(!loadOnce)
-				PreloadEssentialSprites();
 		}
 		else {
 			Debug.LogError("No such data!");
@@ -416,11 +420,14 @@ public class LevelManager : MonoBehaviour {
         light.cullingMask = lightData["CullingMask"].Value<int>();
     }
 
+    public string CurrentMap() {
+        return currentMap;
+    }
+
     public void DestroyMap() {
 		isMapActive = false;
+        EventManager.OnMapDestroyed();
         EventManager.UnregisterAll();
-        if(ScenarySimulation.instance != null)
-            ScenarySimulation.instance.OnMapDestroy();
         if(createdObjs.Count > 0) {
             foreach(KeyValuePair<int, GameObject> kvp in createdObjs) {
 				if(kvp.Value != null) {
@@ -441,10 +448,12 @@ public class LevelManager : MonoBehaviour {
         for (int i = 0; i < loots.Count; i++) {
             LootManager.RemoveLoot(loots[i]);
         }
+        currentMap = "";
     }
 
     public void Initialize() {
-		isMapActive = true;
+        if (!isMapActive)
+            Cursor.visible = true;
         float minX = Mathf.Infinity;
         float minY = Mathf.Infinity;
         float maxX = -Mathf.Infinity;
