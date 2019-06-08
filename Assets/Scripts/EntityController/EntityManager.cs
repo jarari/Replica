@@ -93,47 +93,48 @@ public class EntityManager : MonoBehaviour {
 
 			this.PushBulletToPool(obj);
         }
-		for (int i = 0; i < this.max_projectiles; i++) {
+        Destroy(this.pool_bullets_prefab);
+        for (int i = 0; i < this.max_projectiles; i++) {
 			GameObject obj = Instantiate(this.pool_projectiles_prefab, Vector3.zero, Quaternion.identity);
 			obj.name = "Projectile";
 
 			this.PushProjectileToPool(obj);
         }
-		for (int i = 0; i < this.max_lasers; i++) {
+        Destroy(this.pool_projectiles_prefab);
+        for (int i = 0; i < this.max_lasers; i++) {
 			GameObject obj = Instantiate(this.pool_lasers_prefab, Vector3.zero, Quaternion.identity);
 			obj.name = "Laser";
 
 			this.PushLaserToPool(obj);
         }
-		for (int i = 0; i < this.max_characters; i++) {
+        Destroy(this.pool_lasers_prefab);
+        for (int i = 0; i < this.max_characters; i++) {
 			GameObject obj = Instantiate(this.pool_characters_prefab, Vector3.zero, Quaternion.identity);
 			obj.name = "Character";
 
 			this.PushCharacterToPool(obj);
         }
-		for (int i = 0; i < this.max_effects; i++) {
+        Destroy(this.pool_characters_prefab);
+        for (int i = 0; i < this.max_effects; i++) {
 			GameObject obj = Instantiate(this.pool_effects_prefab, Vector3.zero, Quaternion.identity);
 			obj.name = "Effect";
 
 			this.PushEffectToPool(obj);
         }
-		for (int i = 0; i < this.max_loots; i++) {
+        Destroy(this.pool_effects_prefab);
+        for (int i = 0; i < this.max_loots; i++) {
 			GameObject obj = Instantiate(this.pool_loots_prefab, Vector3.zero, Quaternion.identity);
 			obj.name = "Loot";
 
 			this.PushLootToPool(obj);
         }
+        Destroy(this.pool_loots_prefab);
     }
 
-	public static bool IsManagedObject(GameObject obj) {
-		return obj.GetComponent<Bullet>()
-			|| obj.GetComponent<Projectile>()
-			|| obj.GetComponent<Laser>()
-			|| obj.GetComponent<Character>()
-			|| obj.GetComponent<Effect>()
-			|| obj.GetComponent<Loot>();
-	}
-
+    /// <summary>
+    /// 풀에서 총알 1개 가져오기
+    /// </summary>
+    /// <returns>총알</returns>
 	public GameObject PullBulletFromPool() {
         if(pool_bullets.Count > 0) {
             GameObject obj = pool_bullets.Pop();
@@ -146,6 +147,10 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
+    /// <summary>
+    /// 풀에서 발사체 1개 가져오기
+    /// </summary>
+    /// <returns>발사체</returns>
     public GameObject PullProjectileFromPool() {
         if (pool_projectiles.Count > 0) {
             GameObject obj = pool_bullets.Pop();
@@ -157,6 +162,10 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
+    /// <summary>
+    /// 풀에서 레이저 1개 가져오기
+    /// </summary>
+    /// <returns>레이저</returns>
     public GameObject PullLaserFromPool() {
         if (pool_lasers.Count > 0) {
             GameObject obj = pool_lasers.Pop();
@@ -169,6 +178,10 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
+    /// <summary>
+    /// 풀에서 캐릭터 1개 가져오기
+    /// </summary>
+    /// <returns>캐릭터</returns>
     public GameObject PullCharacterFromPool() {
         if (pool_characters.Count > 0) {
             GameObject obj = pool_characters.Pop();
@@ -181,6 +194,10 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
+    /// <summary>
+    /// 풀에서 이펙트 1개 가져오기
+    /// </summary>
+    /// <returns>이펙트</returns>
     public GameObject PullEffectFromPool() {
         if (pool_effects.Count > 0) {
             GameObject obj = pool_effects.Pop();
@@ -193,6 +210,10 @@ public class EntityManager : MonoBehaviour {
 
         return null;
     }
+    /// <summary>
+    /// 풀에서 보급품 1개 가져오기
+    /// </summary>
+    /// <returns>보급품</returns>
     public GameObject PullLootFromPool() {
         if (pool_loots.Count > 0) {
             GameObject obj = pool_loots.Pop();
@@ -206,42 +227,56 @@ public class EntityManager : MonoBehaviour {
         return null;
 	}
 
-	// asdf 
-	public void PushToPool(GameObject obj) {
-
-	}
-
+    /// <summary>
+    /// 풀에 총알 집어넣기
+    /// </summary>
+    /// <param name="obj">총알</param>
 	public void PushBulletToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_bullets_parent.transform);
 
 		pool_bullets.Push(obj);
 	}
-
+    /// <summary>
+    /// 풀에 발사체 집어넣기
+    /// </summary>
+    /// <param name="obj">발사체</param>
 	public void PushProjectileToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_projectiles_parent.transform);
 		pool_projectiles.Push(obj);
 	}
-
+    /// <summary>
+    /// 풀에 레이저 집어넣기
+    /// </summary>
+    /// <param name="obj">레이저</param>
 	public void PushLaserToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_lasers_parent.transform);
 		pool_lasers.Push(obj);
 	}
-
+    /// <summary>
+    /// 풀에 캐릭터 집어넣기
+    /// </summary>
+    /// <param name="obj">캐릭터</param>
 	public void PushCharacterToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_characters_parent.transform);
 		pool_characters.Push(obj);
 	}
-
+    /// <summary>
+    /// 풀에 이펙트 집어넣기
+    /// </summary>
+    /// <param name="obj">이펙트</param>
 	public void PushEffectToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_effects_parent.transform);
 		pool_effects.Push(obj);
 	}
-
+    /// <summary>
+    /// 풀에 보급품 집어넣기
+    /// </summary>
+    /// <param name="obj">보급품</param>
 	public void PushLootToPool(GameObject obj) {
         obj.SetActive(false);
 		obj.transform.SetParent(pool_loots_parent.transform);
