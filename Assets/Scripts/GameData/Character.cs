@@ -969,12 +969,12 @@ public abstract class Character : ObjectBase {
         EffectManager.CreateEffect(effect, transform.position, 0, null, !IsFacingRight());
     }
 
-    protected void OnChargeGrenade() {
+    protected virtual void OnChargeGrenade() {
         GetAnimator().SetInteger("State", (int)CharacterStates.Throw);
         SetState(CharacterStates.Throw);
     }
 
-    protected void OnGrenadeCancelled() {
+    protected virtual void OnGrenadeCancelled() {
         if (GetState() == CharacterStates.Throw)
             GetAnimator().Play("idle_loop");
         grenadeCharge = 0;
@@ -984,7 +984,7 @@ public abstract class Character : ObjectBase {
     /* 수류탄 투척 함수.
      * 현재는 무조건 기본 수류탄이 나가도록 돼있지만
      * 차후 인벤토리에서 수류탄 갯수를 확인하여 해당 수류탄을 던질 수 있도록 바꿀 계획 */
-    protected void OnThrowGrenade(string className) {
+    protected virtual void OnThrowGrenade(string className) {
         JDictionary grenadeData = GameDataManager.instance.RootData[className];
 
         //Get grenade class, not yet implemented for now.

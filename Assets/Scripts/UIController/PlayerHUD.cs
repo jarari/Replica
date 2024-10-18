@@ -113,6 +113,14 @@ public static class PlayerHUD {
         mesh.colors = colors.ToArray();
     }
 
+    public static void RemoveGreandeTrajectory() {
+        if (!uimanager)
+            return;
+
+        Mesh mesh = uimanager.grenadeUImesh;
+        mesh.Clear();
+    }
+
     public static void UpdateHealth(Character c, float changed) {
         if (c != player)
             return;

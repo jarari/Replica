@@ -53,6 +53,16 @@ public class PlayerCharacter : Character {
         }
     }
 
+    protected override void OnGrenadeCancelled() {
+        base.OnGrenadeCancelled();
+        PlayerHUD.RemoveGreandeTrajectory();
+    }
+
+    protected override void OnThrowGrenade(string className) {
+        base.OnThrowGrenade(className);
+        PlayerHUD.RemoveGreandeTrajectory();
+    }
+
     protected override void Update() {
         base.Update();
         if(state == CharacterStates.Throw) {
