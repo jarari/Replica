@@ -15,6 +15,8 @@ public class LevelExporter : MonoBehaviour {
 
     public void ExportMap() {
         BGParents.Clear();
+        BGlayerCount = 0;
+        counter = 0;
         Cursor.visible = true;
         string data = "{";
         foreach (GameObject obj in FindObjectsOfType<GameObject>()) {
@@ -133,7 +135,8 @@ public class LevelExporter : MonoBehaviour {
         
         string jsondata = "\"" + counter.ToString()
             + "\":{\"ID\":" + obj.GetInstanceID().ToString()
-            + ",\"Tag\":\"" + tag
+            + ",\"Name\":\"" + obj.name
+            + "\",\"Tag\":\"" + tag
             + "\",\"Position\":{\"X\":" + obj.transform.position.x.ToString()
                             + ",\"Y\":" + obj.transform.position.y.ToString()
                             + ",\"Z\":" + obj.transform.position.z.ToString()

@@ -153,6 +153,7 @@ public class LevelManager : MonoBehaviour {
 				BGParents.Add(CreateEmptyObject(key, basePos));
 				BGParentKeys.Add(key);
 				BGParents[i].tag = "BG";
+                BGParents[i].name = stageData[key]["Name"].Value<string>();
 			}
 
 			foreach(JDictionary entity in stageData) {
@@ -269,6 +270,7 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void ApplyComponents(GameObject obj, string key) {
+        obj.name = this.stageData[key]["Name"].Value<string>();
         if (this.stageData[key]["Sprite"])
 			this.ApplySpriteRenderer(obj, key);
 
