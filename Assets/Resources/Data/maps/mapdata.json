@@ -9,5 +9,33 @@
 		"Patterns":
 		{
 		}
+	},
+	"map_teststage":
+	{
+		"TotalNumberOfRooms":10,
+		"Reserved":
+		{
+			"0":"Stage01"
+		},
+		"Patterns":
+		{
+			"0":"stage01/block0",
+			"1":"stage01/block1",
+			"2":"stage01/block2",
+			"3":"stage01/block3",
+			"4":"stage01/block4",
+			"5":"stage01/block5",
+			"6":"stage01/block6",
+			"7":"stage01/block7",
+			"8":"stage01/block8",
+			"9":"stage01/block9",
+			"10":"stage01/block10",
+			"11":"stage01/block11",
+			"12":"stage01/block12",
+			"13":"stage01/block13",
+			"14":"stage01/block14",
+			"15":"stage01/block15",
+			"16":"stage01/block16"
+		}
 	}
 }

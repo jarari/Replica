@@ -21,6 +21,7 @@ public class LevelManager : MonoBehaviour {
         "effects",
         "ui"
     };
+    private static int lastBlockID = 0;
     private string currentMap = "";
     public bool debug = false;
 	public bool isMapActive = false;
@@ -116,6 +117,7 @@ public class LevelManager : MonoBehaviour {
                 if (createdObjs.Count > 0) {
                     float maxX = createdObjs.OrderBy(obj => obj.Value.transform.position.x).Reverse().ToArray()[0].Value.transform.position.x;
                     float minY = createdObjs.Where(obj => obj.Value.transform.position.x == maxX).OrderBy(obj => obj.Value.transform.position.y).ToArray()[0].Value.transform.position.y;
+                    lastBlockID = createdObjs.Count;
                     CreateMap(pattern, new Vector3(maxX + 32, minY, 0));
                     yield return new WaitForEndOfFrame();
                 }
@@ -142,7 +144,9 @@ public class LevelManager : MonoBehaviour {
 		stageData.DeserializeJson("Data/maps/" + mapname);
 
 		if(stageData) {
-			int numOfLayers = stageData["NumOfLayers"].Value<int>();
+            int numOfLayers = 0;
+            if (stageData["NumOfLayers"])
+                numOfLayers = stageData["NumOfLayers"].Value<int>();
 
 			// Backgrounds
 			this.BGParents.Clear();
@@ -200,7 +204,7 @@ public class LevelManager : MonoBehaviour {
 
 			foreach(KeyValuePair<int, GameObject> kvp in createdObjs) {
 				if(inheritances.ContainsKey(kvp.Key)) {
-					if(createdObjs.ContainsKey(inheritances[kvp.Key])) {
+                    if (createdObjs.ContainsKey(inheritances[kvp.Key])) {
 						kvp.Value.transform.parent = createdObjs[inheritances[kvp.Key]].transform;
 					}
 				}
@@ -211,7 +215,22 @@ public class LevelManager : MonoBehaviour {
 			Debug.LogError("No such data!");
 		}
 	}
-	
+
+    private int GetBlockObjectID(int dataID) {
+        return dataID + lastBlockID;
+    }
+
+    private int GetParentBlockObjectID(int uniqueID) {
+        foreach (JDictionary entity in stageData) {
+            if (entity.IsValue)
+                continue;
+
+            if (entity["ID"] && entity["ID"].Value<int>() == uniqueID)
+                return int.Parse(entity.Key) + lastBlockID;
+        }
+        return -1;
+    }
+
     private GameObject CreatePrefab(string name, string key, Vector3 basePos, bool snap = false) {
 		GameObject obj = (GameObject) Instantiate(Resources.Load("Prefab/" + name));
 
@@ -242,7 +261,7 @@ public class LevelManager : MonoBehaviour {
 			this.stageData[key]["Scale"]["Z"].Value<float>()
 			);
 
-        createdObjs.Add(stageData[key]["ID"].Value<int>(), obj);
+        createdObjs.Add(GetBlockObjectID(int.Parse(key)), obj);
 
         return obj;
     }
@@ -265,12 +284,14 @@ public class LevelManager : MonoBehaviour {
 			this.stageData[key]["Scale"]["Z"].Value<float>()
 			);
 
-		this.createdObjs.Add(this.stageData[key]["ID"].Value<int>(), obj);
+		this.createdObjs.Add(GetBlockObjectID(int.Parse(key)), obj);
         return obj;
     }
 
     private void ApplyComponents(GameObject obj, string key) {
-        obj.name = this.stageData[key]["Name"].Value<string>();
+        if(this.stageData[key]["Name"])
+            obj.name = this.stageData[key]["Name"].Value<string>();
+
         if (this.stageData[key]["Sprite"])
 			this.ApplySpriteRenderer(obj, key);
 
@@ -292,14 +313,14 @@ public class LevelManager : MonoBehaviour {
         if (this.stageData[key]["Parent"]) {
             if(this.stageData[key]["ParentIsCam"]) {
 				this.inheritances.Add(
-					this.stageData[key]["ID"].Value<int>(),
+					GetBlockObjectID(int.Parse(key)),
 					Camera.main.GetInstanceID()
 					);
             }
             else {
 				this.inheritances.Add(
-					this.stageData[key]["ID"].Value<int>(),
-					this.stageData[key]["Parent"].Value<int>()
+                    GetBlockObjectID(int.Parse(key)),
+                    GetParentBlockObjectID(this.stageData[key]["Parent"].Value<int>())
 					);
             }
         }
