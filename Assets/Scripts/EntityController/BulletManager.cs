@@ -80,9 +80,8 @@ public static class BulletManager {
         GameObject projectile_obj = em.PullProjectileFromPool();
         projectile_obj.transform.position = pos;
 
-        string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
-		if (script == null || script.Length == 0)
-            script = "Projectile";
+        JDictionary scriptData = GameDataManager.instance.RootData[classname]["ScriptClass"];
+        string script = (scriptData ? scriptData.Value<string>() : "Projectile");
 
         Projectile projectile = (Projectile)projectile_obj.AddComponent(Type.GetType(script));
         Physics2D.IgnoreCollision(projectile_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
@@ -103,9 +102,8 @@ public static class BulletManager {
         GameObject throwable_obj = em.PullProjectileFromPool();
         throwable_obj.transform.position = pos;
 
-        string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
-		if (script == null || script.Length == 0)
-            script = "Throwable";
+        JDictionary scriptData = GameDataManager.instance.RootData[classname]["ScriptClass"];
+        string script = (scriptData ? scriptData.Value<string>() : "Throwable");
 
         Throwable throwable = (Throwable)throwable_obj.AddComponent(Type.GetType(script));
         Physics2D.IgnoreCollision(throwable_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
@@ -126,7 +124,10 @@ public static class BulletManager {
         GameObject laser_obj = em.PullLaserFromPool();
         laser_obj.transform.position = pos;
 
-        Laser l = laser_obj.AddComponent<Laser>();
+        JDictionary scriptData = GameDataManager.instance.RootData[classname]["ScriptClass"];
+        string script = (scriptData ? scriptData.Value<string>() : "Laser");
+
+        Laser l = (Laser)laser_obj.AddComponent(Type.GetType(script));
 		float laserWidth = GameDataManager.instance.RootData[classname]["LaserWidth"].Value<float>();
 		l.Initialize(classname, user, firedfrom, pos, angle, _data[WeaponStats.Range], laserWidth, _data);
 
