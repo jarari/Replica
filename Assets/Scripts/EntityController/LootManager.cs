@@ -33,13 +33,15 @@ public static class LootManager {
             script = "Loot";
         Loot loot = (Loot)loot_obj.AddComponent(Type.GetType(script));
 		loot.Initialize(classname, count);
+        loot.DisallowPickup();
 
 		loot_obj.transform.position = pos;
         Vector3 ang = loot_obj.transform.eulerAngles;
         ang.z = angle;
 		loot_obj.transform.eulerAngles = ang;
-		
-		loot.GetComponent<Rigidbody2D>().velocity += vel;
+
+        loot.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        loot.GetComponent<Rigidbody2D>().velocity += vel;
 
 		loots.Add(loot);
 

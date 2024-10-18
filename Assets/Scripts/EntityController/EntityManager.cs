@@ -234,6 +234,9 @@ public class EntityManager : MonoBehaviour {
 	public void PushBulletToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_bullets_parent.transform);
+        foreach (Bullet c in obj.GetComponents<Bullet>()) {
+            UnityEngine.Object.Destroy(c);
+        }
 
 		pool_bullets.Push(obj);
 	}
@@ -244,8 +247,11 @@ public class EntityManager : MonoBehaviour {
 	public void PushProjectileToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_projectiles_parent.transform);
-		pool_projectiles.Push(obj);
-	}
+        foreach (Bullet c in obj.GetComponents<Bullet>()) {
+            UnityEngine.Object.Destroy(c);
+        }
+        pool_projectiles.Push(obj);
+    }
     /// <summary>
     /// 풀에 레이저 집어넣기
     /// </summary>
@@ -253,7 +259,10 @@ public class EntityManager : MonoBehaviour {
 	public void PushLaserToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_lasers_parent.transform);
-		pool_lasers.Push(obj);
+        foreach (Laser c in obj.GetComponents<Laser>()) {
+            UnityEngine.Object.Destroy(c);
+        }
+        pool_lasers.Push(obj);
 	}
     /// <summary>
     /// 풀에 캐릭터 집어넣기
@@ -262,7 +271,13 @@ public class EntityManager : MonoBehaviour {
 	public void PushCharacterToPool(GameObject obj) {
 		obj.SetActive(false);
 		obj.transform.SetParent(pool_characters_parent.transform);
-		pool_characters.Push(obj);
+        foreach (Character c in obj.GetComponents<Character>()) {
+            UnityEngine.Object.Destroy(c);
+        }
+        foreach (AIBaseController c in obj.GetComponents<AIBaseController>()) {
+            UnityEngine.Object.Destroy(c);
+        }
+        pool_characters.Push(obj);
 	}
     /// <summary>
     /// 풀에 이펙트 집어넣기
@@ -280,7 +295,10 @@ public class EntityManager : MonoBehaviour {
 	public void PushLootToPool(GameObject obj) {
         obj.SetActive(false);
 		obj.transform.SetParent(pool_loots_parent.transform);
-		pool_loots.Push(obj);
+        foreach (Loot c in obj.GetComponents<Loot>()) {
+            UnityEngine.Object.Destroy(c);
+        }
+        pool_loots.Push(obj);
     }
 
 }
