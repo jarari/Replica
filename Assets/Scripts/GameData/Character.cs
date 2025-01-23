@@ -828,7 +828,30 @@ public abstract class Character : ObjectBase {
     /* 방향이 입력이 없다면 백덤블링
      * 있다면 해당 방향으로 덤블링 */
     public virtual void Dash(int dir) {
-        
+        if (Time.time - lastDash < dashCooldown)
+            return;
+
+        if (facingRight) {
+            if (dir == 1) {
+                anim.Play("tumble_front");
+                dashDir = 1;
+            }
+            else {
+                anim.Play("tumble_back");
+                dashDir = -1;
+            }
+        }
+        else {
+            if (dir == 1) {
+                anim.Play("tumble_back");
+                dashDir = 1;
+            }
+            else {
+                anim.Play("tumble_front");
+                dashDir = -1;
+            }
+        }
+        OnTumbleEvent();
     }
 
     /* 덤블링 높이는 점프력에 비례함 */
@@ -853,10 +876,10 @@ public abstract class Character : ObjectBase {
         }
 
         lastDash = Time.time;
-        AddUncontrollableTime(0.25f);
+        AddUncontrollableTime(0.15f);
         ForceMove(dashDir);
         AddForce(Vector3.up * GetCurrentStat(CharacterStats.JumpPower) * 0.15f
-            + Vector3.right * dashDir * GetCurrentStat(CharacterStats.JumpPower) * 0.7f);
+            + Vector3.right * dashDir * GetCurrentStat(CharacterStats.JumpPower) * 0.1f);
         SetFlag(CharacterFlags.Invincible);
         gameObject.layer = LayerMask.NameToLayer("CharactersShifting");
         GetAnimator().SetBool("DiscardFromAnyState", true);
@@ -1001,6 +1024,7 @@ public abstract class Character : ObjectBase {
             GetCurrentStat(grenade, WeaponStats.ExplosionRadius), 90 - (90 - throwang) * GetFacingDirection(), 300,
             grenade.GetEssentialStats());
         RemoveWeapon(WeaponTypes.Throwable);
+        SetState(CharacterStates.Idle);
     }
 
     /* 피격 이벤트 */
