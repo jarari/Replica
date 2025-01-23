@@ -40,15 +40,19 @@ public class GeneralControl : Controller {
                     while (kvp.Value.keyCombos[0] != kc[i] && i < kc.Count - 1) {
                         i++;
                     }
-                    bool match = true;
+                    int matchCount = 0;
+                    bool matchLast = false;
                     for (int j = 0; j < kvp.Value.keyCombos.Count; j++) {
-                        if (kvp.Value.keyCombos[j] != kc[i]) {
-                            match = false;
-                            break;
+                        if (kvp.Value.keyCombos[j] == kc[i]) {
+                            matchCount++;
+                            i++;
+                            if (i == kc.Count) {
+                                matchLast = true;
+                                break;
+                            }
                         }
-                        i++;
                     }
-                    if (match) {
+                    if (matchCount >= Math.Round(kvp.Value.keyCombos.Count * 0.8f) && matchLast) {
                         currentCombo = kvp.Value;
                         character.GetAnimator().Play(kvp.Key);
                         nextAttack = Time.time + 0.25f;
@@ -67,15 +71,19 @@ public class GeneralControl : Controller {
                     while (next.keyCombos[0] != kc[i] && i < kc.Count - 1) {
                         i++;
                     }
-                    bool match = true;
+                    int matchCount = 0;
+                    bool matchLast = false;
                     for (int j = 0; j < next.keyCombos.Count; j++) {
-                        if (next.keyCombos[j] != kc[i]) {
-                            match = false;
-                            break;
+                        if (next.keyCombos[j] == kc[i]) {
+                            matchCount++;
+                            i++;
+                            if (i == kc.Count) {
+                                matchLast = true;
+                                break;
+                            }
                         }
-                        i++;
                     }
-                    if (match) {
+                    if (matchCount >= Math.Round(next.keyCombos.Count * 0.8f) && matchLast) {
                         currentCombo = next;
                         character.GetAnimator().Play(nextCombo);
                         nextAttack = Time.time + 0.25f;
@@ -193,7 +201,7 @@ public class GeneralControl : Controller {
                     if (Input.GetKey(KeyCode.LeftArrow)) {
                         character.Dash(-1);
                     }
-                    else if(Input.GetKey(KeyCode.RightArrow)){
+                    else if (Input.GetKey(KeyCode.RightArrow)) {
                         character.Dash(1);
                     }
                     else {
