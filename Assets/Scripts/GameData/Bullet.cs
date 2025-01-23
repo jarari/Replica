@@ -15,6 +15,7 @@ public class Bullet : MonoBehaviour {
     protected float range;
     protected Animator anim;
     protected Rigidbody2D rb;
+    protected CircleCollider2D cc;
     protected Vector3 collisionPos;
     protected Vector3 collisionNorm;
     protected Vector3 startPos;
@@ -29,6 +30,7 @@ public class Bullet : MonoBehaviour {
     protected void Awake() {
 		rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        cc = GetComponent<CircleCollider2D>();
         collided = false;
     }
 
@@ -50,6 +52,8 @@ public class Bullet : MonoBehaviour {
             transform.localScale = new Vector3(0, 0, 0);
             anim = null;
         }
+
+        cc.offset = new Vector2(35, 0);
             
         init = true;
     }

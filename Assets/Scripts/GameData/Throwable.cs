@@ -6,6 +6,8 @@ public class Throwable : Projectile {
     public void Initialize(string classname, Character user, Weapon firedfrom, float _speed, float _range, float _torque, Dictionary<WeaponStats, float> _data, bool candirecthit) {
         Initialize(classname, user, firedfrom, _speed, _range, _data, candirecthit);
         torque = _torque;
+
+        cc.offset = new Vector2(0, 0);
     }
 
     protected override void FixedUpdate() {
