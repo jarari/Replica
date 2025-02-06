@@ -633,7 +633,7 @@ public abstract class Character : ObjectBase {
     }
 
     public void DestroyQuietly() {
-        CharacterManager.OnCharacterDeath(this);
+        CharacterManager.OnCharacterDeath(this, false);
         for (int i = 0; i < transform.childCount; i++) {
             Destroy(transform.GetChild(i).gameObject);
         }

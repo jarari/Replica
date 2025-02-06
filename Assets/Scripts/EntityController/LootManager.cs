@@ -27,8 +27,10 @@ public static class LootManager {
 			return null;
 
         GameObject loot_obj = em.PullLootFromPool();
+        if (loot_obj == null)
+            return null;
 
-		string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
+        string script = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
         if (string.IsNullOrEmpty(script))
             script = "Loot";
         Loot loot = (Loot)loot_obj.AddComponent(Type.GetType(script));

@@ -50,8 +50,10 @@ public static class BulletManager {
 			return null;
 
         GameObject bullet_obj = em.PullBulletFromPool();
+        if (bullet_obj == null)
+            return null;
 
-		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
+        Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[0]);
 		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[1], user.GetComponentsInParent<Collider2D>()[0]);
 		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[0], user.GetComponentsInParent<Collider2D>()[1]);
 		Physics2D.IgnoreCollision(bullet_obj.GetComponents<Collider2D>()[1], user.GetComponentsInParent<Collider2D>()[1]);
@@ -78,6 +80,9 @@ public static class BulletManager {
 			return null;
 
         GameObject projectile_obj = em.PullProjectileFromPool();
+        if (projectile_obj == null)
+            return null;
+
         projectile_obj.transform.position = pos;
 
         JDictionary scriptData = GameDataManager.instance.RootData[classname]["ScriptClass"];
@@ -100,6 +105,9 @@ public static class BulletManager {
 			return null;
 
         GameObject throwable_obj = em.PullProjectileFromPool();
+        if (throwable_obj == null)
+            return null;
+
         throwable_obj.transform.position = pos;
 
         JDictionary scriptData = GameDataManager.instance.RootData[classname]["ScriptClass"];
@@ -122,6 +130,9 @@ public static class BulletManager {
 			return null;
 
         GameObject laser_obj = em.PullLaserFromPool();
+        if (laser_obj == null)
+            return null;
+
         laser_obj.transform.position = pos;
 
         JDictionary scriptData = GameDataManager.instance.RootData[classname]["ScriptClass"];

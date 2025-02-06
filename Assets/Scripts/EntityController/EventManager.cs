@@ -207,7 +207,8 @@ public static class EventManager {
         eventFunctions.Remove(id);
 	}
     public static void UnregisterAll() {
-        foreach(string id in eventFunctions.Keys) {
+		var keys = eventFunctions.Keys.ToList();
+		foreach (string id in keys) {
             UnregisterEvent(id);
         }
     }

@@ -20,6 +20,9 @@ public static class CharacterManager {
 			return null;
 
         GameObject character_obj = em.PullCharacterFromPool();
+        if (character_obj == null)
+            return null;
+
         character_obj.transform.position = pos;
 
         string scriptClass = GameDataManager.instance.RootData[classname]["ScriptClass"].Value<string>();
@@ -71,12 +74,13 @@ public static class CharacterManager {
         player = c;
     }
 
-    public static void OnCharacterDeath(Character c) {
+    public static void OnCharacterDeath(Character c, bool fireEvent = true) {
         Characters.Remove(c);
         em.PushCharacterToPool(c.gameObject);
         UnityEngine.Object.Destroy(c);
 
-		EventManager.OnCharacterDeath(c);
+        if (fireEvent)
+		    EventManager.OnCharacterDeath(c);
     }
 
     public static Character GetPlayer() {

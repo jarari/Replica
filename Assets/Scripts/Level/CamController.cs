@@ -77,21 +77,21 @@ public class CamController : MonoBehaviour {
 		Vector3 targetAcceleration = Vector3.zero;
 
 		if(lastTargetVel.magnitude > 0) {
-			targetAcceleration = (targetVelocity - lastTargetVel) / Time.deltaTime;
+			targetAcceleration = (targetVelocity - lastTargetVel) / Time.fixedDeltaTime;
 		}
 		lastTargetVel = targetVelocity;
 
-		targetAcceleration_lerp += (targetAcceleration - targetAcceleration_lerp) * Time.deltaTime / smoothValAcc;
+		targetAcceleration_lerp += (targetAcceleration - targetAcceleration_lerp) * Time.fixedDeltaTime / smoothValAcc;
 		targetAcceleration_lerp.y = targetAcceleration_lerp.y * 0.1f;
 
-		targetVelocity_lerp = Vector3.Lerp(targetVelocity_lerp, targetVelocity * 2f, Time.deltaTime / smoothValVel);
+		targetVelocity_lerp = Vector3.Lerp(targetVelocity_lerp, targetVelocity * 2f, Time.fixedDeltaTime / smoothValVel);
 		targetVelocity_lerp.y = targetVelocity_lerp.y * 0.6f * bobbing;
 
 		camTargetPos = target.position;
 		camTargetPos.x = ClampCamX(camTargetPos.x);
 		camTargetPos.y = camTargetPos.y + camUp;
 
-		camPos += ((camTargetPos + targetVelocity_lerp * 0.25f + targetVelocity * (0.1f + 0.1f * bobbing)) + targetAcceleration_lerp * 0.25f * bobbing - camPos) * 10.0f * Time.deltaTime / smoothVal;
+		camPos += ((camTargetPos + targetVelocity_lerp * 0.25f + targetVelocity * (0.1f + 0.1f * bobbing)) + targetAcceleration_lerp * 0.25f * bobbing - camPos) * 10.0f * Time.fixedDeltaTime / smoothVal;
 		//camPos += (camTargetPos - camPos) * Time.deltaTime / smoothVal;
 		//camPos += (camTargetPos + targetAcceleration_lerp * (0.2f * bobbing) - camPos) * 2.0f * Time.deltaTime / smoothValAcc;
 		//camPos += (camTargetPos + targetVelocity * (0.4f + 0.2f * bobbing) - camPos) * Time.deltaTime / smoothValVel;

@@ -10,6 +10,17 @@
 		{
 		}
 	},
+	"map_stage02":
+	{
+		"TotalNumberOfRooms":1,
+		"Reserved":
+		{
+			"0":"Stage02"
+		},
+		"Patterns":
+		{
+		}
+	},
 	"map_teststage":
 	{
 		"TotalNumberOfRooms":10,

@@ -17,8 +17,10 @@ public class SoundManager : MonoBehaviour {
 
     public void RequestSound(GameObject obj, string path, float vol = 1f, float pitch = 1f, bool loop = false) {
 		if(!LevelManager.instance.isMapActive) return;
-		AudioSource As = obj.AddComponent<AudioSource>();
         if (Resources.Load(path) == null) return;
+        AudioSource As = obj.GetComponent<AudioSource>();
+        if (As == null)
+            As = obj.AddComponent<AudioSource>();
         As.clip = (AudioClip)Resources.Load(path);
         As.volume = vol;
         As.pitch = pitch;

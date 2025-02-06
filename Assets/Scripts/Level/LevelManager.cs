@@ -36,9 +36,6 @@ public class LevelManager : MonoBehaviour {
         Cursor.visible = false;
         if (debug)
             StartCoroutine(Debugger());
-        else {
-            Save.DataLoad();
-        }
     }
 
     IEnumerator Debugger() {
@@ -126,8 +123,8 @@ public class LevelManager : MonoBehaviour {
                     yield return new WaitForEndOfFrame();
                 }
             }
-            Initialize();
             isMapActive = true;
+            Initialize();
             EventManager.OnMapCreated();
             if (!loadOnce)
                 PreloadEssentialSprites();
@@ -229,6 +226,20 @@ public class LevelManager : MonoBehaviour {
                 return int.Parse(entity.Key) + lastBlockID;
         }
         return -1;
+    }
+
+    private GameObject GetBlockObjectByID(int instaceID) {
+        foreach (JDictionary entity in stageData) {
+            if (entity.IsValue)
+                continue;
+
+            if (entity["ID"] && entity["ID"].Value<int>() == instaceID) {
+                GameObject ret;
+                createdObjs.TryGetValue(int.Parse(entity.Key) + lastBlockID, out ret);
+                return ret;
+            }
+        }
+        return null;
     }
 
     private GameObject CreatePrefab(string name, string key, Vector3 basePos, bool snap = false) {
@@ -374,6 +385,8 @@ public class LevelManager : MonoBehaviour {
         cs.weaponClass		= spawnerData["WeaponClass"].Value<string>();
 		cs.characterType	= (CharacterTypes) spawnerData["CharacterType"].Value<int>();
 		cs.spawnerType		= (CharacterSpawnerTypes) spawnerData["SpawnerType"].Value<int>();
+        cs.autoEngage       = spawnerData["AutoEngage"].Value<bool>();
+        cs.startEnabled     = spawnerData["StartEnabled"].Value<bool>();
     }
 
     private void ApplyTrigger(GameObject obj, string key) {
@@ -383,15 +396,18 @@ public class LevelManager : MonoBehaviour {
 
 		JDictionary triggerData = this.stageData[key]["Trigger"];
 
-		tr.action = triggerData["TriggerAction"].Value<string>();
+		tr.action = triggerData["Action"].Value<string>();
 
         List<string> args = new List<string>();
-        foreach (JDictionary arg in triggerData["TriggerArguments"]) {
+        foreach (JDictionary arg in triggerData["Arguments"]) {
             args.Add(arg.Value<string>());
         }
         tr.arguments = args.ToArray();
 
-		tr.Initialize();
+        if (triggerData["Target"].Value<string>().Length > 0)
+            tr.target = GetBlockObjectByID(int.Parse(triggerData["Target"].Value<string>()));
+
+        tr.Initialize();
     }
 
     private void ApplyBoxCollider(GameObject obj, string key) {
@@ -472,6 +488,7 @@ public class LevelManager : MonoBehaviour {
             LootManager.RemoveLoot(loots[i]);
         }
         currentMap = "";
+        lastBlockID = 0;
     }
 
     public void Initialize() {
@@ -503,7 +520,7 @@ public class LevelManager : MonoBehaviour {
         }
 
         if (LoadingScreen.instance != null)
-            LoadingScreen.instance.Open();
+            LoadingScreen.instance.Close();
     }
 
     public Vector2 GetMapMin() {

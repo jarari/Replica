@@ -129,7 +129,7 @@
     <Compile Include="Assets\Scripts\GameData\Characters\CharacterSecbot2.cs" />
     <Compile Include="Assets\Scripts\GameData\Projectile.cs" />
     <Compile Include="Assets\Scripts\UIComponents\Menus\InventoryMenu.cs" />
-    <Compile Include="Assets\Scripts\GameData\CharacterSpawner.cs" />
+    <Compile Include="Assets\Scripts\Level\CharacterSpawner.cs" />
     <Compile Include="Assets\Scripts\EntityController\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\GameData\DOT.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\AmbientOcclusionModel.cs" />
@@ -166,6 +166,8 @@
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\AntialiasingModel.cs" />
     <Compile Include="Assets\Scripts\GameData\Attachment.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\DitheringModel.cs" />
+    <Compile Include="Assets\Scripts\Level\Trigger\Trigger_ActivateSpawner.cs" />
+    <Compile Include="Assets\Scripts\Level\Trigger\Trigger_DeactivateSpawner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Sprites\shader\Blur.shader" />

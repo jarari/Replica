@@ -25,6 +25,9 @@ public static class EffectManager {
 		if(!LevelManager.instance.isMapActive) return;
 
         GameObject effect_obj = em.PullEffectFromPool();
+        if (effect_obj == null)
+            return;
+
         effect_obj.transform.position = pos;
 
         Vector3 ang = effect_obj.transform.eulerAngles;
@@ -45,6 +48,8 @@ public static class EffectManager {
 		if(!LevelManager.instance.isMapActive) return;
 
         GameObject effect_obj = em.PullEffectFromPool();
+        if (effect_obj == null)
+            return;
 
         effect_obj.transform.position = pos;
 

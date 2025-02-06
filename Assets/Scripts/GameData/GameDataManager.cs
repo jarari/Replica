@@ -64,7 +64,7 @@ public class GameDataManager : MonoBehaviour {
         DontDestroyOnLoad(this);
 
 		if(LoadingScreen.instance != null)
-            LoadingScreen.instance.Close();
+            LoadingScreen.instance.Open();
 
 		rootData = new JDictionary();
 		rootData.DeserializeJson(

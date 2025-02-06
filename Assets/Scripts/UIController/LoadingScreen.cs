@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LoadingScreen : MonoBehaviour {
     public static LoadingScreen instance;
+    public bool isLoading = false;
     void Awake() {
         if (instance == null) {
             instance = this;
@@ -14,11 +15,13 @@ public class LoadingScreen : MonoBehaviour {
         DontDestroyOnLoad(this);
     }
 
-    public void Close() {
+    public void Open() {
         gameObject.SetActive(true);
+        isLoading = true;
     }
 
-    public void Open() {
+    public void Close() {
         gameObject.SetActive(false);
+        isLoading = false;
     }
 }

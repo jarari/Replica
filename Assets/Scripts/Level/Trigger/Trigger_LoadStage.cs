@@ -10,7 +10,7 @@ public class Trigger_LoadStage : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D collider) {
         if (!collider.GetComponentInChildren<Character>().IsAI()) {
-            LoadingScreen.instance.Close();
+            LoadingScreen.instance.Open();
             Save.SaveData();
             StartCoroutine(WaitForLoadingScreen());
         }

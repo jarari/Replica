@@ -18,6 +18,7 @@ public class LevelExporter : MonoBehaviour {
         BGlayerCount = 0;
         counter = 0;
         Cursor.visible = true;
+        List<GameObject> triggers = new List<GameObject>();
         string data = "{";
         foreach (GameObject obj in FindObjectsOfType<GameObject>()) {
             bool tagged = false;
@@ -77,8 +78,8 @@ public class LevelExporter : MonoBehaviour {
                     break;
                 case "Trigger":
                     tagged = true;
-                    data += HandleObject(obj, "Trigger");
-                    counter++;
+                    triggers.Add(obj);
+                    Debug.Log("Obj was trigger. Object queued.");
                     break;
             }
             if (tagged) continue;
@@ -88,6 +89,10 @@ public class LevelExporter : MonoBehaviour {
                     counter++;
                 }
             }
+        }
+        foreach (GameObject obj in triggers) {
+            data += HandleObject(obj, "Trigger");
+            counter++;
         }
         data += "\"NumOfLayers\":" + BGlayerCount.ToString() + ",";
         data = data.Substring(0, data.Length - 1) + "}";
@@ -180,6 +185,8 @@ public class LevelExporter : MonoBehaviour {
                 + ",\"WeaponClass\":\"" + cs.weaponClass
                 + "\",\"CharacterType\":" + Convert.ToInt32(cs.characterType).ToString()
                 + ",\"SpawnerType\":" + Convert.ToInt32(cs.spawnerType).ToString()
+                + ",\"AutoEngage\":" + cs.autoEngage.ToString().ToLower()
+                + ",\"StartEnabled\":" + cs.startEnabled.ToString().ToLower()
                 + "},";
             if (cs.characterType == CharacterTypes.Player)
                 playerspawner = cs;
@@ -196,9 +203,13 @@ public class LevelExporter : MonoBehaviour {
         if (obj.GetComponent<Trigger>() != null) {
             string[] args = obj.GetComponent<Trigger>().arguments;
             int triggercount = 0;
+            string targetInstanceID = "";
+            if (obj.GetComponent<Trigger>().target != null)
+                targetInstanceID = obj.GetComponent<Trigger>().target.GetInstanceID().ToString();
             jsondata += "\"Trigger\":{"
-                + "\"TriggerAction\":\"" + obj.GetComponent<Trigger>().action
-                + "\",\"TriggerArguments\":{";
+                + "\"Action\":\"" + obj.GetComponent<Trigger>().action
+                + "\",\"Target\":\"" + targetInstanceID
+                + "\",\"Arguments\":{";
             foreach (string arg in args) {
                 jsondata += "\"" + triggercount.ToString() + "\":\"" + arg + "\",";
             }

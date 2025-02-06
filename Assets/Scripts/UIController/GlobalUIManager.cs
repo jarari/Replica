@@ -30,7 +30,7 @@ public class GlobalUIManager : MonoBehaviour {
     }
 
     public void LoadScene(string scene) {
-        LoadingScreen.instance.Close();
+        LoadingScreen.instance.Open();
         StartCoroutine(LoadSceneAsync(Convert.ToInt32(scene)));
     }
 
@@ -38,7 +38,7 @@ public class GlobalUIManager : MonoBehaviour {
         AsyncOperation load = SceneManager.LoadSceneAsync(scene);
         while (!load.isDone) {
             if(scene != 2)
-                LoadingScreen.instance.Open();
+                LoadingScreen.instance.Close();
             yield return null;
         }
     }

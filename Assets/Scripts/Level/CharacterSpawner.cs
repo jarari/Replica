@@ -9,9 +9,9 @@ public enum CharacterSpawnerTypes {
 public class CharacterSpawner : MonoBehaviour {
     private List<Character> managed = new List<Character>();
     private Character lastspawn = null;
-    public float delay = -1;
     private float nextSpawn;
     private bool nextSpawnReseted = true;
+    public float delay = -1;
     public string characterClass;
     public Teams team;
     public string weaponClass;
@@ -20,6 +20,7 @@ public class CharacterSpawner : MonoBehaviour {
     private string aiScript = "";
     public Character target = null;
     public bool autoEngage = false;
+    public bool startEnabled = false;
     public bool init = false;
 
 	private JDictionary characterData;
@@ -39,28 +40,30 @@ public class CharacterSpawner : MonoBehaviour {
         nextSpawn = Time.realtimeSinceStartup;
         if(characterData["AIScript"])
             aiScript = characterData["AIScript"].Value<string>();
-        init = true;
-        if (spawnerType == CharacterSpawnerTypes.Once)
-            Spawn();
+        if (startEnabled) {
+            init = true;
+            if (spawnerType == CharacterSpawnerTypes.Once || spawnerType == CharacterSpawnerTypes.OnDeath)
+                Spawn();
+        }
     }
 
-    private void Spawn() {
+    public void Spawn() {
         int sortorder = 0;
         if (characterType == CharacterTypes.Player)
             sortorder = 5;
         Character spawned = CharacterManager.CreateCharacter(characterClass, transform.position, team, sortorder);
+        if (spawned == null)
+            return;
         switch (characterType) {
             case CharacterTypes.Player:
                 spawned.GiveWeapon("weapon_fist");
                 spawned.GiveWeapon("weapon_gunkata");
                 spawned.GiveWeapon("weapon_sword");
-                //Save.DataLoad();
-                //PlayerHUD.UpdateHealth(spawned.GetCurrentStat(CharacterStats.Health) / spawned.GetMaxStat(CharacterStats.Health));
                 CharacterManager.InsertControl(spawned);
                 PlayerHUD.Initialize();
                 CamController.instance.AttachCam(spawned.transform);
-                spawned.GetInventory().AddItem("item_grenade", 500);
-                spawned.GetInventory().AddItem("item_bullet", 1000);
+                Save.LoadData();
+                PlayerHUD.UpdateHealth(spawned, spawned.GetCurrentStat(CharacterStats.Health) / spawned.GetMaxStat(CharacterStats.Health));
                 break;
             case CharacterTypes.AI:
                 spawned.GiveWeapon(weaponClass);
@@ -99,7 +102,7 @@ public class CharacterSpawner : MonoBehaviour {
     }
 
     private void Update() {
-        if (!init) return;
+        if (!init || !LevelManager.instance.isMapActive) return;
         if (autoEngage) {
             Character closest = CharacterManager.GetClosestEnemy(transform.position, team);
             if (closest != null)
@@ -116,13 +119,6 @@ public class CharacterSpawner : MonoBehaviour {
             }
             else if (nextSpawn <= Time.realtimeSinceStartup)
                 Spawn();
-        }
-    }
-
-    private void OnDestroy() {
-        foreach(Character c in managed) {
-            if(c != null)
-                Destroy(c.transform.gameObject);
         }
     }
 }
