@@ -9,6 +9,7 @@ using UnityEngine;
  * 캐릭터에게 데미지
  * 무적 상태의 캐릭터는 통과함 */
 public class Bullet : MonoBehaviour {
+    const float lifetime = 3f;
     protected Character attacker;
     protected Weapon weapon;
     protected float speed;
@@ -23,6 +24,7 @@ public class Bullet : MonoBehaviour {
     protected bool collided = false;
     protected bool init = false;
     private bool ignoreGround = false;
+    private float wasAliveFor = 0f;
     protected Dictionary<WeaponStats, float> data;
 
 	protected JDictionary bulletData;
@@ -54,7 +56,9 @@ public class Bullet : MonoBehaviour {
         }
 
         cc.offset = new Vector2(35, 0);
-            
+
+        wasAliveFor = 0f;
+
         init = true;
     }
 
@@ -69,8 +73,9 @@ public class Bullet : MonoBehaviour {
 
     protected virtual void FixedUpdate() {
         if (!init) return;
+        wasAliveFor += Time.fixedDeltaTime;
         rb.velocity = transform.right * speed;
-        if (Vector3.Distance(transform.position, startPos) >= range)
+        if (Vector3.Distance(transform.position, startPos) >= range || wasAliveFor >= lifetime)
             PoolDestroy();
     }
 
@@ -199,24 +204,20 @@ public class Bullet : MonoBehaviour {
     }
 
     protected virtual void PoolDestroy() {
-        if (!collided) return;
-        ShakeCam();
+        if (collided) {
+            ShakeCam();
+            Vector3 temp = collisionNorm;
+            temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
+            float ang = Helper.Vector2ToAng(temp);
+            if (anim && bulletData["Sprites"]["hit"]) {
+                EffectManager.CreateEffect(bulletData["Sprites"]["hit"].Value<string>(), collisionPos, ang);
+            }
+            if (bulletData["Sprites"]["hitparticles"]) {
+                foreach (JDictionary particle in bulletData["Sprites"]["hitparticles"]) {
+                    ParticleManager.instance.CreateParticle(particle.Value<string>(), collisionPos, ang, false);
+                }
+            }
+        }
         BulletManager.OnBulletDestroy(this);
-        Vector3 temp = collisionNorm;
-        temp = Quaternion.AngleAxis(180, Vector3.forward) * temp;
-        float ang = Helper.Vector2ToAng(temp);
-        if (anim && bulletData["Sprites"]["hit"]) {
-            EffectManager.CreateEffect(bulletData["Sprites"]["hit"].Value<string>(), collisionPos, ang);
-        }
-        if (bulletData["Sprites"]["hitparticles"]) {
-            //Dictionary<string, object> dict = (Dictionary<string, object>)GameDataManager.instance.GetData(className, "Sprites", "hitparticles");
-            //for (int i = 0; i < dict.Count; i++) {
-            //    string particleName = (string)dict[i.ToString()];
-            //    ParticleManager.instance.CreateParticle(particleName, collisionPos, ang, false);
-            //}
-			foreach(JDictionary particle in bulletData["Sprites"]["hitparticles"]) {
-				ParticleManager.instance.CreateParticle(particle.Value<string>(), collisionPos, ang, false);
-			}
-        }
     }
 }

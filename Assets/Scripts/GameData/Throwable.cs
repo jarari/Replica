@@ -12,7 +12,7 @@ public class Throwable : Projectile {
 
     protected override void FixedUpdate() {
         if (!init) return;
-        rb.velocity += new Vector2(0, -981.0f * Time.fixedDeltaTime);
+        rb.velocity += new Vector2(0, Physics2D.gravity.y * Time.fixedDeltaTime);
         Vector3 temp = transform.right;
         temp = Quaternion.AngleAxis(torque * Time.fixedDeltaTime, Vector3.forward) * temp;
         float ang = Helper.Vector2ToAng(temp);

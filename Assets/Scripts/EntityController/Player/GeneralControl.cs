@@ -406,7 +406,7 @@ public class GeneralControl : Controller {
                 }
             }
             if (Input.GetKeyDown(KeyCode.Escape))
-                MenuManager.instance.PauseToggle();
+                MenuManager.instance.ShowMenu("PauseMenu");
 			if(Input.GetKeyDown(KeyCode.Delete)) {
 				LevelManager.instance.DestroyMap();
 			}

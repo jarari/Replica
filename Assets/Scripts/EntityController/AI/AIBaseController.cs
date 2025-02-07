@@ -11,6 +11,7 @@ public class AIBaseController : Controller {
     protected float maxWanderDist = 3f;
     protected float restingTime = 3f;
     protected float alertRange = 200f;
+    protected float rangeX = 100f;
     protected float rangeY = 20f;
     protected int direction;
     protected float distance;
@@ -37,6 +38,8 @@ public class AIBaseController : Controller {
         restingTime = aiData["RestingTime"].Value<float>();
         if (aiData["AttackRangeY"])
             rangeY = aiData["AttackRangeY"].Value<float>();
+        if (aiData["AttackRangeX"])
+            rangeX = aiData["AttackRangeX"].Value<float>();
 
         direction = 1;
         distance = 0;
@@ -134,10 +137,10 @@ public class AIBaseController : Controller {
         }
         else {
             if(character.GetState() != CharacterStates.Attack) {
-                distance = target.transform.position.x - transform.position.x;
-                if (Mathf.Abs(distance) <= character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f) {
+                Vector2 diff = Helper.GetClosestBoxBorder(target.transform.position, target.GetComponent<BoxCollider2D>(), transform.position) - (Vector2)transform.position;
+                if (Mathf.Abs(diff.x) <= rangeX) {
                     if (Mathf.Sign(target.transform.position.x - transform.position.x) == character.GetFacingDirection()
-                        && Helper.GetClosestBoxBorder(target.transform.position, target.GetComponent<BoxCollider2D>(), transform.position).y - transform.position.y <= rangeY) {
+                        && MathF.Abs(diff.y) <= rangeY) {
                         Attack();
                         return;
                     }
@@ -151,7 +154,7 @@ public class AIBaseController : Controller {
                 }
                 else {
                     direction = (int)Mathf.Sign(distance);
-                    character.Follow(target.transform.position, character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.Range) * 0.9f);
+                    character.Follow(target.transform.position, rangeX * 0.9f);
                     return;
                 }
                 character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);

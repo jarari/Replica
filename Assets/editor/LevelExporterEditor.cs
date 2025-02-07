@@ -11,5 +11,8 @@ public class LevelExporterEditor : Editor {
         if (GUILayout.Button("Export map")) {
             exporter.ExportMap();
         }
+        if (GUILayout.Button("Scenary to Cam")) {
+            exporter.ScenaryToCam();
+        }
     }
 }

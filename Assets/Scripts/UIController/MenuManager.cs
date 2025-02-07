@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour {
-    private bool paused = false;
+    public int pauseCount = 0;
+
     private Stack<Menu> menus = new Stack<Menu>();
     private Dictionary<string, string> lastFocus = new Dictionary<string, string>();
     private GlobalUIManager uimanager;
@@ -22,30 +23,13 @@ public class MenuManager : MonoBehaviour {
         uimanager = GlobalUIManager.instance;
     }
 
-    public void PauseToggle() {
-        paused = !paused;
-        if (paused)
+    public void UpdatePaused() {
+        if (pauseCount > 0)
             TimeManager.instance.Pause();
-        HandleUI();
     }
 
     public bool IsPaused() {
-        return paused;
-    }
-
-    private void HandleUI() {
-        if (paused) {
-            ShowMenu("MainMenu");
-            Cursor.visible = true;
-            PlayerHUD.HideHUD();
-        }
-        else {
-            foreach(Menu menu in menus) {
-                menu.DestroyMenu();
-            }
-            Cursor.visible = false;
-            PlayerHUD.ShowHUD();
-        }
+        return pauseCount > 0;
     }
 
     private void CreateMenu(string classname, int priority) {
@@ -54,6 +38,7 @@ public class MenuManager : MonoBehaviour {
         Menu menu = (Menu)menu_obj.AddComponent(Type.GetType(classname));
         menu.Initialize(priority);
         menus.Push(menu);
+        UpdatePaused();
     }
 
     private IEnumerator RetrieveFocus(string menu) {
@@ -90,8 +75,7 @@ public class MenuManager : MonoBehaviour {
                 uimanager.FocusObject(null);
                 StartCoroutine(RetrieveFocus(menus.Peek().GetMenuName()));
             }
+            UpdatePaused();
         }
-        if (menus.Count == 0)
-            PauseToggle();
     }
 }

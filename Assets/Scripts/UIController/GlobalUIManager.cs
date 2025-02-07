@@ -36,9 +36,12 @@ public class GlobalUIManager : MonoBehaviour {
 
     IEnumerator LoadSceneAsync(int scene) {
         AsyncOperation load = SceneManager.LoadSceneAsync(scene);
-        while (!load.isDone) {
-            if(scene != 2)
+        float lastrun = Time.unscaledTime;
+        while (!load.isDone || LoadingScreen.instance.isLoading) {
+            if (scene != 2)
                 LoadingScreen.instance.Close();
+            LoadingScreen.instance.UpdateLoadingAnimation(Time.unscaledTime - lastrun);
+            lastrun = Time.unscaledTime;
             yield return null;
         }
     }

@@ -100,7 +100,7 @@ public class CamController : MonoBehaviour {
 
     private void LateUpdate() {
         if (lastScreenWidth != Screen.width || lastScreenHeight != Screen.height)
-            SetupCam();
+            SetupCam(Screen.width, Screen.height);
 
         Vector3 temptarget = camPos;
 		//temptarget.x = ClampCamX(temptarget.x);
@@ -121,11 +121,11 @@ public class CamController : MonoBehaviour {
             Destroy(gameObject);
         }
         camPos = transform.position;
-        SetupCam();
+        SetupCam(Screen.width, Screen.height);
     }
 
     public void AttachCam(Transform p) {
-        SetupCam();
+        SetupCam(Screen.width, Screen.height);
         zoomed = 1f;
         target = p;
         //lastTargetPos = target.position;
@@ -139,25 +139,24 @@ public class CamController : MonoBehaviour {
 		//asd
     }
     
-    public void SetupCam() {
-        lastScreenWidth = Screen.width;
-        lastScreenHeight = Screen.height;
+    public void SetupCam(int width, int height) {
+        lastScreenWidth = width;
+        lastScreenHeight = height;
         Camera.main.orthographicSize = (GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f;
-        Vector2 forcedSize = GetForcedScreenSize();
-        marginWidth = (Screen.width - forcedSize.x) / Screen.width;
-        marginHeight = (Screen.height - forcedSize.y) / Screen.height;
+        Vector2 forcedSize = GetForcedScreenSize(width, height);
+        marginWidth = (Screen.width - forcedSize.x) / width;
+        marginHeight = (Screen.height - forcedSize.y) / height;
         Camera.main.rect = new Rect(marginWidth / 2f, marginHeight / 2f, 1.0f - marginWidth, 1.0f - marginHeight);
-        PlayerHUD.DrawUI();
     }
 
-    public Vector2 GetForcedScreenSize() {
+    public Vector2 GetForcedScreenSize(int width, int height) {
         standardAspect = GlobalUIManager.standardWidth / (float)GlobalUIManager.standardHeight;
-        Vector2 forcedSize = new Vector2(Screen.width, Screen.height);
-        if (Screen.width / (float)Screen.height > standardAspect) {
-            forcedSize.x = Screen.height * standardAspect;
+        Vector2 forcedSize = new Vector2(width, height);
+        if (width / (float)height > standardAspect) {
+            forcedSize.x = height * standardAspect;
         }
-        else if (Screen.width / (float)Screen.height < standardAspect) {
-            forcedSize.y = Screen.width / standardAspect;
+        else if (width / (float)height < standardAspect) {
+            forcedSize.y = width / standardAspect;
         }
         return forcedSize;
     }

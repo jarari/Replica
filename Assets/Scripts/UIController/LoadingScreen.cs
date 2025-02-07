@@ -5,6 +5,7 @@ using UnityEngine;
 public class LoadingScreen : MonoBehaviour {
     public static LoadingScreen instance;
     public bool isLoading = false;
+    public GameObject loadingAnimation;
     void Awake() {
         if (instance == null) {
             instance = this;
@@ -23,5 +24,10 @@ public class LoadingScreen : MonoBehaviour {
     public void Close() {
         gameObject.SetActive(false);
         isLoading = false;
+    }
+
+    public void UpdateLoadingAnimation(float deltaTime) {
+        if (!loadingAnimation.activeInHierarchy) return;
+        loadingAnimation.GetComponent<Animator>().Update(deltaTime);
     }
 }

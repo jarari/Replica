@@ -240,5 +240,37 @@ public class LevelExporter : MonoBehaviour {
         }
         return jsondata.Substring(0, jsondata.Length - 1) + "},";
     }
+
+    public void ScenaryToCam() {
+        Camera editorCam = SceneView.lastActiveSceneView.camera;
+        editorCam.orthographicSize = (GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f;
+        CamController camCon = Camera.main.GetComponent<CamController>();
+        camCon.SetupCam(GlobalUIManager.standardWidth, GlobalUIManager.standardHeight);
+        Camera.main.transform.position = editorCam.transform.position;
+
+        List<GameObject> BGp = new List<GameObject>(GameObject.FindGameObjectsWithTag("BG"));
+        float minX = Mathf.Infinity;
+        float minY = Mathf.Infinity;
+        float maxX = -Mathf.Infinity;
+        float maxY = -Mathf.Infinity;
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Ceiling")) {
+            minX = Mathf.Min(obj.transform.position.x, minX);
+            minY = Mathf.Min(obj.transform.position.y, minY);
+            maxX = Mathf.Max(obj.transform.position.x, maxX);
+            maxY = Mathf.Max(obj.transform.position.y, maxY);
+        }
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Ground")) {
+            minX = Mathf.Min(obj.transform.position.x, minX);
+            minY = Mathf.Min(obj.transform.position.y, minY);
+            maxX = Mathf.Max(obj.transform.position.x, maxX);
+            maxY = Mathf.Max(obj.transform.position.y, maxY);
+        }
+        Vector2 mapMin = new Vector2(minX, minY);
+        Vector2 mapMax = new Vector2(maxX, maxY);
+        ScenarySimulation sceneSim = GetComponent<ScenarySimulation>();
+        sceneSim.Initialize(mapMin, mapMax, BGp);
+        sceneSim.UpdateSimulation(editorCam.transform.position, camCon.GetCamSize());
+        sceneSim.OnMapDestroy();
+    }
 }
 #endif

@@ -106,6 +106,7 @@
     <Compile Include="Assets\Scripts\UIController\MenuManager.cs" />
     <Compile Include="Assets\Scripts\HelperFunctions\Helper.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\PostProcessingProfile.cs" />
+    <Compile Include="Assets\Scripts\Level\Trigger\Trigger_ActivateSpawner.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Components\GrainComponent.cs" />
     <Compile Include="Assets\Scripts\GameData\Weapons\WeaponSword.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\PostProcessingContext.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Components\BloomComponent.cs" />
     <Compile Include="Assets\Scripts\GameData\Inventory.cs" />
     <Compile Include="Assets\Scripts\EntityController\Common\Controller.cs" />
+    <Compile Include="Assets\Scripts\Level\Trigger\Trigger_DeactivateSpawner.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\MotionBlurModel.cs" />
     <Compile Include="Assets\Scripts\Level\LevelManager.cs" />
     <Compile Include="Assets\Scripts\UIController\PlayerHUD.cs" />
@@ -142,7 +144,7 @@
     <Compile Include="Assets\Scripts\EntityController\AI\AIBossController.cs" />
     <Compile Include="Assets\Scripts\EntityController\EntityManager.cs" />
     <Compile Include="Assets\Scripts\Level\TimeManager.cs" />
-    <Compile Include="Assets\Scripts\UIComponents\Menus\MainMenu.cs" />
+    <Compile Include="Assets\Scripts\UIComponents\Menus\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Level\Trigger\Trigger_LoadStage.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Components\EyeAdaptationComponent.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\ChromaticAberrationModel.cs" />
@@ -166,8 +168,6 @@
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\AntialiasingModel.cs" />
     <Compile Include="Assets\Scripts\GameData\Attachment.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\DitheringModel.cs" />
-    <Compile Include="Assets\Scripts\Level\Trigger\Trigger_ActivateSpawner.cs" />
-    <Compile Include="Assets\Scripts\Level\Trigger\Trigger_DeactivateSpawner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Sprites\shader\Blur.shader" />

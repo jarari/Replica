@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Trigger_LoadStage : MonoBehaviour {
     private string nextStage = "";
+    private bool triggered = false;
 	public void Initialize(string next) {
         nextStage = next;
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
-        if (!collider.GetComponentInChildren<Character>().IsAI()) {
+        if (triggered == false && !collider.GetComponentInChildren<Character>().IsAI()) {
+            triggered = true;
             LoadingScreen.instance.Open();
             Save.SaveData();
             StartCoroutine(WaitForLoadingScreen());

@@ -15,7 +15,7 @@ public abstract class Menu : MonoBehaviour {
 
     protected abstract void PopulateMenu();
 
-    public void DestroyMenu() {
+    public virtual void DestroyMenu() {
         Destroy(gameObject);
     }
 
@@ -27,11 +27,11 @@ public abstract class Menu : MonoBehaviour {
         return priority;
     }
 
-    public void ShowMenu() {
+    public virtual void ShowMenu() {
         gameObject.SetActive(true);
     }
 
-    public void HideMenu() {
+    public virtual void HideMenu() {
         gameObject.SetActive(false);
     }
 }

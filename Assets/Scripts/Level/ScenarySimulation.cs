@@ -67,20 +67,12 @@ public class ScenarySimulation : MonoBehaviour {
         }
     }
 
-    private void OnMapDestroy() {
-        BGParents.Clear();
-        init = false;
-    }
-
-    private void LateUpdate() {
-        if (!init) return;
-        Vector3 camPos = CamController.instance.GetCamPos();
-        Vector2 camSize = CamController.instance.GetCamSize();
+    public void UpdateSimulation(Vector3 camPos, Vector2 camSize) {
         float mapCompleted = (camPos.x - mapMin.x - camSize.x) / (mapLength - camSize.x * 2f);
         float distY = camPos.y - mapMin.y - camSize.y;
         float a = Mathf.Atan(distY / farthestDist);
 
-        for(int i = 0; i < BGParents.Count; i++) {
+        for (int i = 0; i < BGParents.Count; i++) {
             float triA = Mathf.PI / 2f - a + Mathf.Atan(distY / bgDist[i]);
             float triHyp = Mathf.Sqrt(Mathf.Pow(bgDist[i], 2) + Mathf.Pow(distY, 2));
             Vector3 pos = BGParents[i].transform.position;
@@ -88,5 +80,16 @@ public class ScenarySimulation : MonoBehaviour {
             pos.y = Mathf.Round((camPos.y + Mathf.Cos(triA) * triHyp) * Helper.PixelsPerUnit) / Helper.PixelsPerUnit;
             BGParents[i].transform.position = pos;
         }
+    }
+
+    public void OnMapDestroy() {
+        BGParents.Clear();
+        init = false;
+        EventManager.UnregisterEvent("DestroyScenary");
+    }
+
+    private void LateUpdate() {
+        if (!init) return;
+        UpdateSimulation(CamController.instance.GetCamPos(), CamController.instance.GetCamSize());
     }
 }

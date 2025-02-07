@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour {
     private static int currentPriority = 0;
+    public bool isPaused = false;
     public static TimeManager instance;
     void Awake() {
         if (instance == null) {
@@ -12,6 +13,7 @@ public class TimeManager : MonoBehaviour {
         else if (instance != this) {
             Destroy(gameObject);
         }
+        DontDestroyOnLoad(this);
     }
     public IEnumerator ChangeTimeScale(float scale, float duration, int priority) {
         if (priority < currentPriority) yield break;
@@ -31,13 +33,17 @@ public class TimeManager : MonoBehaviour {
     }
 
     private IEnumerator PauseTime() {
+        isPaused = true;
         float before = Time.timeScale;
         Time.timeScale = 0;
         yield return new WaitWhile(() => MenuManager.instance.IsPaused());
         Time.timeScale = before;
+        isPaused = false;
     }
 
     public void Pause() {
+        if (isPaused)
+            return;
         StartCoroutine(PauseTime());
     }
 }

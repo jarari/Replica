@@ -14,22 +14,35 @@ public static class PlayerHUD {
     public static void Initialize() {
         uimanager = GlobalUIManager.instance;
         player = CharacterManager.GetPlayer();
+        CreateUI();
     }
 
-    public static void DrawUI() {
+    public static void CreateUI() {
         if (!uimanager)
             return;
         healthRatio = player.GetCurrentStat(CharacterStats.Health) / player.GetMaxStat(CharacterStats.Health);
-        uimanager.CreateImage("hp_frame", Helper.GetSprite("Sprites/ui", "HPbarFrame"), new Vector2(326, 970));
+        GameObject frame = uimanager.CreateImage("hp_frame", Helper.GetSprite("Sprites/ui", "HPbarFrame"), new Vector2(326, 970));
         uimanager.RescaleUI("hp_frame", 1, 1);
-        uimanager.CreateImage("hp_bar", Helper.GetSprite("Sprites/ui", "HpBar"), new Vector2(326, 970));
+        uimanager.CreateImage("hp_bar", Helper.GetSprite("Sprites/ui", "HpBar"), new Vector2(326, 970), frame.transform);
         uimanager.SetImageTypeFilled("hp_bar", Image.FillMethod.Horizontal, 0, healthRatio);
-        uimanager.CreateImage("ammo_gb", Helper.GetSprite("Sprites/ui", "bulletngrenade"), new Vector2(326, 970));
+        uimanager.CreateImage("ammo_gb", Helper.GetSprite("Sprites/ui", "bulletngrenade"), new Vector2(326, 970), frame.transform);
         uimanager.RescaleUI("ammo_gb", 1, 1);
-        uimanager.CreateText("ammo_b", new Vector2(125, 940), "0", 50, 50);
-        uimanager.CreateText("ammo_g", new Vector2(232, 940), "0", 50, 50);
+        uimanager.CreateText("ammo_b", new Vector2(125, 940), "0", frame.transform, 50, 50);
+        uimanager.CreateText("ammo_g", new Vector2(232, 940), "0", frame.transform, 50, 50);
 
         EventManager.RegisterEvent("HUD_UpdateHealth", new EventManager.CharacterHealthChanged(UpdateHealth));
+    }
+
+    public static void DestroyUI() {
+        if (!uimanager)
+            return;
+        EventManager.UnregisterEvent("HUD_UpdateHealth");
+
+        uimanager.DeleteUIElement("hp_frame");
+        uimanager.DeleteUIElement("hp_bar");
+        uimanager.DeleteUIElement("ammo_gb");
+        uimanager.DeleteUIElement("ammo_b");
+        uimanager.DeleteUIElement("ammo_g");
     }
 
     public static void DrawGrenadeTrajectory(string pose, float chargeAmount) {
@@ -137,10 +150,10 @@ public static class PlayerHUD {
     }
 
     public static void ShowHUD() {
-        uimanager.gameObject.SetActive(true);
+        uimanager.GetUIObject("hp_frame").SetActive(true);
     }
 
     public static void HideHUD() {
-        uimanager.gameObject.SetActive(false);
+        uimanager.GetUIObject("hp_frame").SetActive(false);
     }
 }
