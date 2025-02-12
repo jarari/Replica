@@ -5,7 +5,8 @@ using UnityEngine;
 public class Trigger : MonoBehaviour {
     public string action = "";
     public string[] arguments = { };
-    public GameObject target;
+    public GameObject[] targets;
+
     public void Initialize() {
         switch (action) {
             case "LoadStage":
@@ -15,12 +16,17 @@ public class Trigger : MonoBehaviour {
                 break;
             case "ActivateSpawner":
                 Trigger_ActivateSpawner trig_as = gameObject.AddComponent<Trigger_ActivateSpawner>();
-                trig_as.Initialize(target);
+                trig_as.Initialize(targets);
                 Destroy(this);
                 break;
             case "DeactivateSpawner":
                 Trigger_DeactivateSpawner trig_ds = gameObject.AddComponent<Trigger_DeactivateSpawner>();
-                trig_ds.Initialize(target);
+                trig_ds.Initialize(targets);
+                Destroy(this);
+                break;
+            case "Talk":
+                Trigger_Talk trig_talk = gameObject.AddComponent<Trigger_Talk>();
+                trig_talk.Initialize(arguments);
                 Destroy(this);
                 break;
         }

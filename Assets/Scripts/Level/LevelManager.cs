@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour {
     public static LevelManager instance;
@@ -46,6 +47,9 @@ public class LevelManager : MonoBehaviour {
             BGParents.Add(bgparent);
         }
         Initialize();
+        foreach (GameObject trigger in GameObject.FindGameObjectsWithTag("Trigger")) {
+            trigger.GetComponent<Trigger>().Initialize();
+        }
     }
 
     private void PreloadEssentialSprites() {
@@ -192,6 +196,10 @@ public class LevelManager : MonoBehaviour {
 						obj = CreateEmptyObject(entity.Key, basePos);
 						obj.tag = "BG_Farthest";
 						break;
+                    case "WorldText":
+                        obj = CreatePrefab("WorldText", entity.Key, basePos);
+                        ApplyComponents(obj, entity.Key);
+                        break;
 					case "Trigger":
 						obj = CreatePrefab("Trigger", entity.Key, basePos);
 						ApplyComponents(obj, entity.Key);
@@ -300,8 +308,14 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void ApplyComponents(GameObject obj, string key) {
-        if(this.stageData[key]["Name"])
+        if (this.stageData[key]["Name"])
             obj.name = this.stageData[key]["Name"].Value<string>();
+
+        if (this.stageData[key]["Tag"].Value<string>() == "WorldText")
+            obj.GetComponentInChildren<Text>().text = this.stageData[key]["Text"].Value<string>();
+
+        if (this.stageData[key]["Layer"])
+            obj.layer = this.stageData[key]["Layer"].Value<int>();
 
         if (this.stageData[key]["Sprite"])
 			this.ApplySpriteRenderer(obj, key);
@@ -385,6 +399,7 @@ public class LevelManager : MonoBehaviour {
         cs.weaponClass		= spawnerData["WeaponClass"].Value<string>();
 		cs.characterType	= (CharacterTypes) spawnerData["CharacterType"].Value<int>();
 		cs.spawnerType		= (CharacterSpawnerTypes) spawnerData["SpawnerType"].Value<int>();
+        cs.facingRight      = spawnerData["FacingRight"].Value<bool>();
         cs.autoEngage       = spawnerData["AutoEngage"].Value<bool>();
         cs.startEnabled     = spawnerData["StartEnabled"].Value<bool>();
     }
@@ -404,8 +419,11 @@ public class LevelManager : MonoBehaviour {
         }
         tr.arguments = args.ToArray();
 
-        if (triggerData["Target"].Value<string>().Length > 0)
-            tr.target = GetBlockObjectByID(int.Parse(triggerData["Target"].Value<string>()));
+        List<GameObject> targets = new List<GameObject>();
+        foreach (JDictionary target in triggerData["Targets"]) {
+            targets.Add(GetBlockObjectByID(int.Parse(target.Value<string>())));
+        }
+        tr.targets = targets.ToArray();
 
         tr.Initialize();
     }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelExporter : MonoBehaviour {
     public bool ScenearySimulation = true;
@@ -76,6 +77,11 @@ public class LevelExporter : MonoBehaviour {
                     data += HandleObject(obj, "BG_Farthest");
                     counter++;
                     break;
+                case "WorldText":
+                    tagged = true;
+                    data += HandleObject(obj, "WorldText");
+                    counter++;
+                    break;
                 case "Trigger":
                     tagged = true;
                     triggers.Add(obj);
@@ -142,7 +148,8 @@ public class LevelExporter : MonoBehaviour {
             + "\":{\"ID\":" + obj.GetInstanceID().ToString()
             + ",\"Name\":\"" + obj.name
             + "\",\"Tag\":\"" + tag
-            + "\",\"Position\":{\"X\":" + obj.transform.position.x.ToString()
+            + "\",\"Layer\":" + obj.layer.ToString()
+            + ",\"Position\":{\"X\":" + obj.transform.position.x.ToString()
                             + ",\"Y\":" + obj.transform.position.y.ToString()
                             + ",\"Z\":" + obj.transform.position.z.ToString()
             + "},\"Rotation\":{\"X\":" + obj.transform.eulerAngles.x.ToString()
@@ -152,6 +159,9 @@ public class LevelExporter : MonoBehaviour {
                             + ",\"Y\":" + obj.transform.localScale.y.ToString()
                             + ",\"Z\":" + obj.transform.localScale.z.ToString()
             + "},";
+        if (tag == "WorldText") {
+            jsondata += "\"Text\":\"" + obj.GetComponentInChildren<Text>().text + "\",";
+        }
         if (obj.transform.parent != null && obj.transform.parent.name != "LevelCreated" && obj.transform.parent.tag != "") {
             if (obj.transform.parent.CompareTag("MainCamera")) {
                 jsondata += "\"ParentIsCam\":1,";
@@ -185,6 +195,7 @@ public class LevelExporter : MonoBehaviour {
                 + ",\"WeaponClass\":\"" + cs.weaponClass
                 + "\",\"CharacterType\":" + Convert.ToInt32(cs.characterType).ToString()
                 + ",\"SpawnerType\":" + Convert.ToInt32(cs.spawnerType).ToString()
+                + ",\"FacingRight\":" + cs.facingRight.ToString().ToLower()
                 + ",\"AutoEngage\":" + cs.autoEngage.ToString().ToLower()
                 + ",\"StartEnabled\":" + cs.startEnabled.ToString().ToLower()
                 + "},";
@@ -202,20 +213,22 @@ public class LevelExporter : MonoBehaviour {
         }
         if (obj.GetComponent<Trigger>() != null) {
             string[] args = obj.GetComponent<Trigger>().arguments;
-            int triggercount = 0;
-            string targetInstanceID = "";
-            if (obj.GetComponent<Trigger>().target != null)
-                targetInstanceID = obj.GetComponent<Trigger>().target.GetInstanceID().ToString();
+            GameObject[] targets = obj.GetComponent<Trigger>().targets;
             jsondata += "\"Trigger\":{"
                 + "\"Action\":\"" + obj.GetComponent<Trigger>().action
-                + "\",\"Target\":\"" + targetInstanceID
                 + "\",\"Arguments\":{";
-            foreach (string arg in args) {
-                jsondata += "\"" + triggercount.ToString() + "\":\"" + arg + "\",";
+            for (int argCount = 0; argCount < args.Length; ++argCount) {
+                jsondata += "\"" + argCount.ToString() + "\":\"" + args[argCount] + "\"";
+                if (argCount != args.Length - 1)
+                    jsondata += ",";
             }
-            jsondata = jsondata.Substring(0, jsondata.Length - 1);
-            jsondata += "}"
-                + "},";
+            jsondata += "},\"Targets\":{";
+            for (int argCount = 0; argCount < targets.Length; ++argCount) {
+                jsondata += "\"" + argCount.ToString() + "\":\"" + targets[argCount].GetInstanceID().ToString() + "\"";
+                if (argCount != args.Length - 1)
+                    jsondata += ",";
+            }
+            jsondata += "}},";
         }
         if(obj.GetComponent<Light>() != null) {
             Light light = obj.GetComponent<Light>();

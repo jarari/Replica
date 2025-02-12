@@ -19,6 +19,7 @@ public class CharacterSpawner : MonoBehaviour {
     public CharacterSpawnerTypes spawnerType = CharacterSpawnerTypes.Once;
     private string aiScript = "";
     public Character target = null;
+    public bool facingRight = true;
     public bool autoEngage = false;
     public bool startEnabled = false;
     public bool init = false;
@@ -81,6 +82,7 @@ public class CharacterSpawner : MonoBehaviour {
                 }
                 break;
         }
+        spawned.FlipFace(facingRight);
         managed.Add(spawned);
         lastspawn = spawned;
         nextSpawn = Time.realtimeSinceStartup + delay;
