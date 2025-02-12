@@ -110,10 +110,11 @@ public class ObjectBase : MonoBehaviour {
     public void FlipFace(bool right) {
 		facingRight = right;
 
-		float sourceScale = objectData["Scale"]["X"].Value<float>();
+		/* float sourceScale = objectData["Scale"]["X"].Value<float>();
 		Vector3 lscale = transform.localScale;
 		lscale.x = sourceScale * (right ? 1.0f : -1.0f);
-        transform.localScale = lscale;
+        transform.localScale = lscale; */
+        GetComponent<SpriteRenderer>().flipX = !right;
     }
 
     public void EnableCollision(bool enable) {
