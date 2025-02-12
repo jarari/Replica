@@ -62,7 +62,8 @@ public class GameDataManager : MonoBehaviour {
         }
 
         DontDestroyOnLoad(this);
-        LoadingScreen.instance.Open();
+		if (LoadingScreen.instance != null)
+			LoadingScreen.instance.Open();
 
 		rootData = new JDictionary();
 		rootData.DeserializeJson(
@@ -83,7 +84,8 @@ public class GameDataManager : MonoBehaviour {
 
 		if (!debug)
             GlobalUIManager.instance.LoadScene("1");
-		LoadingScreen.instance.Close();
+		if (LoadingScreen.instance != null)
+			LoadingScreen.instance.Close();
 	}
 
 	private void ParseComboData() {
