@@ -59,6 +59,7 @@
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Components\FxaaComponent.cs" />
     <Compile Include="Assets\Scripts\EntityController\EffectManager.cs" />
     <Compile Include="Assets\Scripts\GameData\Weapons\WeaponSecbot.cs" />
+    <Compile Include="Assets\Scripts\Level\Trigger\Trigger_Talk.cs" />
     <Compile Include="Assets\Scripts\GameData\Throwable\ThrowableGrenade.cs" />
     <Compile Include="Assets\Scripts\GameData\Loot\LootHP.cs" />
     <Compile Include="Assets\Scripts\GameData\Item.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Assets\Scripts\GameData\Characters\PlayerCharacter.cs" />
     <Compile Include="Assets\UnityPackages\JsonNetSample\JsonNetSample.cs" />
     <Compile Include="Assets\Scripts\UIController\LoadingScreen.cs" />
+    <Compile Include="Assets\Scripts\Level\DialogueManager.cs" />
     <Compile Include="Assets\Scripts\Level\ScenarySimulation.cs" />
     <Compile Include="Assets\Scripts\GameData\Weapons\WeaponSecbot2.cs" />
     <Compile Include="Assets\Scripts\Level\LevelExporter.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="Assets\Scripts\GameData\Character.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Components\DitheringComponent.cs" />
     <Compile Include="Assets\Scripts\Level\Trigger\Trigger.cs" />
+    <Compile Include="Assets\Scripts\GameData\CharacterTalk.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\BuiltinDebugViewsModel.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\PostProcessingComponent.cs" />
