@@ -29,12 +29,13 @@ public enum CharacterStates {
 }
 
 [Flags] public enum CharacterFlags {
-    Invincible = 1,
-    AIControlled = 2,
-    Boss = 4,
-    KnockBackImmunity = 8,
-    StaggerImmunity = 16,
-    UnstoppableAttack = 32
+    Invincible = 1 << 0,
+    AIControlled = 1 << 1,
+    Boss = 1 << 2,
+    KnockBackImmunity = 1 << 3,
+    StaggerImmunity = 1 << 4,
+    UnstoppableAttack = 1 << 5,
+    CanAirDash = 1 << 6
 }
 
 public enum CharacterTypes {
@@ -815,10 +816,10 @@ public abstract class Character : ObjectBase {
     }
 
     /* 이름이 대쉬인데 덤블링임 사실 */
-    protected bool CanDash() {
+    public bool CanDash() {
         if (GetUncontrollableTimeLeft() > 0)
             return false;
-        if (!IsOnGround())
+        if (!IsOnGround() && !HasFlag(CharacterFlags.CanAirDash))
             return false;
         if (Time.time - lastDash < dashCooldown)
             return false;

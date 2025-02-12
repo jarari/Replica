@@ -137,7 +137,7 @@ public class GeneralControl : Controller {
 		}
 		
 		if (!MenuManager.instance.IsPaused()) {
-            if (character.GetUncontrollableTimeLeft() == 0) {
+            if (character.GetUncontrollableTimeLeft() == 0 && !character.HasFlag(CharacterFlags.AIControlled)) {
 				
 				//이동
                 if (Input.GetKey(KeyCode.RightArrow)) {
@@ -197,7 +197,7 @@ public class GeneralControl : Controller {
 					}
 				}
 
-                if (Input.GetKeyDown(KeyCode.LeftShift)) {
+                if (Input.GetKeyDown(KeyCode.LeftShift) && character.CanDash()) {
                     if (Input.GetKey(KeyCode.LeftArrow)) {
                         character.Dash(-1);
                     }
