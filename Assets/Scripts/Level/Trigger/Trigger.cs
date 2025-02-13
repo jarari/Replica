@@ -29,6 +29,11 @@ public class Trigger : MonoBehaviour {
                 trig_talk.Initialize(arguments);
                 Destroy(this);
                 break;
+            case "Stage1Scene1":
+                Trigger_Stage1Scene1 trig_s1s1 = gameObject.AddComponent<Trigger_Stage1Scene1>();
+                trig_s1s1.Initialize(targets);
+                Destroy(this);
+                break;
         }
     }
 }

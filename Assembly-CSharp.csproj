@@ -171,6 +171,9 @@
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\AntialiasingModel.cs" />
     <Compile Include="Assets\Scripts\GameData\Attachment.cs" />
     <Compile Include="Assets\Resources\PostProcessing\Runtime\Models\DitheringModel.cs" />
+    <Compile Include="Assets\Scripts\GameData\AI\AISceneActor.cs" />
+    <Compile Include="Assets\Scripts\GameData\Characters\SceneActor.cs" />
+    <Compile Include="Assets\Scripts\Level\Trigger\ScriptedScenes\Stage1\Trigger_Stage1Scene1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Sprites\shader\Blur.shader" />
