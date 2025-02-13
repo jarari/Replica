@@ -24,5 +24,14 @@
 		"MaxWanderDistance":200.0,
 		"RestingTime":3.0,
 		"AttackRangeX":130.0
+	},
+	"ai_sceneactor":
+	{
+		"ScriptClass":"AISceneActor",
+		"RecognitionRadius":600.0,
+		"MinWanderDistance":60.0,
+		"MaxWanderDistance":200.0,
+		"RestingTime":3.0,
+		"AttackRangeX":130.0
 	}
 }

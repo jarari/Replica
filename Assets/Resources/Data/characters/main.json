@@ -31,6 +31,39 @@
 			"Y":1.0
 		}
 	},
+	"character_npc_echo":
+	{
+		"Name":"Echo",
+		"AIScript":"ai_sceneactor",
+		"ScriptClass":"SceneActor",
+		"Stats":
+		{
+			"Health":1000,
+			"MoveSpeed":550.0,
+			"JumpPower":850.0,
+			"MeleeArmor":10,
+			"RangeArmor":10,
+			"GrenadeFullCharge":2,
+			"GrenadeThrowPower":1000
+		},
+		"Sprites":
+		{
+			"controller":"character_echo/character_echo_controller",
+			"hasSub":0
+		},
+		"Collider":
+		{
+			"Offset_X":0.0,
+			"Offset_Y":-0.5,
+			"Size_X":30.0,
+			"Size_Y":102.0
+		},
+		"Scale":
+		{
+			"X":1.0,
+			"Y":1.0
+		}
+	},
 	"character_dummy":
 	{
 		"Name":"Echo",
