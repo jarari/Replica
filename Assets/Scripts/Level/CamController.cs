@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CamController : MonoBehaviour {
     public static CamController instance;
+    public bool InScriptedScene { get; set; }
     private Transform target;
     //private Vector3 lastTargetPos;
     private Vector3 camTargetPos;
@@ -49,7 +50,7 @@ public class CamController : MonoBehaviour {
         if (target == null || LevelManager.instance == null || zoomed != 1f)
             return;
 
-		/*
+        /*
 		Vector3 deltapos = target.position - lastTargetPos;
         lastTargetPos = target.position;
 
@@ -71,27 +72,33 @@ public class CamController : MonoBehaviour {
         camPos += deltacam;
 		*/
 
-		//asd
-		
-		targetVelocity = rigb2D.velocity;
-		Vector3 targetAcceleration = Vector3.zero;
+        //asd
+        
+        if (!InScriptedScene) {
+            camTargetPos = target.position;
+            camTargetPos.x = ClampCamX(camTargetPos.x);
+            camTargetPos.y = camTargetPos.y + camUp;
 
-		if(lastTargetVel.magnitude > 0) {
-			targetAcceleration = (targetVelocity - lastTargetVel) / Time.fixedDeltaTime;
-		}
-		lastTargetVel = targetVelocity;
+            targetVelocity = rigb2D.velocity;
+            Vector3 targetAcceleration = Vector3.zero;
 
-		targetAcceleration_lerp += (targetAcceleration - targetAcceleration_lerp) * Time.fixedDeltaTime / smoothValAcc;
-		targetAcceleration_lerp.y = targetAcceleration_lerp.y * 0.1f;
+            if (lastTargetVel.magnitude > 0) {
+                targetAcceleration = (targetVelocity - lastTargetVel) / Time.fixedDeltaTime;
+            }
+            lastTargetVel = targetVelocity;
 
-		targetVelocity_lerp = Vector3.Lerp(targetVelocity_lerp, targetVelocity * 2f, Time.fixedDeltaTime / smoothValVel);
-		targetVelocity_lerp.y = targetVelocity_lerp.y * 0.6f * bobbing;
+            targetAcceleration_lerp += (targetAcceleration - targetAcceleration_lerp) * Time.fixedDeltaTime / smoothValAcc;
+            targetAcceleration_lerp.y = targetAcceleration_lerp.y * 0.1f;
 
-		camTargetPos = target.position;
-		camTargetPos.x = ClampCamX(camTargetPos.x);
-		camTargetPos.y = camTargetPos.y + camUp;
+            targetVelocity_lerp = Vector3.Lerp(targetVelocity_lerp, targetVelocity * 2f, Time.fixedDeltaTime / smoothValVel);
+            targetVelocity_lerp.y = targetVelocity_lerp.y * 0.6f * bobbing;
 
-		camPos += ((camTargetPos + targetVelocity_lerp * 0.25f + targetVelocity * (0.1f + 0.1f * bobbing)) + targetAcceleration_lerp * 0.25f * bobbing - camPos) * 10.0f * Time.fixedDeltaTime / smoothVal;
+            camPos += ((camTargetPos + targetVelocity_lerp * 0.25f + targetVelocity * (0.1f + 0.1f * bobbing)) + targetAcceleration_lerp * 0.25f * bobbing - camPos) * 10.0f * Time.fixedDeltaTime / smoothVal;
+        }
+        else {
+            camPos += (camTargetPos - camPos) * 10.0f * Time.fixedDeltaTime / smoothVal;
+        }
+
 		//camPos += (camTargetPos - camPos) * Time.deltaTime / smoothVal;
 		//camPos += (camTargetPos + targetAcceleration_lerp * (0.2f * bobbing) - camPos) * 2.0f * Time.deltaTime / smoothValAcc;
 		//camPos += (camTargetPos + targetVelocity * (0.4f + 0.2f * bobbing) - camPos) * Time.deltaTime / smoothValVel;
@@ -127,16 +134,22 @@ public class CamController : MonoBehaviour {
     public void AttachCam(Transform p) {
         SetupCam(Screen.width, Screen.height);
         zoomed = 1f;
-        target = p;
-        //lastTargetPos = target.position;
-        camTargetPos = p.position + new Vector3(0, camUp, -10);
-        camTargetPos.x = ClampCamX(camTargetPos.x);
+        SetCamTarget(p);
         camPos = camTargetPos;
-		//ShakeCam(10f, 5);
 
 		//asd
 		rigb2D = p.GetComponent<Rigidbody2D>();
 		//asd
+    }
+
+    public void SetCamTarget(Transform p) {
+        target = p;
+        camTargetPos = p.position + new Vector3(0, camUp, -10);
+        camTargetPos.x = ClampCamX(camTargetPos.x);
+    }
+
+    public void SetCamTargetPos(Vector3 pos) {
+        camTargetPos = pos;
     }
     
     public void SetupCam(int width, int height) {
@@ -227,15 +240,18 @@ public class CamController : MonoBehaviour {
         float a = zoomed;
         zooming = true;
         while (zoomed != amount && zooming) {
-            if (nextTick > Time.realtimeSinceStartup) yield return null;
+            if (nextTick > Time.realtimeSinceStartup) yield return new WaitForEndOfFrame();
             nextTick = Time.realtimeSinceStartup + ticktime;
             t += 1 / time * ticktime;
             zoomed = Mathf.Sin(t * Mathf.PI / 2f) * (amount - a) + a;
             camPos = Mathf.Sin(t * Mathf.PI / 2f) * (target - origin) + origin;
             if (t >= 1)
                 zoomed = amount;
-            Camera.main.orthographicSize = Mathf.Round((GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f / zoomed);
-            yield return null;
+            float size = Mathf.Round((GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f / zoomed);
+            foreach (Camera cam in Camera.allCameras) {
+                cam.orthographicSize = size;
+            }
+            yield return new WaitForEndOfFrame();
         }
         zooming = false;
     }
