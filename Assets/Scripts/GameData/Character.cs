@@ -118,6 +118,10 @@ public abstract class Character : ObjectBase {
     protected float lastdir = 0;
     protected bool movedThisFrame = false;
 
+    protected Vector3 followTarget;
+    protected float followRadius = 0f;
+    protected bool isFollowing = false;
+
     protected virtual void Update() {
         uncontrollableTimer = Mathf.Clamp(uncontrollableTimer - Time.deltaTime, 0, uncontrollableTimer);
         if (uncontrollableTimer > 0 || forceUncontrollable)
@@ -238,6 +242,9 @@ public abstract class Character : ObjectBase {
             ModifyHeight(1f);
             satdown = false;
         }
+
+        if (isFollowing)
+            Follow();
     }
 
     protected override void FixedUpdate() {
@@ -1060,12 +1067,22 @@ public abstract class Character : ObjectBase {
         GetAnimator().SetBool("DiscardFromAnyState", false);
     }
 
+    public void SetFollow(Vector3 pos, float xradius) {
+        isFollowing = true;
+        followTarget = pos;
+        followRadius = xradius;
+    }
+
+    public void StopFollow() {
+        isFollowing = false;
+    }
+
     /* 다양한 용도로 쓸 수 있는 좌표를 향해 가기 함수
      * Navmesh같은걸 이용한다면 좀 더 멋드러지고 효과적이겠지만
      * 일단은 이 알고리즘을 쓰도록 함. */
-    public virtual void Follow(Vector3 pos, float xradius) {
-        float dx = pos.x - transform.position.x;
-        float dy = pos.y - transform.position.y;
+    protected virtual void Follow() {
+        float dx = followTarget.x - transform.position.x;
+        float dy = followTarget.y - transform.position.y;
         float dist = Mathf.Abs(dx);
         int dir = (int)Mathf.Sign(dx);
         maxJump = Mathf.Pow(GetCurrentStat(CharacterStats.JumpPower), 2) / 3924f;
@@ -1073,9 +1090,9 @@ public abstract class Character : ObjectBase {
             GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
             RaycastHit2D rayup = Physics2D.Raycast(transform.position, new Vector2(0, 1), maxJump, Helper.groundLayer);
             RaycastHit2D rayunder = Physics2D.Raycast((Vector2)transform.position + box.offset - new Vector2(0, box.size.y / 2f + 33), new Vector2(0, -1), 128f, Helper.groundLayer);
-            if (dist > xradius) {
+            if (dist > followRadius) {
                 subX = -1;
-                if (minDistToDash != -1 && dist > minDistToDash && CanDash()) {
+                if (minDistToDash != -1f && dist > minDistToDash && CanDash()) {
                     Dash(dir);
                 }
                 else {

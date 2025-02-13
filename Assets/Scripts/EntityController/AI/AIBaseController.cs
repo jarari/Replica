@@ -154,7 +154,7 @@ public class AIBaseController : Controller {
                 }
                 else {
                     direction = (int)Mathf.Sign(distance);
-                    character.Follow(target.transform.position, rangeX * 0.9f);
+                    character.SetFollow(target.transform.position, rangeX * 0.9f);
                     return;
                 }
                 character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
