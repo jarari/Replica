@@ -18,6 +18,7 @@ public class DialogueManager : MonoBehaviour {
     public GameObject CurrentSpeaker { get; private set; }
     public string CurrentMessage { get; private set; }
     private Queue<Dialogue> dialogueQueue;
+    private bool processQueued = false;
 
     void Awake() {
         if (instance == null) {
@@ -38,14 +39,24 @@ public class DialogueManager : MonoBehaviour {
             Debug.LogWarning("No dialogue message in queue.");
             return;
         }
-        StartCoroutine(ProcessDialogues());
+        if (IsInDialogue) {
+            processQueued = true;
+        }
+        else {
+            StartCoroutine(ProcessDialogues());
+        }
     }
 
     private IEnumerator ProcessDialogues() {
+        yield return new WaitWhile(() => IsInDialogue == true);
         IsInDialogue = true;
+        Queue<Dialogue> processing = new Queue<Dialogue>(dialogueQueue);
+        for (int i = 0; i < processing.Count; ++i) {
+            dialogueQueue.Dequeue();
+        }
         while (IsInDialogue) {
-            if (dialogueQueue.Count > 0 && !IsPlayingMessage) {
-                Dialogue d = dialogueQueue.Dequeue();
+            if (processing.Count > 0 && !IsPlayingMessage) {
+                Dialogue d = processing.Dequeue();
                 CurrentSpeaker = d.Speaker;
                 CurrentMessage = d.Message;
                 CurrentSpeaker.GetComponent<CharacterTalk>().ClearText();
@@ -65,6 +76,10 @@ public class DialogueManager : MonoBehaviour {
                 CurrentMessage = "";
                 IsInDialogue = false;
             }
+        }
+        if (processQueued) {
+            processQueued = false;
+            StartDialogue();
         }
         yield return null;
     }
