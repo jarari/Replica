@@ -41,7 +41,7 @@ public class Trigger_Stage1Scene1 : MonoBehaviour
         dm.AddDialogue(player.gameObject, "Wait!");
         dm.StartDialogue();
         yield return new WaitForSeconds(1.0f);
-        cam.ZoomCam(player.transform.position, 1.0f, 0.5f);
+        cam.RevertZoom(0.5f);
         cam.InScriptedScene = false;
         player.RemoveFlag(CharacterFlags.AIControlled);
         yield return null;
