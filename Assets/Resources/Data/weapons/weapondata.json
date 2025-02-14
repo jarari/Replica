@@ -222,7 +222,7 @@
 			"WeaponType":4,
 			"Damage":200,
 			"SADestruction":0,
-			"AttackSpeed":0.6,
+			"AttackSpeed":0.3,
 			"Stagger":0,
 			"MagSize":0,
 			"ReloadTime":0,

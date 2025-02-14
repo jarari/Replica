@@ -5,6 +5,8 @@ using System.Text;
 
 public class CharacterSecdroid01 : Character {
     protected override void OnStagger(float stagger) {
+        if (HasFlag(CharacterFlags.StaggerImmunity))
+            return;
         base.OnStagger(stagger);
         if (GetState() != CharacterStates.Uncontrollable) {
             if(IsOnGround())
