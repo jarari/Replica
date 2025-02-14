@@ -155,29 +155,9 @@ public class CamController : MonoBehaviour {
     public void SetupCam(int width, int height) {
         lastScreenWidth = width;
         lastScreenHeight = height;
-        Vector2 forcedSize = GetForcedScreenSize(width, height);
-        marginWidth = (Screen.width - forcedSize.x) / width;
-        marginHeight = (Screen.height - forcedSize.y) / height;
         foreach (Camera cam in Camera.allCameras) {
             cam.orthographicSize = (GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f;
-            cam.rect = new Rect(marginWidth / 2f, marginHeight / 2f, 1.0f - marginWidth, 1.0f - marginHeight);
         }
-    }
-
-    public Vector2 GetForcedScreenSize(int width, int height) {
-        standardAspect = GlobalUIManager.standardWidth / (float)GlobalUIManager.standardHeight;
-        Vector2 forcedSize = new Vector2(width, height);
-        if (width / (float)height > standardAspect) {
-            forcedSize.x = height * standardAspect;
-        }
-        else if (width / (float)height < standardAspect) {
-            forcedSize.y = width / standardAspect;
-        }
-        return forcedSize;
-    }
-
-    public Vector2 GetMargin() {
-        return new Vector2(marginWidth, marginHeight);
     }
 
     public Vector3 GetCamPos() {

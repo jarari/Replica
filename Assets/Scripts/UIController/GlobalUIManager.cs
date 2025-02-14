@@ -61,8 +61,7 @@ public class GlobalUIManager : MonoBehaviour {
         if (!CamController.instance)
             return;
         RectTransform rect = obj.GetComponent<RectTransform>();
-        Vector2 margin = CamController.instance.GetMargin();
-        Vector2 screenCorner = new Vector2(margin.x * Screen.width / 2f, margin.y * Screen.height / 2f);
+        Vector2 screenCorner = new Vector2(Screen.width / 2f, Screen.height / 2f);
         float widthRatio = Screen.width / (float)standardWidth;
         float heightRatio = Screen.height / (float)standardHeight;
         Image img = obj.GetComponent<Image>();
@@ -78,17 +77,7 @@ public class GlobalUIManager : MonoBehaviour {
                 _height = (int)(sprite.rect.size.y / sprite.rect.size.x * _width);
             }
         }
-        if (margin.x != 0) {
-            _width = (int)(_width * (1.0f - margin.x));
-            _height = (int)(_height * (1.0f - margin.x));
-            obj.transform.position = screenCorner + new Vector2(pos.x * heightRatio, pos.y * heightRatio);
-        }
-        else if (margin.y != 0) {
-            obj.transform.position = screenCorner + new Vector2(pos.x * widthRatio, pos.y * widthRatio);
-        }
-        else {
-            obj.transform.position = pos;
-        }
+        obj.transform.position = pos * new Vector2(widthRatio, heightRatio);
         rect.sizeDelta = new Vector2(_width, _height);
     }
 
