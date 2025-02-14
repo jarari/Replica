@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\MobileDependencyResolver\Editor\Google.IOSResolver.dll" />
+    <None Include="Assets\editor\MediationAdapterDependencies.xml" />
     <None Include="Assets\MobileDependencyResolver\Editor\mobile-dependency-resolver.txt" />
     <None Include="Assets\MobileDependencyResolver\Editor\Google.VersionHandlerImpl.dll" />
     <None Include="Assets\MobileDependencyResolver\Editor\Google.JarResolver.dll" />
