@@ -47,7 +47,7 @@ public class CamController : MonoBehaviour {
 		return Mathf.Clamp(x, LevelManager.instance.GetMapMin().x + GetCamSize().x + tilesize / 2f, LevelManager.instance.GetMapMax().x - GetCamSize().x - tilesize / 2f);
 	}
 	private void FixedUpdate() {
-        if (target == null || LevelManager.instance == null || zoomed != 1f)
+        if (target == null || LevelManager.instance == null)
             return;
 
         /*
@@ -210,34 +210,12 @@ public class CamController : MonoBehaviour {
             StopCoroutine(zoomCoroutine);
         zoomCoroutine = StartCoroutine(Zoom(target, amount, time));
     }
-    IEnumerator Zoom(Vector3 target, float amount, float time) {
-        yield return new WaitForEndOfFrame();
-        Vector3 origin = transform.position;
-        float t = 0;
-        float a = zoomed;
-        float lastRun = Time.time;
-        zooming = true;
-        while (zoomed != amount && zooming) {
-            t += (Time.time - lastRun) / time;
-            zoomed = Mathf.Sin(t * Mathf.PI / 2f) * (amount - a) + a;
-            camPos = Mathf.Sin(t * Mathf.PI / 2f) * (target - origin) + origin;
-            if (t >= 1)
-                zoomed = amount;
-            float size = Mathf.Round((GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f / zoomed);
-            foreach (Camera cam in Camera.allCameras) {
-                cam.orthographicSize = size;
-            }
-            lastRun = Time.time;
-            yield return new WaitForEndOfFrame();
-        }
-        zooming = false;
-    }
 
-    public void RevertZoom(float time) {
+    public void ZoomCam(float amount, float time) {
         zooming = false;
         if (zoomCoroutine != null)
             StopCoroutine(zoomCoroutine);
-        zoomCoroutine = StartCoroutine(Zoom(1.0f, time));
+        zoomCoroutine = StartCoroutine(Zoom(amount, time));
     }
 
     IEnumerator Zoom(float amount, float time) {
@@ -259,5 +237,36 @@ public class CamController : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
         zooming = false;
+    }
+
+    IEnumerator Zoom(Vector3 target, float amount, float time) {
+        yield return new WaitForEndOfFrame();
+        Vector3 origin = transform.position;
+        float t = 0;
+        float a = zoomed;
+        float lastRun = Time.time;
+        zooming = true;
+        while (zoomed != amount && zooming) {
+            t += (Time.time - lastRun) / time;
+            zoomed = Mathf.Sin(t * Mathf.PI / 2f) * (amount - a) + a;
+            camPos = Mathf.Sin(t * Mathf.PI / 2f) * (target - origin) + origin;
+            camTargetPos = camPos;
+            if (t >= 1)
+                zoomed = amount;
+            float size = Mathf.Round((GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f / zoomed);
+            foreach (Camera cam in Camera.allCameras) {
+                cam.orthographicSize = size;
+            }
+            lastRun = Time.time;
+            yield return new WaitForEndOfFrame();
+        }
+        zooming = false;
+    }
+
+    public void RevertZoom(float time) {
+        zooming = false;
+        if (zoomCoroutine != null)
+            StopCoroutine(zoomCoroutine);
+        zoomCoroutine = StartCoroutine(Zoom(1.0f, time));
     }
 }
