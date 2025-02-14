@@ -210,19 +210,15 @@ public class CamController : MonoBehaviour {
             StopCoroutine(zoomCoroutine);
         zoomCoroutine = StartCoroutine(Zoom(target, amount, time));
     }
-
     IEnumerator Zoom(Vector3 target, float amount, float time) {
         yield return new WaitForEndOfFrame();
-        float ticktime = 0.02f;
         Vector3 origin = transform.position;
-        float nextTick = Time.realtimeSinceStartup;
         float t = 0;
         float a = zoomed;
+        float lastRun = Time.time;
         zooming = true;
         while (zoomed != amount && zooming) {
-            if (nextTick > Time.realtimeSinceStartup) yield return new WaitForEndOfFrame();
-            nextTick = Time.realtimeSinceStartup + ticktime;
-            t += 1 / time * ticktime;
+            t += (Time.time - lastRun) / time;
             zoomed = Mathf.Sin(t * Mathf.PI / 2f) * (amount - a) + a;
             camPos = Mathf.Sin(t * Mathf.PI / 2f) * (target - origin) + origin;
             if (t >= 1)
@@ -231,6 +227,35 @@ public class CamController : MonoBehaviour {
             foreach (Camera cam in Camera.allCameras) {
                 cam.orthographicSize = size;
             }
+            lastRun = Time.time;
+            yield return new WaitForEndOfFrame();
+        }
+        zooming = false;
+    }
+
+    public void RevertZoom(float time) {
+        zooming = false;
+        if (zoomCoroutine != null)
+            StopCoroutine(zoomCoroutine);
+        zoomCoroutine = StartCoroutine(Zoom(1.0f, time));
+    }
+
+    IEnumerator Zoom(float amount, float time) {
+        yield return new WaitForEndOfFrame();
+        float t = 0;
+        float a = zoomed;
+        float lastRun = Time.time;
+        zooming = true;
+        while (zoomed != amount && zooming) {
+            t += (Time.time - lastRun) / time;
+            zoomed = Mathf.Sin(t * Mathf.PI / 2f) * (amount - a) + a;
+            if (t >= 1)
+                zoomed = amount;
+            float size = Mathf.Round((GlobalUIManager.standardHeight / (1f * Helper.PixelsPerUnit)) * 0.25f / zoomed);
+            foreach (Camera cam in Camera.allCameras) {
+                cam.orthographicSize = size;
+            }
+            lastRun = Time.time;
             yield return new WaitForEndOfFrame();
         }
         zooming = false;
