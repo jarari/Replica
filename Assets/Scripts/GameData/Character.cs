@@ -642,8 +642,10 @@ public abstract class Character : ObjectBase {
 
     public void DestroyCharacter(bool fireEvent = true) {
         CharacterManager.OnCharacterDeath(this, fireEvent);
+        Transform text2DParent = GetComponent<CharacterTalk>().m_text2D.transform.parent;
         for (int i = 0; i < transform.childCount; i++) {
-            Destroy(transform.GetChild(i).gameObject);
+            if (transform.GetChild(i) != text2DParent)
+                Destroy(transform.GetChild(i).gameObject);
         }
         if (GetInventory() != null) {
             Destroy(GetInventory());
