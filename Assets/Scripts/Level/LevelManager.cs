@@ -495,7 +495,7 @@ public class LevelManager : MonoBehaviour {
 		createdObjs.Clear();
         List<Character> characters = CharacterManager.GetAllCharacters();
         for (int i = characters.Count - 1; i > -1; i--) {
-            characters[i].DestroyQuietly();
+            characters[i].DestroyCharacter(false);
         }
         List<Effect> effects = EffectManager.GetEffects();
         for (int i = 0; i < effects.Count; i++) {

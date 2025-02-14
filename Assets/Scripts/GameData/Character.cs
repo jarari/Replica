@@ -640,8 +640,8 @@ public abstract class Character : ObjectBase {
         DoDamage(this, GetCurrentStat(CharacterStats.Health), 0);
     }
 
-    public void DestroyQuietly() {
-        CharacterManager.OnCharacterDeath(this, false);
+    public void DestroyCharacter(bool fireEvent = true) {
+        CharacterManager.OnCharacterDeath(this, fireEvent);
         for (int i = 0; i < transform.childCount; i++) {
             Destroy(transform.GetChild(i).gameObject);
         }
@@ -680,7 +680,7 @@ public abstract class Character : ObjectBase {
                 }
             }
         }
-        DestroyQuietly();
+        DestroyCharacter();
     }
 
     /* 이동속도에 비례해서 움직이기.
@@ -1067,14 +1067,22 @@ public abstract class Character : ObjectBase {
         GetAnimator().SetBool("DiscardFromAnyState", false);
     }
 
-    public void SetFollow(Vector3 pos, float xradius) {
+    public void SetFollow(Vector3 pos, float xradius, bool useDash = false) {
         isFollowing = true;
         followTarget = pos;
         followRadius = xradius;
+        if (useDash)
+            minDistToDash = 100f;
+        else
+            minDistToDash = -1f;
     }
 
     public void StopFollow() {
         isFollowing = false;
+    }
+
+    public bool IsFollowing() {
+        return isFollowing;
     }
 
     /* 다양한 용도로 쓸 수 있는 좌표를 향해 가기 함수
@@ -1086,6 +1094,10 @@ public abstract class Character : ObjectBase {
         float dist = Mathf.Abs(dx);
         int dir = (int)Mathf.Sign(dx);
         maxJump = Mathf.Pow(GetCurrentStat(CharacterStats.JumpPower), 2) / 3924f;
+        if (dist <= followRadius && Mathf.Abs(dy) <= 40f) {
+            StopFollow();
+            return;
+        }
         if (GetUncontrollableTimeLeft() == 0) {
             GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
             RaycastHit2D rayup = Physics2D.Raycast(transform.position, new Vector2(0, 1), maxJump, Helper.groundLayer);
