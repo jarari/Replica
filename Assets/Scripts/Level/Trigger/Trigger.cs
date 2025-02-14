@@ -34,6 +34,16 @@ public class Trigger : MonoBehaviour {
                 trig_s1s1.Initialize(targets);
                 Destroy(this);
                 break;
+            case "Stage2Scene1":
+                Trigger_Stage2Scene1 trig_s2s1 = gameObject.AddComponent<Trigger_Stage2Scene1>();
+                trig_s2s1.Initialize(targets);
+                Destroy(this);
+                break;
+            case "Stage2Scene2":
+                Trigger_Stage2Scene2 trig_s2s2 = gameObject.AddComponent<Trigger_Stage2Scene2>();
+                trig_s2s2.Initialize(targets);
+                Destroy(this);
+                break;
         }
     }
 }
