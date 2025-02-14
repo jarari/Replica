@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 //기본 AI 움직임 클래스
 public class AIBaseController : Controller {
@@ -95,7 +96,7 @@ public class AIBaseController : Controller {
      * 감지 범위의 25%부터는 무조건 추격.
      * 이외의 경우에는 계속 돌아다님. */
     protected virtual void Search() {
-        if (distance <= 0) {
+        if (distance <= 10) {
             direction = (int)((UnityEngine.Random.Range(0, 2) - 0.5f) * 2f);
             distance = UnityEngine.Random.Range(minWanderDist, maxWanderDist);
             lastX = transform.position.x;
@@ -136,31 +137,39 @@ public class AIBaseController : Controller {
             character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
         }
         else {
-            if(character.GetState() != CharacterStates.Attack) {
-                Vector2 diff = Helper.GetClosestBoxBorder(target.transform.position, target.GetComponent<BoxCollider2D>(), transform.position) - (Vector2)transform.position;
-                if (Mathf.Abs(diff.x) <= rangeX) {
-                    if (Mathf.Sign(target.transform.position.x - transform.position.x) == character.GetFacingDirection()
-                        && MathF.Abs(diff.y) <= rangeY) {
-                        Attack();
-                        return;
-                    }
-                    else if (character.GetUncontrollableTimeLeft() == 0) {
-                        direction = (int)Mathf.Sign(distance);
-                        if (direction == 1)
-                            character.FlipFace(true);
-                        else if (direction == -1)
-                            character.FlipFace(false);
-                    }
-                }
-                else {
-                    direction = (int)Mathf.Sign(distance);
-                    character.SetFollow(target.transform.position, rangeX * 0.9f);
-                    return;
-                }
+            if(Vector3.Distance(target.transform.position, character.transform.position) >= recognitionRadius) {
+                target = null;
+                targetFound = false;
+                SetCommand("Search");
                 character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
             }
-            else
-                character.GetAnimator().SetBool("DiscardFromAnyState", true);
+            else {
+                if (character.GetState() != CharacterStates.Attack) {
+                    Vector2 diff = Helper.GetClosestBoxBorder(target.transform.position, target.GetComponent<BoxCollider2D>(), transform.position) - (Vector2)transform.position;
+                    if (Mathf.Abs(diff.x) <= rangeX) {
+                        if (Mathf.Sign(target.transform.position.x - transform.position.x) == character.GetFacingDirection()
+                            && MathF.Abs(diff.y) <= rangeY) {
+                            Attack();
+                            return;
+                        }
+                        else if (character.GetUncontrollableTimeLeft() == 0) {
+                            direction = (int)Mathf.Sign(distance);
+                            if (direction == 1)
+                                character.FlipFace(true);
+                            else if (direction == -1)
+                                character.FlipFace(false);
+                        }
+                    }
+                    else {
+                        direction = (int)Mathf.Sign(distance);
+                        character.SetFollow(target.transform.position, rangeX * 0.9f);
+                        return;
+                    }
+                    character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
+                }
+                else
+                    character.GetAnimator().SetBool("DiscardFromAnyState", true);
+            }
         }
     }
 
