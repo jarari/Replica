@@ -46,10 +46,11 @@ public class GlobalUIManager : MonoBehaviour {
         }
     }
 
-    public void BackToMainmenu() {
+    public IEnumerator BackToMainmenu() {
         LevelManager.instance.DestroyMap();
         PlayerHUD.DestroyUI();
         LoadScene("1");
+        yield return null;
     }
 
     private bool NullCheck(string uniqueid) {
