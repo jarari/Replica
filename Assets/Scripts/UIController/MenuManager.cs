@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour {
     public int pauseCount = 0;
 
+    public bool CanShowMenu { get; set; }
     private Stack<Menu> menus = new Stack<Menu>();
     private Dictionary<string, string> lastFocus = new Dictionary<string, string>();
     private GlobalUIManager uimanager;
@@ -20,6 +21,7 @@ public class MenuManager : MonoBehaviour {
         else if (instance != this) {
             Destroy(gameObject);
         }
+        CanShowMenu = true;
         uimanager = GlobalUIManager.instance;
     }
 
@@ -50,7 +52,7 @@ public class MenuManager : MonoBehaviour {
     }
 
     public void ShowMenu(string menu) {
-        if (uimanager == null) return;
+        if (uimanager == null || !CanShowMenu) return;
         int priority = 50;
         if(menus.Count > 0) {
             Menu current = menus.Peek();
