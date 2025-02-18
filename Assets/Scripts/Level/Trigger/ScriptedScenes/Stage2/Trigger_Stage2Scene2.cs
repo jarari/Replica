@@ -51,6 +51,7 @@ public class Trigger_Stage2Scene2 : MonoBehaviour
         cam.RevertZoom(0.5f);
         cam.InScriptedScene = false;
         player.RemoveFlag(CharacterFlags.AIControlled | CharacterFlags.Invincible);
+        sceneActor.RemoveFlag(CharacterFlags.Invincible);
         aicon.SetCommand("Chase");
         aicon.ForceTarget(player);
         aicon.SetAIStatus(true);

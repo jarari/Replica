@@ -22,6 +22,7 @@ public class Trigger_Stage2Scene1 : MonoBehaviour
         CamController cam = CamController.instance;
 
         player.SetFlag(CharacterFlags.AIControlled);
+        targets[0].GetComponent<CharacterSpawner>().GetLastSpawn().SetFlag(CharacterFlags.Invincible);
 
         player.SetFollow(player.transform.position + Vector3.right * 200f, 10f);
         cam.ZoomCam(1.25f, 1.0f);
