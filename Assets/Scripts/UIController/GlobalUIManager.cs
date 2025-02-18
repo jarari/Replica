@@ -46,6 +46,12 @@ public class GlobalUIManager : MonoBehaviour {
         }
     }
 
+    public void BackToMainmenu() {
+        LevelManager.instance.DestroyMap();
+        PlayerHUD.DestroyUI();
+        LoadScene("1");
+    }
+
     private bool NullCheck(string uniqueid) {
         if (UIElement.ContainsKey(uniqueid)) {
             if (UIElement[uniqueid] == null) {
@@ -164,18 +170,19 @@ public class GlobalUIManager : MonoBehaviour {
         return CreateImage(uniqueid, Helper.GetSprite("Sprites/ui/menu", "panel"), pos, parent, width, height);
     }
 
-    public GameObject CreateText(string uniqueid, Vector2 pos, string text, Transform parent, int width = -1, int height = -1) {
+    public GameObject CreateText(string uniqueid, Vector2 pos, string text, Transform parent, int width = -1, int height = -1, int fontSize = 20) {
         if (!NullCheck(uniqueid))
             DeleteUIElement(uniqueid);
         GameObject obj = (GameObject)Instantiate(Resources.Load("Prefab/UI/Text2D"), pos, new Quaternion(), parent);
         obj.GetComponent<Text>().text = text;
+        obj.GetComponent<Text>().fontSize = fontSize;
         AdjustToScreen(obj, pos, width, height);
         UIElement.Add(uniqueid, obj);
         return obj;
     }
 
-    public GameObject CreateText(string uniqueid, Vector2 pos, string text, int width = -1, int height = -1) {
-        return CreateText(uniqueid, pos, text, transform, width, height);
+    public GameObject CreateText(string uniqueid, Vector2 pos, string text, int width = -1, int height = -1, int fontSize = 20) {
+        return CreateText(uniqueid, pos, text, transform, width, height, fontSize);
     }
 
     public GameObject CreateScrollView(string uniqueid, Vector2 pos, Transform parent, int width = -1, int height = -1) {
