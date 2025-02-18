@@ -482,7 +482,6 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void DestroyMap() {
-		isMapActive = false;
         EventManager.OnMapDestroyed();
         EventManager.UnregisterAll();
         if(createdObjs.Count > 0) {
@@ -501,12 +500,15 @@ public class LevelManager : MonoBehaviour {
         for (int i = 0; i < effects.Count; i++) {
             EffectManager.RemoveEffect(effects[i]);
         }
+        effects.Clear();
         List<Loot> loots = LootManager.GetLoots();
         for (int i = 0; i < loots.Count; i++) {
             LootManager.RemoveLoot(loots[i]);
         }
+        loots.Clear();
         currentMap = "";
         lastBlockID = 0;
+        isMapActive = false;
     }
 
     public void Initialize() {

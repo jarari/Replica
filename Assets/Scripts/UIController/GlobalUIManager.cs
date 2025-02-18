@@ -48,6 +48,7 @@ public class GlobalUIManager : MonoBehaviour {
 
     public IEnumerator BackToMainmenu() {
         LevelManager.instance.DestroyMap();
+        yield return new WaitWhile(() => LevelManager.instance.isMapActive);
         PlayerHUD.DestroyUI();
         LoadScene("1");
         yield return null;

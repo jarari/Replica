@@ -31,7 +31,7 @@ public class GenericButton : MonoBehaviour {
                 MenuManager.instance.ShowMenu(Argument);
                 break;
             case "MainMenu":
-                GlobalUIManager.instance.BackToMainmenu();
+                GlobalUIManager.instance.StartCoroutine(GlobalUIManager.instance.BackToMainmenu());
                 break;
             case "UseItem":
                 CharacterManager.GetPlayer().GetInventory().UseItem(Argument, 1);
