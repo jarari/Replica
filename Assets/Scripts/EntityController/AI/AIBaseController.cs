@@ -148,7 +148,7 @@ public class AIBaseController : Controller {
                     Vector2 diff = Helper.GetClosestBoxBorder(target.transform.position, target.GetComponent<BoxCollider2D>(), transform.position) - (Vector2)transform.position;
                     if (Mathf.Abs(diff.x) <= rangeX) {
                         if (Mathf.Sign(target.transform.position.x - transform.position.x) == character.GetFacingDirection()
-                            && MathF.Abs(diff.y) <= rangeY) {
+                            && MathF.Abs(diff.y) <= rangeY && !target.IsAI()) {
                             Attack();
                             return;
                         }

@@ -628,7 +628,7 @@ public abstract class Character : ObjectBase {
     public void DoDamage(Character attacker, float damage, float stagger) {
         if (damage == 0 || HasFlag(CharacterFlags.Invincible)) return;
 
-        if (IsAI() && !IsBoss())
+        if (IsAI() && !IsBoss() && !IsPlayer())
             ((AIBaseController)basecontroller).OnTakeDamage(attacker);
 
 		if (stagger > 0) {
