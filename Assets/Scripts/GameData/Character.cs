@@ -483,6 +483,8 @@ public abstract class Character : ObjectBase {
     }
 
     public void SetBaseStat(Weapon wep, WeaponStats stat, float val) {
+        if (wep == null)
+            return;
         if (!weaponstats.ContainsKey(wep.GetWeaponType())) {
             weaponstats.Add(wep.GetWeaponType(), new float[(int)WeaponStats.EndOfEnums]);
         }
@@ -490,6 +492,8 @@ public abstract class Character : ObjectBase {
     }
 
     public void ModStat(Weapon wep, WeaponStats stat, float val) {
+        if (wep == null)
+            return;
         if (!weaponstats.ContainsKey(wep.GetWeaponType())) {
             weaponstats.Add(wep.GetWeaponType(), new float[(int)WeaponStats.EndOfEnums]);
         }
@@ -497,14 +501,20 @@ public abstract class Character : ObjectBase {
     }
 
     public float GetBaseStat(Weapon wep, WeaponStats stat) {
+        if (wep == null)
+            return 0;
         return GameDataManager.instance.GetWeaponStat(wep.GetClass(), stat);
     }
 
     public float GetMaxStat(Weapon wep, WeaponStats stat) {
+        if (wep == null)
+            return 0;
         return GetBuffedWeaponStat(GetBaseStat(wep, stat), wep.GetWeaponType(), stat);
     }
 
     public float GetCurrentStat(Weapon wep, WeaponStats stat) {
+        if (wep == null)
+            return 0;
         if (!weaponstats.ContainsKey(wep.GetWeaponType()))
             return 0;
         return GetBuffedWeaponStat(weaponstats[wep.GetWeaponType()][(int)stat], wep.GetWeaponType(), stat);
@@ -539,7 +549,7 @@ public abstract class Character : ObjectBase {
     }
 
     public bool IsPlayer() {
-        return !HasFlag(CharacterFlags.AIControlled);
+        return CharacterManager.GetPlayer() == this;
     }
 
     public bool IsAI() {
