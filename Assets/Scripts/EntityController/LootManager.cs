@@ -17,10 +17,9 @@ public static class LootManager {
 	}
 
 	public static void RemoveLoot(Loot loot) {
-		loots.Remove(loot);
+        loots.Remove(loot);
         if (loot.gameObject != null)
             em.PushLootToPool(loot.gameObject);
-        UnityEngine.Object.Destroy(loot);
     }
 	
     public static GameObject CreateLoot(string classname, int count, Vector2 pos, float angle, Vector2 vel = new Vector2()) {

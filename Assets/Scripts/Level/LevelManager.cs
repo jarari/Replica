@@ -496,16 +496,14 @@ public class LevelManager : MonoBehaviour {
         for (int i = characters.Count - 1; i > -1; i--) {
             characters[i].DestroyCharacter(false);
         }
-        List<Effect> effects = EffectManager.GetEffects();
-        for (int i = 0; i < effects.Count; i++) {
+        Effect[] effects = EffectManager.GetEffects().ToArray();
+        for (int i = 0; i < effects.Length; i++) {
             EffectManager.RemoveEffect(effects[i]);
         }
-        effects.Clear();
-        List<Loot> loots = LootManager.GetLoots();
-        for (int i = 0; i < loots.Count; i++) {
+        Loot[] loots = LootManager.GetLoots().ToArray();
+        for (int i = 0; i < loots.Length; i++) {
             LootManager.RemoveLoot(loots[i]);
         }
-        loots.Clear();
         currentMap = "";
         lastBlockID = 0;
         isMapActive = false;
