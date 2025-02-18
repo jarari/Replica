@@ -159,13 +159,13 @@ public class AIBaseController : Controller {
                             else if (direction == -1)
                                 character.FlipFace(false);
                         }
+                        character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
                     }
                     else {
                         direction = (int)Mathf.Sign(distance);
                         character.SetFollow(target.transform.position, rangeX * 0.9f);
                         return;
                     }
-                    character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
                 }
                 else
                     character.GetAnimator().SetBool("DiscardFromAnyState", true);
@@ -179,7 +179,6 @@ public class AIBaseController : Controller {
 
     protected virtual void Attack() {
         if (Time.time < nextAttack) {
-            character.GetAnimator().SetInteger("State", (int)CharacterStates.Idle);
             return;
         }
         nextAttack = Time.time + 1f / character.GetCurrentStat(character.GetWeapon(WeaponTypes.AI), WeaponStats.AttackSpeed);
