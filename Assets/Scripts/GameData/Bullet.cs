@@ -75,6 +75,10 @@ public class Bullet : MonoBehaviour {
         if (!init) return;
         wasAliveFor += Time.fixedDeltaTime;
         rb.velocity = transform.right * speed;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position - transform.right * 0.06f, transform.right, speed, Helper.characterLayer);
+        if (hit.collider != null) {
+            HandleCollision(hit.collider);
+        }
         if (Vector3.Distance(transform.position, startPos) >= range || wasAliveFor >= lifetime)
             PoolDestroy();
     }
@@ -83,26 +87,26 @@ public class Bullet : MonoBehaviour {
         if (!init) return;
         collisionPos = collision.contacts[0].point;
         collisionNorm = collision.contacts[0].normal;
-        HandleCollision(collision);
+        HandleCollision(collision.collider);
     }
 
-    protected virtual void HandleCollision(Collision2D collision) {
+    protected virtual void HandleCollision(Collider2D collider) {
         Character colliding = null;
-        if(collision.gameObject == null) return;
-        if (collision.gameObject.tag.Equals("Character")) {
-            if (collision.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
-                colliding = collision.gameObject.GetComponent<Character>();
+        if(collider.gameObject == null) return;
+        if (collider.gameObject.tag.Equals("Character")) {
+            if (collider.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
+                colliding = collider.gameObject.GetComponent<Character>();
             }
             else {
-                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collision.collider);
-                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[1], collision.collider);
+                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider);
+                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[1], collider);
                 return;
             }
         }
-        else if (collision.gameObject.tag.Equals("Ground")) {
+        else if (collider.gameObject.tag.Equals("Ground")) {
             if (ignoreGround) {
-                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collision.collider);
-                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[1], collision.collider);
+                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider);
+                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[1], collider);
             }
             else {
                 collided = true;
@@ -111,7 +115,7 @@ public class Bullet : MonoBehaviour {
                 return;
             }
         }
-        else if (collision.gameObject.tag.Equals("Ceiling")) {
+        else if (collider.gameObject.tag.Equals("Ceiling")) {
             collided = true;
             PoolDestroy();
             init = false;
@@ -122,8 +126,8 @@ public class Bullet : MonoBehaviour {
             if (colliding.GetTeam() != attacker.GetTeam()) {
                 collided = true;
                 if (colliding.HasFlag(CharacterFlags.Invincible)) {
-                    Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collision.collider);
-                    Physics2D.IgnoreCollision(GetComponents<Collider2D>()[1], collision.collider);
+                    Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider);
+                    Physics2D.IgnoreCollision(GetComponents<Collider2D>()[1], collider);
                 }
                 else {
                     if (data[WeaponStats.ExplosionRadius] <= 0) {

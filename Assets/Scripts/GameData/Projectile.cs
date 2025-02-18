@@ -98,22 +98,22 @@ public class Projectile : Bullet {
         }
     }
 
-    protected override void HandleCollision(Collision2D collision) {
-        if (collision.gameObject == null) return;
-        if (collision.gameObject.tag.Equals("Character")) {
-            if(collision.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
+    protected override void HandleCollision(Collider2D collider) {
+        if (collider.gameObject == null) return;
+        if (collider.gameObject.tag.Equals("Character")) {
+            if(collider.gameObject.GetComponent<Character>().GetTeam() != attacker.GetTeam()) {
                 collided = true;
                 PoolDestroy();
                 init = false;
                 return;
             }
             else {
-                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collision.gameObject.GetComponents<Collider2D>()[0]);
-                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collision.gameObject.GetComponents<Collider2D>()[1]);
+                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider.gameObject.GetComponents<Collider2D>()[0]);
+                Physics2D.IgnoreCollision(GetComponents<Collider2D>()[0], collider.gameObject.GetComponents<Collider2D>()[1]);
                 return;
             }
         }
-        else if (collision.gameObject.tag.Equals("Ground") || collision.gameObject.tag.Equals("Ceiling")) {
+        else if (collider.gameObject.tag.Equals("Ground") || collider.gameObject.tag.Equals("Ceiling")) {
             collided = true;
             PoolDestroy();
             init = false;

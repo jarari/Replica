@@ -40,7 +40,7 @@ class ThrowableGrenade : Throwable{
         }
     }
 
-    protected override void HandleCollision(Collision2D collision) {
+    protected override void HandleCollision(Collider2D collider) {
         if (flying) {
             flying = false;
             rb.gravityScale = 1;
