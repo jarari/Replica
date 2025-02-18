@@ -22,7 +22,7 @@ public class Trigger_Stage1Scene1 : MonoBehaviour
         Character sceneActor = targets[0].GetComponent<CharacterSpawner>().GetLastSpawn();
         CamController cam = CamController.instance;
 
-        player.SetFlag(CharacterFlags.AIControlled);
+        player.SetFlag(CharacterFlags.AIControlled | CharacterFlags.Invincible);
 
         cam.InScriptedScene = true;
         Vector3 mid = (player.transform.position + sceneActor.transform.position) / 2;
@@ -43,7 +43,7 @@ public class Trigger_Stage1Scene1 : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         cam.RevertZoom(0.5f);
         cam.InScriptedScene = false;
-        player.RemoveFlag(CharacterFlags.AIControlled);
+        player.RemoveFlag(CharacterFlags.AIControlled | CharacterFlags.Invincible);
         yield return null;
     }
 }

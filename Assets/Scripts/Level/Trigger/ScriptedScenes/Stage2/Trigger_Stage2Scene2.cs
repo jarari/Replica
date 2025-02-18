@@ -24,7 +24,7 @@ public class Trigger_Stage2Scene2 : MonoBehaviour
         CamController cam = CamController.instance;
         DialogueManager dm = DialogueManager.instance;
 
-        player.SetFlag(CharacterFlags.AIControlled);
+        player.SetFlag(CharacterFlags.AIControlled | CharacterFlags.Invincible);
         
         cam.InScriptedScene = true;
         Vector3 mid = (player.transform.position + sceneActor.transform.position) / 2;
@@ -50,7 +50,7 @@ public class Trigger_Stage2Scene2 : MonoBehaviour
         yield return new WaitWhile(() => sceneActor.GetState() == CharacterStates.Attack);
         cam.RevertZoom(0.5f);
         cam.InScriptedScene = false;
-        player.RemoveFlag(CharacterFlags.AIControlled);
+        player.RemoveFlag(CharacterFlags.AIControlled | CharacterFlags.Invincible);
         aicon.SetCommand("Chase");
         aicon.ForceTarget(player);
         aicon.SetAIStatus(true);
