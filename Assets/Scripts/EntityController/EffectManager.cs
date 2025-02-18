@@ -18,7 +18,8 @@ public static class EffectManager {
 
 	public static void RemoveEffect(Effect effect) {
 		effects.Remove(effect);
-        em.PushEffectToPool(effect.gameObject);
+        if (effect.gameObject != null)
+            em.PushEffectToPool(effect.gameObject);
 	}
 
     public static void CreateEffect(string classname, Vector3 pos, float angle, Transform parent = null, bool flip = false) {

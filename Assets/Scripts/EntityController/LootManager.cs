@@ -18,7 +18,8 @@ public static class LootManager {
 
 	public static void RemoveLoot(Loot loot) {
 		loots.Remove(loot);
-        em.PushLootToPool(loot.gameObject);
+        if (loot.gameObject != null)
+            em.PushLootToPool(loot.gameObject);
         UnityEngine.Object.Destroy(loot);
     }
 	
