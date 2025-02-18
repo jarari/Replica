@@ -612,7 +612,9 @@ public abstract class Character : ObjectBase {
     }
 
     public Weapon GetWeapon(WeaponTypes type) {
-        return weapons[type];
+        Weapon ret;
+        weapons.TryGetValue(type, out ret);
+        return ret;
     }
 
     public Weapon GetLastUsedWeapon() {
