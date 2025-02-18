@@ -36,6 +36,9 @@ public class GenericButton : MonoBehaviour {
             case "UseItem":
                 CharacterManager.GetPlayer().GetInventory().UseItem(Argument, 1);
                 break;
+            case "ExitGame":
+                Application.Quit();
+                break;
             case "default":
                 break;
         }
