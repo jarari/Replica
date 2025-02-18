@@ -25,7 +25,7 @@ public class Trigger_Stage2Scene2 : MonoBehaviour
         DialogueManager dm = DialogueManager.instance;
 
         player.SetFlag(CharacterFlags.AIControlled);
-
+        
         cam.InScriptedScene = true;
         Vector3 mid = (player.transform.position + sceneActor.transform.position) / 2;
         cam.SetCamTargetPos(mid);
@@ -59,7 +59,40 @@ public class Trigger_Stage2Scene2 : MonoBehaviour
 
     void OnCharacterDeath(Character character) {
         if (character == targets[0].GetComponent<CharacterSpawner>().GetLastSpawn()) {
-            Debug.Log("Game clear");
+            EventManager.UnregisterEvent("GameClear");
+            StartCoroutine(Scene3());
         }
+    }
+
+    IEnumerator Scene3() {
+        Character player = CharacterManager.GetPlayer();
+        CamController cam = CamController.instance;
+        DialogueManager dm = DialogueManager.instance;
+        GlobalUIManager ui = GlobalUIManager.instance;
+        MenuManager mm = MenuManager.instance;
+        targets[1].GetComponent<BoxCollider2D>().enabled = false;
+        targets[1].SetActive(false);
+        mm.CanShowMenu = false;
+        player.SetFlag(CharacterFlags.AIControlled);
+        cam.ZoomCam(1.25f, 1.25f);
+        player.SetFollow(targets[2].transform.position, 10f);
+        yield return new WaitWhile(() => player.IsFollowing() == true);
+        dm.AddDialogue(player.gameObject, "I have no idea what's going on here.");
+        dm.StartDialogue();
+        yield return new WaitForSeconds(2.0f);
+        dm.AddDialogue(player.gameObject, ".........");
+        dm.AddDialogue(player.gameObject, "Whatever. I should get to the HQ.");
+        dm.StartDialogue();
+        yield return new WaitForSeconds(7.0f);
+        player.SetFollow(player.transform.position + Vector3.right * 10000f, 1f);
+        yield return new WaitForSeconds(1.75f);
+        ui.CreateImage("BGBlack", Helper.GetSprite("Sprites/ui/splashscreen", "BGBlack"), new Vector2(960, 540), Screen.width, Screen.height);
+        ui.CreateText("ToBeContinued", new Vector2(960, 540), "To be continued.", 100, 100, 84);
+        yield return new WaitForSeconds(3.0f);
+        ui.DeleteUIElement("BGBlack");
+        ui.DeleteUIElement("ToBeContinued");
+        mm.CanShowMenu = true;
+        ui.StartCoroutine(ui.BackToMainmenu());
+        yield return null;
     }
 }
