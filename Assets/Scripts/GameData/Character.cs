@@ -1096,7 +1096,7 @@ public abstract class Character : ObjectBase {
         float dist = Mathf.Abs(dx);
         int dir = (int)Mathf.Sign(dx);
         maxJump = Mathf.Pow(GetCurrentStat(CharacterStats.JumpPower), 2) / 3924f;
-        if (dist <= followRadius && Mathf.Abs(dy) <= 40f) {
+        if (dist <= followRadius && Mathf.Abs(dy) <= maxJump / 2f) {
             StopFollow();
             return;
         }
