@@ -415,6 +415,8 @@ public class GeneralControl : Controller {
     }
 
     public override void ResetAttackTimer() {
+        if (character.GetLastUsedWeapon() == null)
+            return;
         nextAttack = Time.time + 1f / character.GetCurrentStat(character.GetLastUsedWeapon(), WeaponStats.AttackSpeed);
     }
 }
