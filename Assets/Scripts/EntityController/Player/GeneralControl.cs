@@ -360,13 +360,13 @@ public class GeneralControl : Controller {
                         if (Input.GetKeyDown(KeyCode.G) && character.GetInventory().GetCount("item_grenade") > 0) {
                             if(character.GetState() != CharacterStates.Throw) {
                                 character.GetAnimator().Play("throw_ready");
-                                character.GetInventory().ModCount("item_grenade", -1);
                             }
                         }
                         if (Input.GetKeyUp(KeyCode.G) && character.GetState() == CharacterStates.Throw) {
                             character.GetAnimator().ResetTrigger("UpG");
                             character.GetAnimator().ResetTrigger("FlatG");
                             character.GetAnimator().ResetTrigger("DownG");
+                            character.GetInventory().ModCount("item_grenade", -1);
                             if (Input.GetKey(KeyCode.DownArrow)) {
                                 character.GetAnimator().SetTrigger("DownG");
                             }

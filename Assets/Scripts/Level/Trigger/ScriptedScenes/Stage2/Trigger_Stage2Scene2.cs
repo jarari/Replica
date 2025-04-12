@@ -74,6 +74,8 @@ public class Trigger_Stage2Scene2 : MonoBehaviour
         targets[1].GetComponent<BoxCollider2D>().enabled = false;
         targets[1].SetActive(false);
         mm.CanShowMenu = false;
+        player.SetState(CharacterStates.Idle);
+        player.GetAnimator().Play("idle_loop");
         player.SetFlag(CharacterFlags.AIControlled);
         cam.ZoomCam(1.25f, 1.25f);
         player.SetFollow(targets[2].transform.position, 10f);

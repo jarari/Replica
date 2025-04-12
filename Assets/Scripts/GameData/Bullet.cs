@@ -77,6 +77,8 @@ public class Bullet : MonoBehaviour {
         rb.velocity = transform.right * speed;
         RaycastHit2D hit = Physics2D.Raycast(rb.position, transform.right, speed * Time.fixedDeltaTime, Helper.characterLayer);
         if (hit.collider != null) {
+            collisionPos = hit.point;
+            collisionNorm = hit.normal;
             HandleCollision(hit.collider);
         }
         if (Vector3.Distance(transform.position, startPos) >= range || wasAliveFor >= lifetime)
